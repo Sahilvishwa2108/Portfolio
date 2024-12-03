@@ -1,0 +1,46 @@
+{
+  "certificates": [
+    {
+      "id": 1,
+      "title": "Java Programming Fundamentals",
+      "slug": "java-programming-fundamentals",
+      "description": "Learn the basics of Java programming with our comprehensive beginner's course.",
+      "image": "/certificates/java_programming_fundamentals.jpg"
+    },
+    {
+      "id": 2,
+      "title": "Advanced Java Programming",
+      "slug": "advanced-java-programming",
+      "description": "Deep dive into advanced Java programming concepts and techniques.",
+      "image": "/certificates/java_programming_fundamentals.jpg"
+    },
+    {
+      "id": 3,
+      "title": "Web Development with JavaScript",
+      "slug": "web-development-javascript",
+      "description": "Master web development using JavaScript, HTML, and CSS.",
+      "image": "/certificates/java_programming_fundamentals.jpg"
+    },
+    {
+      "id": 4,
+      "title": "React for Beginners",
+      "slug": "react-for-beginners",
+      "description": "Get started with React and build dynamic web applications.",
+      "image": "/certificates/java_programming_fundamentals.jpg"
+    },
+    {
+      "id": 5,
+      "title": "Node.js and Express",
+      "slug": "nodejs-express",
+      "description": "Learn to build server-side applications using Node.js and Express.",
+      "image": "/certificates/java_programming_fundamentals.jpg"
+    },
+    {
+      "id": 6,
+      "title": "Full Stack Development",
+      "slug": "full-stack-development",
+      "description": "Become a full stack developer by mastering both front-end and back-end technologies.",
+      "image": "/certificates/java_programming_fundamentals.jpg"
+    }
+  ]
+}
