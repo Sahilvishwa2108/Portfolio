@@ -1,11 +1,14 @@
 "use client";
 import React from "react";
-import { Button } from "./ui/moving-border";
+import { useScroll, useTransform } from "framer-motion";
+import { GoogleGeminiEffect } from "./ui/google-gemini-effect";
 import { motion } from "framer-motion";
 import { LampContainer } from "./ui/lamp";
+import { TypewriterEffectSmooth } from "./ui/typewriter-effect";
 
 function Hero() {
   return (
+    <>
     <LampContainer>
       <motion.h1
         initial={{ opacity: 0.5, y: 100 }}
@@ -17,7 +20,7 @@ function Hero() {
         }}
         className="mt-8 bg-gradient-to-br from-slate-300 to-slate-500 py-4 bg-clip-text text-center text-4xl font-medium tracking-tight text-transparent md:text-7xl"
       >
-        Hey there,
+        <b>Hey there,</b>
       </motion.h1>
       <motion.h1
         initial={{ opacity: 0.5, y: 100 }}
@@ -29,34 +32,64 @@ function Hero() {
         }}
         className="mt-1 bg-gradient-to-br from-slate-300 to-slate-500 py-4 bg-clip-text text-center text-4xl font-medium tracking-tight text-transparent md:text-7xl"
       >
-        I am <b>Sahil Vishwakarma</b>
-      </motion.h1>
-      <motion.h1
-        initial={{ opacity: 0.5, y: 100 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{
-          delay: 0.3,
-          duration: 0.8,
-          ease: "easeInOut",
-        }}
-      >
-        <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 space-x-0 md:space-x-4 mt-2">
-          <Button
-            borderRadius="1.75rem"
-            className="bg-black border-neutral-600 text-white text-md"
-          >
-            Hire me
-          </Button>
-          <Button
-            borderRadius="1.75rem"
-            className="bg-white text-black border-black  text-md"
-          >
-            Resume
-          </Button>
-        </div>
+        {TypewriterEffectSmoothDemo()}
       </motion.h1>
     </LampContainer>
+    <GoogleGeminiEffectDemo />
+    </>
   );
 }
 
+function GoogleGeminiEffectDemo() {
+  const ref = React.useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start start", "end start"],
+  });
+ 
+  const pathLengthFirst = useTransform(scrollYProgress, [0, 0.8], [0.2, 1.2]);
+  const pathLengthSecond = useTransform(scrollYProgress, [0, 0.8], [0.15, 1.2]);
+  const pathLengthThird = useTransform(scrollYProgress, [0, 0.8], [0.1, 1.2]);
+  const pathLengthFourth = useTransform(scrollYProgress, [0, 0.8], [0.05, 1.2]);
+  const pathLengthFifth = useTransform(scrollYProgress, [0, 0.8], [0, 1.2]);
+ 
+  return (
+    <div
+      className="h-[400vh] bg-black w-full dark:border dark:border-white/[0.1] rounded-md relative pt-40 overflow-clip"
+      ref={ref}
+    >
+      <GoogleGeminiEffect
+        pathLengths={[
+          pathLengthFirst,
+          pathLengthSecond,
+          pathLengthThird,
+          pathLengthFourth,
+          pathLengthFifth,
+        ]}
+      />
+    </div>
+  );
+}
+
+function TypewriterEffectSmoothDemo() {
+  const words = [
+    {
+      text: "This",
+      className:"text-7xl",
+    },
+    {
+      text: "is",
+      className:"text-7xl",
+    },
+    {
+      text: "Sahil Vishwakarma.",
+      className: "text-7xl text-blue-500 dark:text-blue-500",
+    },
+  ];
+  return (
+    <>
+      <TypewriterEffectSmooth words={words} />
+    </>
+  );
+}
 export default Hero;
