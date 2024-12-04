@@ -8,22 +8,19 @@ interface LetterPullupProps {
   className?: string;
   words: string;
   delay?: number;
+  onComplete?: () => void; // Add this line to accept a callback
 }
 
-export function LetterPullup({
-  className,
-  words,
-  delay,
-}: LetterPullupProps) {
+export const LetterPullup = ({ words, delay = 0.05, className, onComplete }: LetterPullupProps) => {
   const letters = words.split("");
 
   const pullupVariant = {
-    initial: { y: 100, opacity: 0 },
+    initial: { y: 50, opacity: 0 },
     animate: (i: any) => ({
       y: 0,
       opacity: 1,
       transition: {
-        delay: i * (delay ? delay : 0.05), // By default, delay each letter's animation by 0.05 seconds
+        delay: i * delay, // By default, delay each letter's animation by 0.05 seconds
       },
     }),
   };
@@ -40,11 +37,17 @@ export function LetterPullup({
           className={cn(
             "font-display text-center tracking-[-0.02em] drop-shadow-sm dark:text-white md:leading-[5rem]",
             className,
+            words === "Sahil Vishwakarma" ? "bg-blue-500" : ""
           )}
+          onAnimationComplete={() => {
+            if (i === letters.length - 1 && onComplete) {
+              onComplete();
+            }
+          }}
         >
           {letter === " " ? <span>&nbsp;</span> : letter}
         </motion.h1>
       ))}
     </div>
   );
-}
+};
