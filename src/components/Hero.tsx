@@ -5,6 +5,8 @@ import { GoogleGeminiEffect } from "./ui/google-gemini-effect";
 import { motion } from "framer-motion";
 import { LampContainer } from "./ui/lamp";
 import { TypewriterEffectSmooth } from "./ui/typewriter-effect";
+import {LetterPullup} from "@/components/ui/letter-pullup";
+import BlurIn from "@/components/ui/blur-in";
 
 function Hero() {
   return (
@@ -20,7 +22,7 @@ function Hero() {
         }}
         className="mt-8 bg-gradient-to-br from-slate-300 to-slate-500 py-4 bg-clip-text text-center text-4xl font-medium tracking-tight text-transparent md:text-7xl"
       >
-        <b>Hey there,</b>
+        <b><LetterPullup words={"Hey there,"} delay={0.05} /></b>
       </motion.h1>
       <motion.h1
         initial={{ opacity: 0.5, y: 100 }}
