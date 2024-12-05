@@ -10,6 +10,8 @@ import BlurIn from "@/components/ui/blur-in";
 
 function Hero() {
   const [firstLineComplete, setFirstLineComplete] = useState(false);
+  const [secondLineComplete, setSecondLineComplete] = useState(false);
+  const [thirdLineComplete, setThirdLineComplete] = useState(false);
 
   return (
     <>
@@ -27,28 +29,26 @@ function Hero() {
           <b>
             <LetterPullup
               words={"Hey there,"}
-              delay={0.05}
+              delay={0.02}
               onComplete={() => setFirstLineComplete(true)}
             />
-          </b>
-        </motion.h1>
-        {firstLineComplete && (
-          <motion.h1
-            initial={{ opacity: 0.5, y: 100 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{
-              delay: 0.3,
-              duration: 0.8,
-              ease: "easeInOut",
-            }}
-            className="mt-1 bg-gradient-to-br from-slate-300 to-slate-500 py-4 bg-clip-text text-center text-4xl font-medium tracking-tight text-transparent md:text-7xl"
-          >
-            <b>
-              <LetterPullup words={"This is Sahil Vishwakarma"} delay={0.03} />
+            {firstLineComplete && (
+            <LetterPullup
+              words={"I'm"} 
+              delay={0.02} 
+              onComplete={()=> setSecondLineComplete(true)} 
+            />
+            )}
+            {secondLineComplete && (
+            <LetterPullup
+              words={"Sahil Vishwakarma"} 
+              delay={0.05} 
+              onComplete={()=> setThirdLineComplete(true)} 
+            />
+            )}
             </b>
-          </motion.h1>
-        )}
-        {firstLineComplete && (
+        </motion.h1>
+        {thirdLineComplete && (
           <motion.h1
             initial={{ opacity: 0.5, y: 100 }}
             whileInView={{ opacity: 1, y: 0 }}
