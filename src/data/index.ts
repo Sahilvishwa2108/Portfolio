@@ -197,13 +197,16 @@ export const socialMedia = [
   {
     id: 1,
     img: "/git.svg",
+    link: "https://github.com/Sahilvishwa2108",
   },
   {
     id: 2,
-    img: "/twit.svg",
+    img: "/link.svg",
+    link: "https://www.linkedin.com/in/sahilvishwa2108/",
   },
   {
     id: 3,
-    img: "/link.svg",
+    img: "/insta.svg",
+    link: "https://www.instagram.com/sahilvishwa2108/",
   },
 ];

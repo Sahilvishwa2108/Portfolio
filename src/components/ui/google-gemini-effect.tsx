@@ -22,27 +22,14 @@ export const GoogleGeminiEffect = ({
 }) => {
   return (
     <div className={cn("sticky top-80", className)}>
-      <p className="text-lg md:text-7xl font-normal pb-4 text-center bg-clip-text text-transparent bg-gradient-to-b from-neutral-100 to-neutral-300">
+      <p className="text-lg md:text-7xl font-normal pb-4 text-center bg-clip-text text-teal-600 bg-gradient-to-b from-neutral-100 to-neutral-300 ">
         {title || `Who Am I?`}
       </p>
       <p className="text-xs md:text-xl font-normal text-center text-neutral-400 mt-4 max-w-lg mx-auto">
         {description ||
           `Software Developer passionate about creating innovative, user-centric applications with modern technologies.`}
       </p>
-      <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 space-x-0 md:space-x-4 mt-8 justify-center items-center">
-          <Button
-            borderRadius="1.75rem"
-            className="bg-black border-neutral-600 text-white text-md"
-          >
-            Hire me
-          </Button>
-          <Button
-            borderRadius="1.75rem"
-            className="bg-white text-black border-black  text-md"
-          >
-            Resume
-          </Button>
-        </div>
+      
       <svg
         width="1440"
         height="890"
