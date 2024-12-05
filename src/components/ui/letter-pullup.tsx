@@ -36,7 +36,7 @@ export const LetterPullup = ({ words, delay = 0.05, className, onComplete }: Let
           custom={i}
           className={cn(
             "font-display text-center tracking-[-0.02em] drop-shadow-sm",
-            letters.join("") === "Sahil Vishwakarma" ? "dark:text-teal-600" : "dark:text-white",
+            letters.join("") === "SAHIL VISHWAKARMA" ? "dark:text-teal-600" : "dark:text-white",
             className,
           )}
           onAnimationComplete={() => {

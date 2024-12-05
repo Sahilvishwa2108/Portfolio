@@ -34,15 +34,17 @@ function Hero() {
                 onComplete={() => setFirstLineComplete(true)}
               />
               {firstLineComplete && (
-                <LetterPullup
-                  words={"I'm"}
-                  delay={0.05}
-                  onComplete={() => setSecondLineComplete(true)}
-                />
+                <>
+                  <LetterPullup
+                    words={"I'm"}
+                    delay={0.05}
+                    onComplete={() => setSecondLineComplete(true)}
+                  />
+                </>
               )}
               {secondLineComplete && (
                 <LetterPullup
-                  words={"Sahil Vishwakarma"}
+                  words={"SAHIL VISHWAKARMA"}
                   delay={0.05}
                   onComplete={() => setThirdLineComplete(true)}
                 />

@@ -27,7 +27,7 @@ const BlurIn = ({ word, className, variant, duration = 1, as: Tag = "span" }: Bl
       animate="visible"
       transition={{ duration }}
       variants={combinedVariants}
-      className={cn(className)}
+      className={cn("tracking-wide", className)} // Add tracking-wide class for letter spacing
     >
       <Tag>{word}</Tag>
     </motion.div>
