@@ -1,14 +1,12 @@
 "use client"
 import { useScroll, useTransform } from "framer-motion";
 import {GoogleGeminiEffect} from "@/components/ui/google-gemini-effect";
-import Grid from "@/components/Grid";
 import React from 'react'
 
 function About() {
   return (
     <>
       <GoogleGeminiEffectDemo />
-      <Grid />
     </>
   )
 }
