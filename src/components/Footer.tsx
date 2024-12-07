@@ -1,9 +1,13 @@
 import { FaLocationArrow } from "react-icons/fa6";
-
 import { socialMedia } from "@/data";
 import MagicButton from "@/components/ui/MagicButton";
 import Link from "next/link";
-import { Key } from "lucide-react";
+
+interface SocialMedia {
+  id: number;
+  link: string;
+  img: string;
+}
 
 const Footer = () => {
   return (
@@ -40,7 +44,7 @@ const Footer = () => {
         </p>
 
         <div className="flex items-center md:gap-3 gap-6">
-          {socialMedia.map((info) => (
+          {socialMedia.map((info: SocialMedia) => (
             <Link href={`${info.link}`} key={info.id}>
               <div
                 className="w-10 h-10 cursor-pointer flex justify-center items-center backdrop-filter backdrop-blur-lg saturate-180 bg-opacity-75 bg-black-200 rounded-lg border border-black-300"

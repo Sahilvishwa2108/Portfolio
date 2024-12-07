@@ -16,7 +16,7 @@ export const LetterPullup = ({ words, delay = 0.05, className, onComplete }: Let
 
   const pullupVariant = {
     initial: { y: 50, opacity: 0 },
-    animate: (i: any) => ({
+    animate: (i: number) => ({
       y: 0,
       opacity: 1,
       transition: {
