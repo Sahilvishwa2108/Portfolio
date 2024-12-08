@@ -63,7 +63,7 @@ function Certifications() {
         </div>
         <Slider {...settings}>
           {certificates.map((certificate: Certificate) => (
-            <div key={certificate.id} className="p-4 gap-32 relative">
+            <div key={certificate.id} className="p-6 gap-32 relative"> {/* Increased padding from p-4 to p-6 */}
               <BackgroundGradient>
                 <div className="bg-black rounded-3xl overflow-hidden shadow-lg group">
                   <Image
@@ -73,7 +73,7 @@ function Certifications() {
                     height={300}
                     className="w-full h-full object-cover"
                   />
-                  <div className="absolute inset-0 bg-black bg-opacity-80 backdrop-filter backdrop-blur-xs backdrop-saturate-180 border border-white border-opacity-12 rounded-3xl flex flex-col justify-center items-center transition-all duration-500 group-hover:h-0 group-hover:opacity-0 overflow-hidden">
+                  <div className="absolute inset-0 bg-black bg-opacity-80 backdrop-filter backdrop-blur-xs backdrop-saturate-180 border border-opacity-12 rounded-3xl flex flex-col justify-center items-center transition-all duration-1000 group-hover:h-0 group-hover:opacity-0 overflow-hidden">
                     <h3 className="text-lg font-semibold text-white">{certificate.title}</h3>
                     <Link href={`/certificates/${certificate.slug}`} legacyBehavior>
                       <a className="mt-4 inline-block text-teal-600 hover:text-teal-800">
