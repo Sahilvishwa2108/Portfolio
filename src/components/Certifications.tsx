@@ -2,8 +2,11 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
+import Slider from "react-slick";
 import certificatesData from "@/data/certificates.json";
 import { BackgroundGradient } from "./ui/background-gradient";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 interface Certificate {
   id: number;
@@ -15,9 +18,41 @@ interface Certificate {
 
 function Certifications() {
   const certificates = certificatesData.certificates;
+
+  const settings = {
+    dots: true,
+    infinite: true,
+    speed: 10000, // Slow down the transition speed
+    slidesToShow: 3,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 0, // Continuous scrolling
+    cssEase: "linear",
+    pauseOnHover: true,
+    swipeToSlide: true,
+    responsive: [
+      {
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 1,
+          infinite: true,
+          dots: true
+        }
+      },
+      {
+        breakpoint: 600,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1
+        }
+      }
+    ]
+  };
+
   return (
-    <div className="py-12 bg-black">
-      <div>
+    <div className="relative py-12 bg-black overflow-hidden">
+      <div className="relative z-10">
         <div className="text-center">
           <h2 className="text-base text-teal-600 font-semibold tracking-wide uppercase">
             CERTIFICATIONS
@@ -26,36 +61,31 @@ function Certifications() {
             Learn With the Best
           </p>
         </div>
-      </div>
-      <div className="mt-10 mx-8">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-20 justify-center">
+        <Slider {...settings}>
           {certificates.map((certificate: Certificate) => (
-            <div key={certificate.id} className="flex justify-center">
-              <BackgroundGradient className="flex flex-col rounded-[22px] bg-white dark:bg-zinc-900 overflow-hidden h-full max-w-sm">
-                <div className="p-4 sm:p-6 flex flex-col items-center text-center flex-grow">
+            <div key={certificate.id} className="p-4 gap-32 relative">
+              <BackgroundGradient>
+                <div className="bg-black rounded-3xl overflow-hidden shadow-lg group">
                   <Image
                     src={certificate.image}
                     alt={certificate.title}
-                    height={100}
-                    width={400}
-                    className="object-fill rounded-2xl"
+                    width={500}
+                    height={300}
+                    className="w-full h-full object-cover"
                   />
-                  <p className="text-lg sm:text-xl text-black mt-4 mb-2 dark:text-neutral-200">
-                    {certificate.title}
-                  </p>
+                  <div className="absolute inset-0 bg-black bg-opacity-80 backdrop-filter backdrop-blur-xs backdrop-saturate-180 border border-white border-opacity-12 rounded-3xl flex flex-col justify-center items-center transition-all duration-500 group-hover:h-0 group-hover:opacity-0 overflow-hidden">
+                    <h3 className="text-lg font-semibold text-white">{certificate.title}</h3>
+                    <Link href={`/certificates/${certificate.slug}`} legacyBehavior>
+                      <a className="mt-4 inline-block text-teal-600 hover:text-teal-800">
+                        Learn More
+                      </a>
+                    </Link>
+                  </div>
                 </div>
               </BackgroundGradient>
             </div>
           ))}
-        </div>
-      </div>
-      <div className="mt-20 text-center">
-        <Link
-          href={"/certifications"}
-          className="px-4 py-2 rounded border border-neutral-600 text-neutral-700 bg-white hover:bg-gray-100 transition duration-200"
-        >
-          View All certificates
-        </Link>
+        </Slider>
       </div>
     </div>
   );
