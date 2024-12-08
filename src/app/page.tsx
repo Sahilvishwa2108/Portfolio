@@ -4,6 +4,7 @@ import RecentProjects from "@/components/RecentProjects";
 import Experience from "@/components/Experience";
 import Footer from "@/components/Footer";
 import About from "@/components/About";
+import { MacbookScrollDemo } from "@/components/Macbook-scroll";
 
 
 export default function Home() {
@@ -11,6 +12,7 @@ export default function Home() {
     <div className="min-h-screen bg-black/[0.96] antialiased bg-grid-white/[0.02]">
       <Hero/>
       <About/>
+      <MacbookScrollDemo/>
       <Experience/>
       <Certifications/>
       <RecentProjects/>
