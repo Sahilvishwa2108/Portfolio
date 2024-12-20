@@ -7,6 +7,7 @@ import certificatesData from "@/data/certificates.json";
 import { BackgroundGradient } from "./ui/background-gradient";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import {Marquee} from "@/components/ui/marquee";
 
 interface Certificate {
   id: number;
@@ -54,12 +55,9 @@ function Certifications() {
     <div className="relative py-12 bg-black overflow-hidden">
       <div className="relative z-10">
         <div className="text-center">
-          <h2 className="text-base text-teal-600 font-semibold tracking-wide uppercase">
+          <h2 className="text-base text-teal-600 font-semibold tracking-wide uppercase mb-10">
             CERTIFICATIONS
           </h2>
-          <p className="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-white sm:text-4xl">
-            Learn With the Best
-          </p>
         </div>
         <Slider {...settings}>
           {certificates.map((certificate: Certificate) => (
