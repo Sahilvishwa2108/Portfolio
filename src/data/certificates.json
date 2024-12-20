@@ -5,42 +5,189 @@
       "title": "Java Programming Fundamentals",
       "slug": "java-programming-fundamentals",
       "description": "Learn the basics of Java programming with our comprehensive beginner's course.",
-      "image": "/certificates/java_programming_fundamentals.jpg"
+      "image": "/certificates/infosys4.png"
     },
     {
       "id": 2,
-      "title": "Advanced Java Programming",
-      "slug": "advanced-java-programming",
-      "description": "Deep dive into advanced Java programming concepts and techniques.",
-      "image": "/certificates/java_programming_fundamentals.jpg"
+      "title": "Database Management System",
+      "slug": "database-management-system",
+      "description": "Master the concepts of database management system with our comprehensive course.",
+      "image": "/certificates/infosys1.png"
     },
     {
       "id": 3,
-      "title": "Web Development with JavaScript",
-      "slug": "web-development-javascript",
-      "description": "Master web development using JavaScript, HTML, and CSS.",
-      "image": "/certificates/java_programming_fundamentals.jpg"
+      "title": "High Impact Presentations",
+      "slug": "high-impact-presentations",
+      "description": "Learn to deliver high-impact presentations that generate results.",
+      "image": "/certificates/infosys2.png"
     },
     {
       "id": 4,
-      "title": "React for Beginners",
-      "slug": "react-for-beginners",
-      "description": "Get started with React and build dynamic web applications.",
-      "image": "/certificates/java_programming_fundamentals.jpg"
+      "title": "Java Language Features",
+      "slug": "java-language-features",
+      "description": "Master the advanced features of Java programming with our comprehensive course.",
+      "image": "/certificates/infosys3.png"
     },
     {
       "id": 5,
-      "title": "Node.js and Express",
-      "slug": "nodejs-express",
-      "description": "Learn to build server-side applications using Node.js and Express.",
-      "image": "/certificates/java_programming_fundamentals.jpg"
+      "title": "Full Stack Web Development",
+      "slug": "full-stack-web-development",
+      "description": "Learn to build full stack web applications with our comprehensive course.",
+      "image": "/certificates/delta.jpg"
     },
     {
       "id": 6,
-      "title": "Full Stack Development",
-      "slug": "full-stack-development",
-      "description": "Become a full stack developer by mastering both front-end and back-end technologies.",
-      "image": "/certificates/java_programming_fundamentals.jpg"
+      "title": "Introduction to Ethical Hacking",
+      "slug": "introduction-to-ethical-hacking",
+      "description": "Learn the basics of ethical hacking with our comprehensive beginner's course.",
+      "image": "/certificates/pwhacking.jpg"
+    },
+    {
+      "id": 7,
+      "title": "TCS: Cybersecurity Analyst Job Simulation",
+      "slug": "cybersecurity-analyst-job-simulation",
+      "description": "Get hands-on experience with our cybersecurity analyst job simulation.",
+      "image": "/certificates/forage1.png"
+    },
+    {
+      "id": 8,
+      "title": "Introduction to Cybersecurity",
+      "slug": "introduction-to-cybersecurity",
+      "description": "Learn the basics of cybersecurity with our comprehensive beginner's course.",
+      "image": "/certificates/cisco1.png"
+    },
+    {
+      "id": 9,
+      "title": "Cybersecurity Essentials",
+      "slug": "cybersecurity-essentials",
+      "description": "Master the essentials of cybersecurity with our comprehensive course.",
+      "image": "/certificates/cisco2.png"
+    },
+    {
+      "id": 10,
+      "title": "Junior Cybersecurity Analyst",
+      "slug": "junior-cybersecurity-analyst",
+      "description": "Get hands-on experience with our junior cybersecurity analyst job simulation.",
+      "image": "/certificates/cisco3.png"
+    },
+    {
+      "id": 11,
+      "title": "Networking Basics",
+      "slug": "networking-basics",
+      "description": "Learn the basics of networking with our comprehensive beginner's course.",
+      "image": "/certificates/cisco4.png"
+    },
+    {
+      "id": 12,
+      "title": "Network Technician",
+      "slug": "network-technician",
+      "description": "Get hands-on experience with our network technician job simulation.",
+      "image": "/certificates/cisco5.png"
+    },
+    {
+      "id": 13,
+      "title": "Networking Essentials",
+      "slug": "networking-essentials",
+      "description": "Master the essentials of networking with our comprehensive course.",
+      "image": "/certificates/cisco6.png"
+    },
+    {
+      "id": 14,
+      "title": "Partner: Cloud Security",
+      "slug": "partner-cloud-security",
+      "description": "Learn the basics of cloud security with our comprehensive course.",
+      "image": "/certificates/cisco7.png"
+    },
+    {
+      "id": 15,
+      "title": "Introduction to Packet Tracer",
+      "slug": "introduction-to-packet-tracer",
+      "description": "Get hands-on experience with our packet tracer simulation.",
+      "image": "/certificates/cisco8.png"
+    },
+    {
+      "id": 16,
+      "title": "Software Engineering Virtual Experience Program",
+      "slug": "software-engineering-virtual-experience-program",
+      "description": "Get hands-on experience with our software engineering virtual experience program.",
+      "image": "/certificates/forage2.png"
+    },
+    {
+      "id": 17,
+      "title": "IBM: Cloud Core",
+      "slug": "ibm-cloud-core",
+      "description": "Learn the basics of cloud computing with our comprehensive course.",
+      "image": "/certificates/ibm1.png"
+    },
+    {
+      "id": 18,
+      "title": "Complete Java Masterclass",
+      "slug": "complete-java-masterclass",
+      "description": "Master the advanced features of Java programming with our comprehensive course.",
+      "image": "/certificates/udemy1.jpg"
+    },
+    {
+      "id": 19,
+      "title": "Complete C++ 20 Masterclass",
+      "slug": "complete-c++-20-masterclass",
+      "description": "Master the advanced features of C++ programming with our comprehensive course.",
+      "image": "/certificates/udemy2.jpg"
+    },
+    {
+      "id": 20,
+      "title": "Angular Certification",
+      "slug": "angular-certification",
+      "description": "Master the essentials of Angular with our comprehensive course.",
+      "image": "/certificates/infosys5.jpg"
+    },
+    {
+      "id": 21,
+      "title": "Email Writing Skills",
+      "slug": "email-writing-skills",
+      "description": "Learn to write effective emails that get results.",
+      "image": "/certificates/infosys6.png"
+    },
+    {
+      "id": 22,
+      "title": "Time Management",
+      "slug": "time-management",
+      "description": "Learn to manage your time effectively and get more done.",
+      "image": "/certificates/infosys7.png"
+    },
+    {
+      "id": 23,
+      "title": "HTML 5: The Language",
+      "slug": "html-5-the-language",
+      "description": "Learn the basics of HTML 5 with our comprehensive course.",
+      "image": "/certificates/infosys8.png"
+    },
+    {
+      "id": 24,
+      "title": "JavaScript Certification",  
+      "slug": "javascript-certification",
+      "description": "Master the essentials of JavaScript with our comprehensive course.",
+      "image": "/certificates/infosys9.png"
+    },
+    {
+      "id": 25,
+      "title": "BootStrap 4",
+      "slug": "bootstrap-4",
+      "description": "Master the essentials of BootStrap 4 with our comprehensive course.",
+      "image": "/certificates/infosys10.png"
+    },
+    {
+      "id": 26,
+      "title": "TypeScript Certification",
+      "slug": "typescript-certification",
+      "description": "Master the essentials of TypeScript with our comprehensive course.",
+      "image": "/certificates/infosys11.png"
+    },
+    {
+      "id": 27,
+      "title": "CSS 3 Certification",
+      "slug": "css-3-certification",
+      "description": "Master the essentials of CSS 3 with our comprehensive course.",
+      "image": "/certificates/infosys12.png"
     }
   ]
 }
