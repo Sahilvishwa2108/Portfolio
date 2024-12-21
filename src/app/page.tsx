@@ -1,4 +1,5 @@
 import {Achivements} from "@/components/Achivements";
+import {Certifications} from "@/components/Certifications";
 import Hero from "@/components/Hero";
 import RecentProjects from "@/components/RecentProjects";
 import Experience from "@/components/Experience";
@@ -15,6 +16,7 @@ export default function Home() {
       <Experience/>
       <MacbookScrollDemo/>
       <Achivements/>
+      <Certifications/>
       <RecentProjects/>
       <Footer/>
     </div>
