@@ -13,12 +13,12 @@ export const LampContainer = ({
   return (
     <div
       className={cn(
-        "relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-transparent w-full rounded-md",
+        "relative flex min-h-screen  flex-col items-center justify-center overflow-hidden bg-transparent w-full rounded-md",
         className
       )}
     >
       {/* Decorative Background */}
-      <div className="relative flex w-full flex-1 scale-y-125 items-center justify-center isolate">
+      <div className="relative flex w-full flex-1 scale-y-125 items-center justify-center">
         <motion.div
           initial={{ opacity: 0.5, width: "15rem" }}
           whileInView={{ opacity: 1, width: "30rem" }}
@@ -30,7 +30,7 @@ export const LampContainer = ({
           style={{
             backgroundImage: `conic-gradient(var(--conic-position), var(--tw-gradient-stops))`,
           }}
-          className="absolute inset-auto right-1/2 h-56 overflow-visible w-[30rem] bg-gradient-conic from-cyan-500 via-transparent to-transparent text-white [--conic-position:from_70deg_at_center_top]"
+          className="absolute inset-auto right-1/2 h-56 overflow-hidden w-[30rem] bg-gradient-conic from-cyan-500 via-transparent to-transparent text-white [--conic-position:from_70deg_at_center_top]"
         ></motion.div>
 
         <motion.div
