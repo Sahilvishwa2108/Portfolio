@@ -1,5 +1,5 @@
 "use client";
-import React, { RefObject } from "react";
+import React from "react";
 import {
   motion,
   useAnimationFrame,
@@ -32,7 +32,6 @@ export function Button({
   return (
     <Component
       className={cn(
-        // remove h-16 w-40, add  md:col-span-2
         "bg-transparent relative text-xl p-[1px] overflow-hidden md:col-span-2 md:row-span-1",
         containerClassName
       )}

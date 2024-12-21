@@ -11,7 +11,6 @@ import {
   IconMicrophone,
   IconMoon,
   IconPlayerSkipForward,
-  IconPlayerTrackNext,
   IconPlayerTrackPrev,
   IconTable,
   IconVolume,

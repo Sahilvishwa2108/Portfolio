@@ -1,5 +1,5 @@
 "use client";
-import React, { ElementType, ReactNode, RefObject } from "react";
+import React, { ElementType, ReactNode } from "react";
 import {
   motion,
   useAnimationFrame,
