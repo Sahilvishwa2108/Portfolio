@@ -126,7 +126,7 @@ export function Certifications() {
         ) : null}
       </AnimatePresence>
       <ul className="max-w-2xl mx-auto w-full gap-4">
-        {cards.map((card, index) => (
+        {cards.map((card) => (
           <motion.div
             layoutId={`card-${card.title}-${id}`}
             key={`card-${card.title}-${id}`}
@@ -203,10 +203,9 @@ export const CloseIcon = () => {
     </motion.svg>
   );
 };
-
 const cards = [
   {
-    description: "Certificate of Achivement by Infosys",
+    description: "Certificate of Achievement by Infosys",
     title: "Infosys Java Developer Certification",
     src: "/certificates/infosysJavaCertificate.png",
     ctaText: "View",
@@ -214,9 +213,9 @@ const cards = [
     content: () => {
       return (
         <p>
-          This certificate was awarded to me by Infosys as a certificate of 
+          This certificate was awarded to me by Infosys as a certificate of
           achievement on qualifying its Java Developer Certification Exam.
-          The exam tested my knowledge and skills in Java programming, including 
+          The exam tested my knowledge and skills in Java programming, including
           object-oriented programming and software development best practices.
         </p>
       );
@@ -233,9 +232,8 @@ const cards = [
         <p>
           This internship program was designed to help students learn the
           fundamentals of cyber security and how to protect their digital
-          assets. The program was designed to help students learn the
-          fundamentals of cyber security and how to protect their digital
-          assets.
+          assets. The program provided a comprehensive understanding of
+          cybersecurity practices.
         </p>
       );
     },
@@ -249,9 +247,9 @@ const cards = [
     content: () => {
       return (
         <p>
-            Campus Ambassador at Physics Wallah is a certificate that I received
-            for promoting Physics Wallah's courses and helping students to learn
-            and grow. I have been a part of the Physics Wallah team for over a year.
+          Campus Ambassador at Physics Wallah is a certificate that I received
+          for promoting Physics Wallah's courses and helping students to learn
+          and grow. I have been a part of the Physics Wallah team for over a year.
         </p>
       );
     },
