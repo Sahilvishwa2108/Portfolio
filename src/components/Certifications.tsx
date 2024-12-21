@@ -248,7 +248,7 @@ const cards = [
       return (
         <p>
           Campus Ambassador at Physics Wallah is a certificate that I received
-          for promoting Physics Wallah's courses and helping students to learn
+          for promoting PW courses and helping students to learn
           and grow. I have been a part of the Physics Wallah team for over a year.
         </p>
       );
