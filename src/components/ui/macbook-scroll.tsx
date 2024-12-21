@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { MotionValue, motion, useScroll, useTransform } from "framer-motion";
 import { cn } from "@/lib/utils";
 import {
@@ -17,12 +17,12 @@ import {
   IconVolume,
   IconVolume2,
   IconVolume3,
+  IconSearch,
+  IconWorld,
+  IconCommand,
+  IconCaretLeftFilled,
+  IconCaretDownFilled,
 } from "@tabler/icons-react";
-import { IconSearch } from "@tabler/icons-react";
-import { IconWorld } from "@tabler/icons-react";
-import { IconCommand } from "@tabler/icons-react";
-import { IconCaretLeftFilled } from "@tabler/icons-react";
-import { IconCaretDownFilled } from "@tabler/icons-react";
 import Image from "next/image";
 
 export const MacbookScroll = ({
@@ -234,20 +234,16 @@ export const Keypad = () => {
           <span className="inline-block mt-1">F8</span>
         </KBtn>
         <KBtn>
-          <IconPlayerTrackNext className="h-[6px] w-[6px]" />
-          <span className="inline-block mt-1">F8</span>
-        </KBtn>
-        <KBtn>
           <IconVolume3 className="h-[6px] w-[6px]" />
-          <span className="inline-block mt-1">F10</span>
+          <span className="inline-block mt-1">F9</span>
         </KBtn>
         <KBtn>
           <IconVolume2 className="h-[6px] w-[6px]" />
-          <span className="inline-block mt-1">F11</span>
+          <span className="inline-block mt-1">F10</span>
         </KBtn>
         <KBtn>
           <IconVolume className="h-[6px] w-[6px]" />
-          <span className="inline-block mt-1">F12</span>
+          <span className="inline-block mt-1">F11</span>
         </KBtn>
         <KBtn>
           <div className="h-4 w-4 rounded-full  bg-gradient-to-b from-20% from-neutral-900 via-black via-50% to-neutral-900 to-95% p-px">
@@ -460,7 +456,7 @@ export const Keypad = () => {
         <KBtn>
           <span className="block">{`>`}</span>
           <span className="block">{`.`}</span>
-        </KBtn>{" "}
+        </KBtn>
         <KBtn>
           <span className="block">{`?`}</span>
           <span className="block">{`/`}</span>
@@ -488,68 +484,69 @@ export const Keypad = () => {
             <IconChevronUp className="h-[6px] w-[6px]" />
           </div>
           <div className="flex justify-start w-full pl-1">
-            <span className="block">control</span>
-          </div>
-        </KBtn>
-        <KBtn className="" childrenClassName="h-full justify-between py-[4px]">
-          <div className="flex justify-end w-full pr-1">
-            <OptionKey className="h-[6px] w-[6px]" />
-          </div>
-          <div className="flex justify-start w-full pl-1">
-            <span className="block">option</span>
-          </div>
-        </KBtn>
-        <KBtn
-          className="w-8"
-          childrenClassName="h-full justify-between py-[4px]"
-        >
-          <div className="flex justify-end w-full pr-1">
-            <IconCommand className="h-[6px] w-[6px]" />
-          </div>
-          <div className="flex justify-start w-full pl-1">
-            <span className="block">command</span>
-          </div>
-        </KBtn>
-        <KBtn className="w-[8.2rem]"></KBtn>
-        <KBtn
-          className="w-8"
-          childrenClassName="h-full justify-between py-[4px]"
-        >
-          <div className="flex justify-start w-full pl-1">
-            <IconCommand className="h-[6px] w-[6px]" />
-          </div>
-          <div className="flex justify-start w-full pl-1">
-            <span className="block">command</span>
-          </div>
-        </KBtn>
-        <KBtn className="" childrenClassName="h-full justify-between py-[4px]">
-          <div className="flex justify-start w-full pl-1">
-            <OptionKey className="h-[6px] w-[6px]" />
-          </div>
-          <div className="flex justify-start w-full pl-1">
-            <span className="block">option</span>
-          </div>
-        </KBtn>
-        <div className="w-[4.9rem] mt-[2px] h-6 p-[0.5px] rounded-[4px] flex flex-col justify-end items-center">
-          <KBtn className="w-6 h-3">
-            <IconCaretUpFilled className="h-[6px] w-[6px]" />
-          </KBtn>
-          <div className="flex">
-            <KBtn className="w-6 h-3">
-              <IconCaretLeftFilled className="h-[6px] w-[6px]" />
-            </KBtn>
-            <KBtn className="w-6 h-3">
-              <IconCaretDownFilled className="h-[6px] w-[6px]" />
-            </KBtn>
-            <KBtn className="w-6 h-3">
-              <IconCaretRightFilled className="h-[6px] w-[6px]" />
-            </KBtn>
-          </div>
+          <span className="block">control</span>
         </div>
-      </Row>
-    </div>
+      </KBtn>
+      <KBtn className="" childrenClassName="h-full justify-between py-[4px]">
+        <div className="flex justify-end w-full pr-1">
+          <OptionKey className="h-[6px] w-[6px]" />
+        </div>
+        <div className="flex justify-start w-full pl-1">
+          <span className="block">option</span>
+        </div>
+      </KBtn>
+      <KBtn
+        className="w-8"
+        childrenClassName="h-full justify-between py-[4px]"
+      >
+        <div className="flex justify-end w-full pr-1">
+          <IconCommand className="h-[6px] w-[6px]" />
+        </div>
+        <div className="flex justify-start w-full pl-1">
+          <span className="block">command</span>
+        </div>
+      </KBtn>
+      <KBtn className="w-[8.2rem]"></KBtn>
+      <KBtn
+        className="w-8"
+        childrenClassName="h-full justify-between py-[4px]"
+      >
+        <div className="flex justify-start w-full pl-1">
+          <IconCommand className="h-[6px] w-[6px]" />
+        </div>
+        <div className="flex justify-start w-full pl-1">
+          <span className="block">command</span>
+        </div>
+      </KBtn>
+      <KBtn className="" childrenClassName="h-full justify-between py-[4px]">
+        <div className="flex justify-start w-full pl-1">
+          <OptionKey className="h-[6px] w-[6px]" />
+        </div>
+        <div className="flex justify-start w-full pl-1">
+          <span className="block">option</span>
+        </div>
+      </KBtn>
+      <div className="w-[4.9rem] mt-[2px] h-6 p-[0.5px] rounded-[4px] flex flex-col justify-end items-center">
+        <KBtn className="w-6 h-3">
+          <IconCaretUpFilled className="h-[6px] w-[6px]" />
+        </KBtn>
+        <div className="flex">
+          <KBtn className="w-6 h-3">
+            <IconCaretLeftFilled className="h-[6px] w-[6px]" />
+          </KBtn>
+          <KBtn className="w-6 h-3">
+            <IconCaretDownFilled className="h-[6px] w-[6px]" />
+          </KBtn>
+          <KBtn className="w-6 h-3">
+            <IconCaretRightFilled className="h-[6px] w-[6px]" />
+          </KBtn>
+        </div>
+      </div>
+    </Row>
+  </div>
   );
 };
+
 export const KBtn = ({
   className,
   children,
@@ -646,24 +643,3 @@ export const OptionKey = ({ className }: { className: string }) => {
     </svg>
   );
 };
-
-// const AceternityLogo = () => {
-//   return (
-//     <svg
-//       width="66"
-//       height="65"
-//       viewBox="0 0 66 65"
-//       fill="none"
-//       xmlns="http://www.w3.org/2000/svg"
-//       className="h-3 w-3 text-white"
-//     >
-//       <path
-//         d="M8 8.05571C8 8.05571 54.9009 18.1782 57.8687 30.062C60.8365 41.9458 9.05432 57.4696 9.05432 57.4696"
-//         stroke="currentColor"
-//         strokeWidth="15"
-//         strokeMiterlimit="3.86874"
-//         strokeLinecap="round"
-//       />
-//     </svg>
-//   );
-// };

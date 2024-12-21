@@ -164,7 +164,16 @@ export const Card = ({
 }) => {
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-  const { onCardClose, currentIndex } = useContext(CarouselContext);
+  const { onCardClose } = useContext(CarouselContext); // Remove 'currentIndex'
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    onCardClose(index);
+  };
 
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
@@ -175,24 +184,18 @@ export const Card = ({
 
     if (open) {
       document.body.style.overflow = "hidden";
+      window.addEventListener("keydown", onKeyDown);
     } else {
-      document.body.style.overflow = "auto";
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", onKeyDown);
     }
 
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [open]);
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [open, handleClose]); // Add 'handleClose' to dependency array
 
   useOutsideClick(containerRef, () => handleClose());
-
-  const handleOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-    onCardClose(index);
-  };
 
   return (
     <>
