@@ -105,7 +105,7 @@ export const Carousel = ({ items, initialScroll = 0 }: CarouselProps) => {
 
           <div
             className={cn(
-              "flex flex-row justify-start gap-4 pl-4",
+              "flex flex-row justify-start gap-8 pl-4",
               "max-w-7xl mx-auto" // remove max-w-4xl if you want the carousel to span the full width of its container
             )}
           >
@@ -133,7 +133,7 @@ export const Carousel = ({ items, initialScroll = 0 }: CarouselProps) => {
             ))}
           </div>
         </div>
-        <div className="flex justify-end gap-2 mr-10">
+        <div className="flex justify-center gap-2">
           <button
             className="relative z-40 h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center disabled:opacity-50"
             onClick={scrollLeft}
