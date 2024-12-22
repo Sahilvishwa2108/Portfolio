@@ -5,7 +5,7 @@ import { LampContainer } from "./ui/lamp";
 import { LetterPullup } from "@/components/ui/letter-pullup";
 import { Button } from "@/components/ui/moving-border";
 import BlurIn from "@/components/ui/blur-in";
-import Link from "next/link"
+import Link from "next/link";
 
 function Hero() {
   const [firstLineComplete, setFirstLineComplete] = useState(false);
@@ -62,7 +62,7 @@ function Hero() {
             <BlurIn word="Resume" />
           </Button>
           </Link>
-          <Link href="/hireme">
+          <Link href="mailto:sahilvishwa2108@gmail.com">
           <Button
             borderRadius="1.75rem"
             className="bg-white text-black border-black  text-md"

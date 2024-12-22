@@ -4,6 +4,7 @@ import { FaLocationArrow } from "react-icons/fa";
 import { projects } from "@/data";
 import { PinContainer } from "./ui/Pin";
 import Image from "next/image";
+import Link from "next/link";
 
 const RecentProjects = () => {
   return (
@@ -32,8 +33,8 @@ const RecentProjects = () => {
                   src={item.img}
                   alt="cover"
                   fill
-                  style={{ objectFit: "contain" }}
-                  className="z-10 absolute bottom-0"
+                  style={{ objectFit: "cover" }}
+                  className="z-10 absolute bottom-0 rounded-3xl"
                 />
               </div>
 
@@ -61,15 +62,17 @@ const RecentProjects = () => {
                         transform: `translateX(-${5 * index + 2}px)`,
                       }}
                     >
-                      <Image src={icon} alt="icon5" width={20} height={20} className="p-2" />
+                      <Image src={icon} alt="icon5" width={20} height={20} />
                     </div>
                   ))}
                 </div>
 
                 <div className="flex justify-center items-center">
-                  <p className="flex lg:text-xl md:text-xs text-sm text-purple">
-                    Check Live Site
-                  </p>
+                  <Link href={item.link}>
+                  <button className="text-teal-600">
+                    Live Link
+                  </button>
+                  </Link>
                   <FaLocationArrow className="ms-3" color="#CBACF9" />
                 </div>
               </div>
