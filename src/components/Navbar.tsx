@@ -1,30 +1,58 @@
 "use client";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { FloatingNav } from "./ui/floating-navbar";
 import { IconHome, IconMessage, IconUser } from "@tabler/icons-react";
+
 export function Navbar() {
+  const [activeNavItem, setActiveNavItem] = useState("#hero");
+
   const navItems = [
     {
       name: "Home",
-      link: "/",
+      link: "#hero",
       icon: <IconHome className="h-4 w-4 text-neutral-500 dark:text-white" />,
     },
     {
       name: "About",
-      link: "/about",
+      link: "#macbook-scroll-demo",
+      icon: <IconUser className="h-4 w-4 text-neutral-500 dark:text-white" />,
+    },
+    {
+      name: "Projects",
+      link: "#recent-projects",
       icon: <IconUser className="h-4 w-4 text-neutral-500 dark:text-white" />,
     },
     {
       name: "Contact",
-      link: "/contact",
-      icon: (
-        <IconMessage className="h-4 w-4 text-neutral-500 dark:text-white" />
-      ),
+      link: "#footer",
+      icon: <IconMessage className="h-4 w-4 text-neutral-500 dark:text-white" />,
     },
   ];
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const sections = document.querySelectorAll("section");
+      let currentSection = "#hero";
+
+      sections.forEach((section) => {
+        const rect = section.getBoundingClientRect();
+        if (rect.top <= 0 && rect.bottom >= 0) {
+          currentSection = `#${section.id}`;
+        }
+      });
+
+      setActiveNavItem(currentSection);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   return (
-    <div className="relative  w-full">
-      <FloatingNav navItems={navItems} />
+    <div className="relative w-full">
+      <FloatingNav navItems={navItems} activeNavItem={activeNavItem} />
     </div>
   );
 }

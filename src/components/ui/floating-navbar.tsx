@@ -1,7 +1,6 @@
 "use client";
 import React, { useState } from "react";
 import { motion, useScroll, useMotionValueEvent } from "framer-motion";
-import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { AnimatePresence } from "framer-motion";
 
@@ -11,30 +10,37 @@ interface FloatingNavProps {
     link: string;
     icon: React.ReactNode;
   }[];
+  activeNavItem: string;
   className?: string;
 }
 
-export const FloatingNav = ({ navItems, className }: FloatingNavProps) => {
+export const FloatingNav = ({ navItems, activeNavItem, className }: FloatingNavProps) => {
   const { scrollYProgress } = useScroll();
   const [visible, setVisible] = useState(true);
 
   useMotionValueEvent(scrollYProgress, "change", (current) => {
-    // Check if current is not undefined and is a number
     if (typeof current === "number") {
       const previous = scrollYProgress.getPrevious();
       const direction = previous !== undefined ? current - previous : 0;
 
       if (scrollYProgress.get() < 0.05) {
-        setVisible(true); // Always visible at the top of the page
+        setVisible(true);
       } else {
         if (direction < 0) {
-          setVisible(true); // Reveal when scrolling up
+          setVisible(true);
         } else {
-          setVisible(false); // Hide when scrolling down
+          setVisible(false);
         }
       }
     }
   });
+
+  const handleNavItemClick = (link: string) => {
+    const section = document.querySelector(link);
+    if (section) {
+      section.scrollIntoView({ behavior: "smooth" });
+    }
+  };
 
   return (
     <AnimatePresence mode="wait">
@@ -61,23 +67,24 @@ export const FloatingNav = ({ navItems, className }: FloatingNavProps) => {
         }}
       >
         {navItems.map((navItem, idx) => (
-          <Link
+          <button
             key={`link=${idx}`}
-            href={navItem.link}
+            onClick={() => handleNavItemClick(navItem.link)}
             className={cn(
-              "relative dark:text-neutral-50 items-center flex space-x-1 text-neutral-600 dark:hover:text-neutral-300 hover:text-neutral-500 text-base"
+              "relative dark:text-neutral-50 items-center flex space-x-1 text-neutral-600 dark:hover:text-neutral-300 hover:text-neutral-500 text-base",
+              navItem.link === activeNavItem ? "text-teal-600 dark:text-teal-600" : ""
             )}
           >
             <span className="block sm:hidden">{navItem.icon}</span>
             <span className="hidden sm:block text-lg">{navItem.name}</span>
-          </Link>
+          </button>
         ))}
-        <Link href="https://github.com/sahilvishwa2108">
-        <button className="border text-lg font-medium relative border-neutral-200 dark:border-white/[0.2] text-black dark:text-white px-8 py-3 rounded-full">
-          <span>GitHub</span>
-          <span className="absolute inset-x-0 w-1/2 mx-auto -bottom-px bg-gradient-to-r from-transparent via-blue-500 to-transparent h-px" />
-        </button>
-        </Link>
+        <a href="https://github.com/sahilvishwa2108">
+          <button className="border text-lg font-medium relative border-neutral-200 dark:border-white/[0.2] text-black dark:text-white px-8 py-3 rounded-full">
+            <span>GitHub</span>
+            <span className="absolute inset-x-0 w-1/2 mx-auto -bottom-px bg-gradient-to-r from-transparent via-blue-500 to-transparent h-px" />
+          </button>
+        </a>
       </motion.div>
     </AnimatePresence>
   );
