@@ -31,7 +31,7 @@ export function Certifications() {
   useOutsideClick(ref, () => setActive(null));
 
   return (
-    <>
+    <div className="mb-40">
       <AnimatePresence>
         {active && typeof active === "object" && (
           <motion.div
@@ -167,7 +167,7 @@ export function Certifications() {
           </motion.div>
         ))}
       </ul>
-    </>
+    </div>
   );
 }
 
@@ -214,8 +214,8 @@ const cards = [
       return (
         <p>
           This certificate was awarded to me by Infosys as a certificate of
-          achievement on qualifying its Java Developer Certification Exam.
-          The exam tested my knowledge and skills in Java programming, including
+          achievement on qualifying its Java Developer Certification Exam. The
+          exam tested my knowledge and skills in Java programming, including
           object-oriented programming and software development best practices.
         </p>
       );
@@ -248,8 +248,8 @@ const cards = [
       return (
         <p>
           Campus Ambassador at Physics Wallah is a certificate that I received
-          for promoting PW courses and helping students to learn
-          and grow. I have been a part of the Physics Wallah team for over a year.
+          for promoting PW courses and helping students to learn and grow. I
+          have been a part of the Physics Wallah team for over a year.
         </p>
       );
     },
