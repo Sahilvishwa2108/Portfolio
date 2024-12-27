@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { motion, useScroll, useMotionValueEvent } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { AnimatePresence } from "framer-motion";
+import { IconBrandGithub } from "@tabler/icons-react";
 
 interface FloatingNavProps {
   navItems: {
@@ -79,11 +80,14 @@ export const FloatingNav = ({ navItems, activeNavItem, className }: FloatingNavP
             <span className="hidden sm:block text-lg">{navItem.name}</span>
           </button>
         ))}
-        <a href="https://github.com/sahilvishwa2108">
-          <button className="border text-lg font-medium relative border-neutral-200 dark:border-white/[0.2] text-black dark:text-white px-8 py-3 rounded-full">
+        <a href="https://github.com/sahilvishwa2108" className="flex items-center">
+          <button className="hidden sm:block border text-lg font-medium relative border-neutral-200 dark:border-white/[0.2] text-black dark:text-white px-8 py-3 rounded-full">
             <span>GitHub</span>
             <span className="absolute inset-x-0 w-1/2 mx-auto -bottom-px bg-gradient-to-r from-transparent via-blue-500 to-transparent h-px" />
           </button>
+          <span className="block sm:hidden">
+            <IconBrandGithub className="h-6 w-6 text-neutral-500 dark:text-white" />
+          </span>
         </a>
       </motion.div>
     </AnimatePresence>

@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { FloatingNav } from "./ui/floating-navbar";
-import { IconHome, IconMessage, IconUser } from "@tabler/icons-react";
+import { IconDeviceLaptop, IconHome, IconMessage, IconUser } from "@tabler/icons-react";
 
 export function Navbar() {
   const [activeNavItem, setActiveNavItem] = useState("#hero");
@@ -10,22 +10,22 @@ export function Navbar() {
     {
       name: "Home",
       link: "#hero",
-      icon: <IconHome className="h-4 w-4 text-neutral-500 dark:text-white" />,
+      icon: <IconHome className="h-6 w-6 text-neutral-500 dark:text-white" />,
     },
     {
       name: "About",
       link: "#macbook-scroll-demo",
-      icon: <IconUser className="h-4 w-4 text-neutral-500 dark:text-white" />,
+      icon: <IconUser className="h-6 w-6 text-neutral-500 dark:text-white" />,
     },
     {
       name: "Projects",
       link: "#recent-projects",
-      icon: <IconUser className="h-4 w-4 text-neutral-500 dark:text-white" />,
+      icon: <IconDeviceLaptop className="h-6 w-6 text-neutral-500 dark:text-white" />,
     },
     {
       name: "Contact",
       link: "#footer",
-      icon: <IconMessage className="h-4 w-4 text-neutral-500 dark:text-white" />,
+      icon: <IconMessage className="h-6 w-6 text-neutral-500 dark:text-white" />,
     },
   ];
 
