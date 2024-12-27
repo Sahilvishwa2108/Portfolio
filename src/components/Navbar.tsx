@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { FloatingNav } from "./ui/floating-navbar";
-import { IconDeviceLaptop, IconHome, IconMessage, IconUser } from "@tabler/icons-react";
+import { IconHome, IconMessage, IconUser, IconDeviceLaptop } from "@tabler/icons-react";
 
 export function Navbar() {
   const [activeNavItem, setActiveNavItem] = useState("#hero");
