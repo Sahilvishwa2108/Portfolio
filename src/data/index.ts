@@ -13,7 +13,7 @@ export const projects = [
     title: "Blog Web App",
     des: "A blog web app built with React.js, JavaScript, Tailwind CSS and Appwrite.",
     img: "/projects/blogwebapp.png",
-    iconLists: ["/next.svg", "/tail.svg", "/ts.svg", "/stream.svg", "/c.svg"],
+    iconLists: ["/html.svg","/css.svg","/tail.svg", "/js.svg", "/re.svg"],
     link: "https://blog-web-app-sigma.vercel.app/",
   },
   {
@@ -23,7 +23,31 @@ export const projects = [
     img: "/projects/videotube.png",
     iconLists: ["/re.svg", "/tail.svg", "/ts.svg", "/three.svg", "/c.svg"],
     link: "https://github.com/Sahilvishwa2108/VideoTube.git",
-  }
+  },
+  {
+    id: 4,
+    title: "Simon Says Game",
+    des: "A Simon Says Game built with HTML, CSS and JavaScript.",
+    img: "/projects/simon.png",
+    iconLists: ["/html.svg", "/css.svg", "/js.svg"],
+    link: "https://sahilvishwa2108.github.io/Simon-Says-Game/",
+  },
+  {
+    id: 5,
+    title: "Fintech website",
+    des: "A fintech website built with HTML, CSS and JavaScript.",
+    img: "/projects/codeRebels.png",
+    iconLists: ["/html.svg", "/css.svg", "/js.svg"],
+    link: "https://sahilvishwa2108.github.io/Code_Rebels/",
+  },
+  {
+    id: 6,
+    title: "Amazon Clone",
+    des: "An Amazon Clone built with React.js, Firebase and Stripe.",
+    img: "/projects/amazon.jpg",
+    iconLists: ["/html.svg", "/css.svg"],
+    link: "https://sahilvishwa2108.github.io/Amazon_clone/",
+  },
 ];
 
 
