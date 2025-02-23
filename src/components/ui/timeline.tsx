@@ -3,10 +3,9 @@ import {
   useScroll,
   useTransform,
   motion,
-  useAnimation,
-  useInView,
 } from "framer-motion";
 import React, { useEffect, useRef, useState } from "react";
+import { useTimelineAnimation } from "../../hooks/useTimelineAnimation";
 
 interface TimelineEntry {
   title: string;
@@ -46,15 +45,7 @@ export const Timeline = ({ data }: { data: TimelineEntry[] }) => {
 
       <div ref={ref} className="relative max-w-7xl mx-auto pb-20">
         {data.map((item, index) => {
-          const controls = useAnimation();
-          const entryRef = useRef(null);
-          const inView = useInView(entryRef, { once: true, amount: 0.5 });
-
-          useEffect(() => {
-            if (inView) {
-              controls.start({ x: 0, opacity: 1 });
-            }
-          }, [inView, controls]);
+          const { controls, entryRef } = useTimelineAnimation();
 
           return (
             <motion.div
