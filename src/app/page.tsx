@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 import About from "@/components/About";
 import { MacbookScrollDemo } from "@/components/Macbook-scroll";
 import {AnimatedContainer} from "@/components/ui/AnimatedContainer";
+import { TimelineDemo } from "@/components/Timeline";
 
 
 export default function Home() {
@@ -21,9 +22,16 @@ export default function Home() {
       <section id="macbook-scroll-demo">
         <MacbookScrollDemo />
       </section>
-      <section id="experience">
-        <Experience />
-      </section>
+      <AnimatedContainer reverse={false} direction="vertical" distance={100}>
+        <section id="experience">
+          <Experience />
+        </section>
+      </AnimatedContainer>
+      <AnimatedContainer reverse={false} direction="vertical" distance={100}>
+        <section id="timeline">
+          <TimelineDemo />
+        </section>
+      </AnimatedContainer>
       <section id="achievements">
         <Achivements />
       </section>
