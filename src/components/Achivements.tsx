@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { Carousel, Card } from "@/components/ui/apple-cards-carousel";
 import certificatesData from "@/data/certificates.json";
 import { BackgroundGradient } from "./ui/background-gradient";

@@ -38,7 +38,7 @@ const Contact = () => {
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
-          Have any questions or want to work together? Fill out the form below and I'll get back to you as soon as possible.
+          Have any questions or want to work together? Fill out the form below and I&apos;ll get back to you as soon as possible.
         </motion.p>
         <motion.form 
           ref={form} 
