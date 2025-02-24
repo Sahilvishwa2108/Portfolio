@@ -8,7 +8,7 @@ import About from "@/components/About";
 import { MacbookScrollDemo } from "@/components/Macbook-scroll";
 import {AnimatedContainer} from "@/components/ui/AnimatedContainer";
 import { TimelineDemo } from "@/components/Timeline";
-
+import Contact from "@/components/Contact";
 
 export default function Home() {
   return (
@@ -43,6 +43,9 @@ export default function Home() {
           <RecentProjects />
         </section>
       </AnimatedContainer>
+      <section id="contact">
+        <Contact />
+      </section>
       <section id="footer">
         <Footer />
       </section>
