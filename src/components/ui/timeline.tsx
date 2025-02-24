@@ -32,6 +32,8 @@ export const Timeline = ({ data }: { data: TimelineEntry[] }) => {
   const heightTransform = useTransform(scrollYProgress, [0, 1], [0, height]);
   const opacityTransform = useTransform(scrollYProgress, [0, 0.1], [0, 1]);
 
+  const animations = data.map(() => useTimelineAnimation());
+
   return (
     <div
       className="w-full bg-white dark:bg-black font-sans md:px-10 overflow-x-hidden"
@@ -45,7 +47,7 @@ export const Timeline = ({ data }: { data: TimelineEntry[] }) => {
 
       <div ref={ref} className="relative max-w-7xl mx-auto pb-20">
         {data.map((item, index) => {
-          const { controls, entryRef } = useTimelineAnimation();
+          const { controls, entryRef } = animations[index];
 
           return (
             <motion.div
