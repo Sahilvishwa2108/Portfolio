@@ -32,6 +32,7 @@ export const Timeline = ({ data }: { data: TimelineEntry[] }) => {
   const heightTransform = useTransform(scrollYProgress, [0, 1], [0, height]);
   const opacityTransform = useTransform(scrollYProgress, [0, 0.1], [0, 1]);
 
+  // Move the hook call outside of the map callback
   const animations = data.map(() => useTimelineAnimation());
 
   return (
