@@ -43,11 +43,9 @@ export default function Home() {
           <RecentProjects />
         </section>
       </AnimatedContainer>
-      <AnimatedContainer reverse={false} direction="vertical" distance={100}>
-        <section id="footer">
-          <Footer />
-        </section>
-      </AnimatedContainer>
+      <section id="footer">
+        <Footer />
+      </section>
     </div>
   );
 }
