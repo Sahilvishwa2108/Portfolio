@@ -1,20 +1,27 @@
+'use client'
 import Image from "next/image";
 import React from "react";
 import { Timeline } from "@/components/ui/timeline";
+import { motion } from "framer-motion";
 
 export function TimelineDemo() {
   const data = [
     {
       title: "Expected - 2026",
       content: (
-        <div>
-          <p className="text-3xl">
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="bg-gray-800 p-6 rounded-lg shadow-lg"
+        >
+          <p className="text-3xl font-bold text-teal-500">
             Lakshmi Narain College of Technology, Bhopal
           </p>
-          <p className="text-xl">
+          <p className="text-xl text-gray-300">
             B.Tech in Computer Science Engineering
           </p>
-          <p className="text-large mb-10">
+          <p className="text-lg text-gray-400 mb-10">
             CGPA: 8.0
           </p>
           <div className="grid grid-cols-2 gap-8">
@@ -23,30 +30,35 @@ export function TimelineDemo() {
               alt="startup template"
               width={500}
               height={500}
-              className="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
+              className="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full shadow-lg"
             />
             <Image
               src="/projects/amazon.jpg"
               alt="startup template"
               width={500}
               height={500}
-              className="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
+              className="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full shadow-lg"
             />
           </div>
-        </div>
+        </motion.div>
       ),
     },
     {
       title: "2021",
       content: (
-        <div>
-          <p className="text-3xl">
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="bg-gray-800 p-6 rounded-lg shadow-lg"
+        >
+          <p className="text-3xl font-bold text-teal-500">
             Jawahar Navodaya Vidyalaya, Khurai
           </p>
-          <p className="text-xl">
+          <p className="text-xl text-gray-300">
             XII (PCM) with Computer Science - CBSE
           </p>
-          <p className="text-large mb-10">
+          <p className="text-lg text-gray-400 mb-10">
             Grade: 91.4%
           </p>
           <div className="grid grid-cols-2 gap-8">
@@ -55,83 +67,92 @@ export function TimelineDemo() {
               alt="hero template"
               width={500}
               height={500}
-              className="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
+              className="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full shadow-lg"
             />
             <Image
               src="/projects/amazon.jpg"
               alt="hero template"
               width={500}
               height={500}
-              className="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
+              className="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full shadow-lg"
             />
           </div>
-        </div>
+        </motion.div>
       ),
     },
     {
       title: "2019",
       content: (
-        <div>
-          <p className="text-3xl">
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="bg-gray-800 p-6 rounded-lg shadow-lg"
+        >
+          <p className="text-3xl font-bold text-teal-500">
             Jawahar Navodaya Vidyalaya, Khurai
           </p>
-          <p className="text-xl">
+          <p className="text-xl text-gray-300">
             X - CBSE
           </p>
-          <p className="text-large mb-10">
+          <p className="text-lg text-gray-400 mb-10">
             Grade: 92.6%
           </p>
-          <div className="mb-8"></div>
           <div className="grid grid-cols-2 gap-8">
             <Image
               src="/projects/amazon.jpg"
               alt="hero template"
               width={500}
               height={500}
-              className="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
+              className="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full shadow-lg"
             />
             <Image
               src="/projects/amazon.jpg"
               alt="feature template"
               width={500}
               height={500}
-              className="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
+              className="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full shadow-lg"
             />
           </div>
-        </div>
+        </motion.div>
       ),
     },
     {
       title: "2014",
       content: (
-        <div>
-          <p className="text-3xl">
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="bg-gray-800 p-6 rounded-lg shadow-lg"
+        >
+          <p className="text-3xl font-bold text-teal-500">
             S.P.M Convent School, Garhakota
           </p>
-          <p className="text-xl">
+          <p className="text-xl text-gray-300 mb-8">
             Class - V (Primary School)
           </p>
-          <div className="mb-8"></div>
           <div className="grid grid-cols-2 gap-8">
             <Image
               src="/projects/amazon.jpg"
               alt="hero template"
               width={500}
               height={500}
-              className="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
+              className="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full shadow-lg"
             />
             <Image
               src="/projects/amazon.jpg"
               alt="feature template"
               width={500}
               height={500}
-              className="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
+              className="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full shadow-lg"
             />
           </div>
-        </div>
+        </motion.div>
       ),
     },
   ];
+
   return (
     <div className="w-full">
       <Timeline data={data} />
