@@ -1,57 +1,83 @@
+import { 
+  SiNextdotjs, 
+  SiTailwindcss, 
+  SiTypescript, 
+  SiReact, 
+  SiVercel,
+  SiJavascript, 
+  SiHtml5, 
+  SiCss3, 
+  SiNodedotjs,
+  SiExpress,
+  SiMongodb,
+  SiCloudinary,
+  SiFirebase,
+  SiAppwrite,
+  SiDocker,
+  SiGithub,
+  SiLinkedin,
+  SiInstagram
+} from 'react-icons/si';
+import { IconType } from 'react-icons';
+
+
+// Update projects to use React Icon components
 export const projects = [
   {
     id: 1,
+    title: "Office Pilot (SaaS)",
+    des: "A comprehensive office management SaaS featuring task delegation, client management, real-time collaboration, and role-based access control using Next.js, React, Tailwind CSS, Prisma, PostgreSQL, Redis pub/sub.",
+    img: "/projects/officepilot.png",
+    iconList: [SiNextdotjs, SiTailwindcss, SiTypescript, SiReact, SiVercel],
+    link: "https://officepilot.vercel.app/",
+    github: "https://github.com/Sahilvishwa2108/office_management_system",
+    featured: true
+  },
+  {
+    id: 2,
+    title: "AI Powered Anonymous Feedback",
+    des: "A feedback collection platform with AI-driven suggestions, secure authentication, and real-time updates using Next.js, React, TypeScript, NextAuth.js, and OpenAI API.",
+    img: "/projects/truefeedback.png",
+    iconList: [SiNextdotjs, SiTailwindcss, SiTypescript, SiReact, SiVercel],
+    link: "https://annonymousfeedbacks.vercel.app/",
+    github: "https://github.com/Sahilvishwa2108/feedback_app",
+    featured: true
+  },
+  {
+    id: 3,
     title: "Personal Portfolio",
     des: "A personal portfolio website built with Next.js, TypeScript and Tailwind CSS.",
     img: "/projects/portfolio.png",
-    iconLists: ["/next.svg", "/tail.svg", "/ts.svg", "/vercel.svg", "/fm.svg"],
+    iconList: [SiNextdotjs, SiTailwindcss, SiTypescript, SiVercel],
     link: "https://portfolio-sahil-vishwakarmas-projects.vercel.app/",
     github: "https://github.com/Sahilvishwa2108/personal_portfolio"
   },
   {
-    id: 2,
+    id: 4,
     title: "Blog Web App",
     des: "A blog web app built with React.js, JavaScript, Tailwind CSS and Appwrite.",
     img: "/projects/blogwebapp.png",
-    iconLists: ["/html.svg","/css.svg","/tail.svg", "/js.svg", "/re.svg"],
+    iconList: [SiHtml5, SiCss3, SiTailwindcss, SiJavascript, SiReact],
     link: "https://blog-web-app-sigma.vercel.app/",
     github: "https://github.com/Sahilvishwa2108/BlogWebApp"
   },
   {
-    id: 3,
+    id: 5,
     title: "Video Tube",
     des: "scalable backend for a video-sharing platform using Node.js, Express.js, MongoDB, Cloudinary & Multer.",
     img: "/projects/videotube.png",
-    iconLists: ["/re.svg", "/tail.svg", "/ts.svg", "/three.svg", "/c.svg"],
+    iconList: [SiNodedotjs, SiExpress, SiMongodb, SiCloudinary],
     link: "https://github.com/Sahilvishwa2108/VideoTube.git",
     github: "https://github.com/Sahilvishwa2108/VideoTube.git"
   },
   {
-    id: 4,
+    id: 6,
     title: "Simon Says Game",
     des: "A Simon Says Game built with HTML, CSS and JavaScript.",
     img: "/projects/simon.png",
-    iconLists: ["/html.svg", "/css.svg", "/js.svg"],
+    iconList: [SiHtml5, SiCss3, SiJavascript],
     link: "https://sahilvishwa2108.github.io/Simon-Says-Game/",
     github: "https://github.com/Sahilvishwa2108/Simon-Says-Game"
-  },
-  {
-    id: 5,
-    title: "Fintech website",
-    des: "A fintech website built with HTML, CSS and JavaScript.",
-    img: "/projects/codeRebels.png",
-    iconLists: ["/html.svg", "/css.svg", "/js.svg"],
-    link: "https://sahilvishwa2108.github.io/Code_Rebels/",
-    github: "https://github.com/Sahilvishwa2108/Code_Rebels"
-  },
-  {
-    id: 6,
-    title: "Amazon Clone",
-    des: "An Amazon Clone built with React.js, Firebase and Stripe.",
-    img: "/projects/amazon.jpg",
-    iconLists: ["/html.svg", "/css.svg"],
-    link: "https://sahilvishwa2108.github.io/Amazon_clone/",
-    github: "https://github.com/Sahilvishwa2108/Amazon_clone"
   },
 ];
 
@@ -59,81 +85,77 @@ export const projects = [
 export const companies = [
   {
     id: 1,
-    name: "cloudinary",
-    img: "/cloud.svg",
-    nameImg: "/cloudName.svg",
+    name: "Cloudinary",
+    icon: SiCloudinary,
   },
   {
     id: 2,
-    name: "appwrite",
-    img: "/app.svg",
-    nameImg: "/appName.svg",
+    name: "Appwrite",
+    icon: SiAppwrite,
   },
   {
     id: 3,
-    name: "HOSTINGER",
-    img: "/host.svg",
-    nameImg: "/hostName.svg",
+    name: "Hostinger",
+    icon: SiVercel, // Using Vercel as a placeholder, replace with appropriate icon
   },
   {
     id: 4,
-    name: "stream",
-    img: "/s.svg",
-    nameImg: "/streamName.svg",
+    name: "Stream",
+    icon: SiNodedotjs, // Using Node.js as a placeholder, replace with appropriate icon
   },
   {
     id: 5,
-    name: "docker.",
-    img: "/dock.svg",
-    nameImg: "/dockerName.svg",
+    name: "Docker",
+    icon: SiDocker,
   },
 ];
 
 export const workExperience = [
   {
     id: 1,
-    title: "Frontend Engineer",
+    title: "Full Stack Developer",
     desc: "Assisted in the development of a web-based platform using Next.js, enhancing interactivity.",
     className: "md:col-span-2",
-    thumbnail: "/exp1.svg",
+    thumbnail: "/exp1.svg", // Keep the thumbnail path for now
   },
   {
     id: 2,
-    title: "Mobile App Development",
-    desc: "Designing and developing mobile app for both iOS & Android platforms using React Native.",
-    className: "md:col-span-2", // change to md:col-span-2
+    title: "Problem Solver",
+    desc: "Participated in hackathons and coding competitions, honing problem-solving skills and algorithmic thinking.",
+    className: "md:col-span-2",
     thumbnail: "/exp2.svg",
   },
   {
     id: 3,
-    title: "Engaging UI Architect",
+    title: "UI/UX Design",
     desc: "Designed stunning UIs and animations using GSAP, Framer Motion, and modern libraries for impactful UX.",
-    className: "md:col-span-2", // change to md:col-span-2
+    className: "md:col-span-2",
     thumbnail: "/exp3.svg",
   },
   {
     id: 4,
-    title: "Linux Distro Explorer",
-    desc: "Explored and optimized Linux distributions, enhancing performance and user experience.",
+    title: "DevOps Engineer",
+    desc: "Implemented CI/CD pipelines and containers using Docker, enhancing deployment efficiency.",
     className: "md:col-span-2",
     thumbnail: "/exp4.svg",
   },
 ];
 
+
 export const socialMedia = [
   {
     id: 1,
-    img: "/git.svg",
+    icon: SiGithub,
     link: "https://github.com/Sahilvishwa2108",
   },
   {
     id: 2,
-    img: "/link.svg",
+    icon: SiLinkedin,
     link: "https://www.linkedin.com/in/sahilvishwa2108/",
   },
   {
     id: 3,
-    img: "/insta.svg",
+    icon: SiInstagram,
     link: "https://www.instagram.com/sahilvishwa2108/",
   },
 ];

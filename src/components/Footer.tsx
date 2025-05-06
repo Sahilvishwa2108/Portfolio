@@ -126,7 +126,7 @@ const Footer = () => {
                       rel="noopener noreferrer"
                       className="hover:scale-110 transition-transform"
                     >
-                      <Image src={info.img} alt="social" width={20} height={20} />
+                      <info.icon size={20} className="text-gray-300 hover:text-white transition-colors" />
                     </Link>
                   ))}
                 </div>

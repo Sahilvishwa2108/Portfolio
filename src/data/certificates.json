@@ -1,16 +1,16 @@
 {
   "certificates": [
     {
-      "src": "/certificates/infosys4.png",
-      "title": "Java Programming Fundamentals",
+      "src": "/certificates/dbms.png",
+      "title": "NPTEL Programming in Java",
       "category": 1,
-      "content": "Learn the basics of Java programming with our comprehensive beginner's course."
+      "content": "Comprehensive certification in Java programming fundamentals, OOP concepts, and advanced Java features from NPTEL."
     },
     {
-      "src": "/certificates/infosys1.png",
-      "title": "Database Management System",
+      "src": "/certificates/dbms.png",
+      "title": "NPTEL Database Management System",
       "category": 2,
-      "content": "Master the concepts of database management system with our comprehensive course."
+      "content": "Certification in database design principles, SQL, normalization, transaction processing, and database administration."
     },
     {
       "src": "/certificates/infosys2.png",
@@ -97,10 +97,10 @@
       "content": "Get hands-on experience with our software engineering virtual experience program."
     },
     {
-      "src": "/certificates/ibm1.png",
-      "title": "IBM: Cloud Core",
+      "src": "/certificates/aws-cloud.png",
+      "title": "AWS Cloud Foundation Certification",
       "category": 17,
-      "content": "Learn the basics of cloud computing with our comprehensive course."
+      "content": "Certification covering foundational AWS cloud concepts, services, security, architecture, and operational best practices."
     },
     {
       "src": "/certificates/udemy1.jpg",

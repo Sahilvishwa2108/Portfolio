@@ -5,11 +5,15 @@ import {
   SiReact, SiNextdotjs, SiTypescript, SiTailwindcss, SiFramer,
   SiNodedotjs, SiExpress, SiMongodb, SiPostgresql, SiRedis,
   SiGit, SiDocker, SiGithub, SiFirebase, SiCloudflare,
+  SiJavascript, SiHtml5, SiCss3, SiLinux,
+  SiPrisma, SiPostman, SiAmazon, SiZod, SiAuth0,
+  SiSocketdotio, SiCloudinary
 } from 'react-icons/si';
+import { DiJava } from 'react-icons/di';
 import { LazyLoad } from '@/components/LazyLoad';
 import { useOptimizedAnimation } from '@/hooks/useOptimizedAnimation';
 
-// Improved skill data structure with categories and clean organization
+// Updated skill data structure with more categories
 const skillsData = {
   frontend: [
     { name: "React", icon: SiReact, color: "#61DAFB", level: 90 },
@@ -17,6 +21,9 @@ const skillsData = {
     { name: "TypeScript", icon: SiTypescript, color: "#3178C6", level: 80 },
     { name: "Tailwind CSS", icon: SiTailwindcss, color: "#06B6D4", level: 95 },
     { name: "Framer Motion", icon: SiFramer, color: "#0055FF", level: 75 },
+    { name: "HTML5", icon: SiHtml5, color: "#E34F26", level: 90 },
+    { name: "CSS3", icon: SiCss3, color: "#1572B6", level: 85 },
+    { name: "JavaScript", icon: SiJavascript, color: "#F7DF1E", level: 88 },
   ],
   backend: [
     { name: "Node.js", icon: SiNodedotjs, color: "#339933", level: 85 },
@@ -24,22 +31,34 @@ const skillsData = {
     { name: "MongoDB", icon: SiMongodb, color: "#47A248", level: 70 },
     { name: "PostgreSQL", icon: SiPostgresql, color: "#336791", level: 75 },
     { name: "Redis", icon: SiRedis, color: "#DC382D", level: 65 },
+    { name: "Prisma", icon: SiPrisma, color: "#2D3748", level: 70 },
+    { name: "Java", icon: DiJava, color: "#007396", level: 80 },
+    { name: "Socket.io", icon: SiSocketdotio, color: "#010101", level: 65 },
   ],
   tools: [
     { name: "Git", icon: SiGit, color: "#F05032", level: 90 },
-    { name: "Docker", icon: SiDocker, color: "#2496ED", level: 70 },
     { name: "GitHub", icon: SiGithub, color: "#181717", level: 85 },
+    { name: "Docker", icon: SiDocker, color: "#2496ED", level: 70 },
+    { name: "Linux", icon: SiLinux, color: "#FCC624", level: 75 },
+    { name: "Postman", icon: SiPostman, color: "#FF6C37", level: 80 },
+    { name: "AWS", icon: SiAmazon, color: "#232F3E", level: 65 },
+    { name: "Cloudinary", icon: SiCloudinary, color: "#3448C5", level: 75 },
     { name: "Firebase", icon: SiFirebase, color: "#FFCA28", level: 80 },
+  ],
+  frameworks: [
+    { name: "NextAuth", icon: SiAuth0, color: "#EB5424", level: 75 },
+    { name: "Zod", icon: SiZod, color: "#3068B7", level: 70 },
     { name: "Cloudflare", icon: SiCloudflare, color: "#F38020", level: 75 },
   ]
 };
 
-// Categories for filtering
+// Update categories for filtering
 const categories = [
   { id: "all", name: "All Skills" },
   { id: "frontend", name: "Frontend" },
   { id: "backend", name: "Backend" },
-  { id: "tools", name: "DevOps & Tools" }
+  { id: "tools", name: "DevOps & Tools" },
+  { id: "frameworks", name: "Libraries & Frameworks" }
 ];
 
 interface Skill {
@@ -151,7 +170,8 @@ const TechnicalSkills = () => {
       return [
         ...skillsData.frontend,
         ...skillsData.backend,
-        ...skillsData.tools
+        ...skillsData.tools,
+        ...skillsData.frameworks
       ];
     }
     return skillsData[category as keyof typeof skillsData] || [];
