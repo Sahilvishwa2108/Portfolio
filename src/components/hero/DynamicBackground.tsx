@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef } from "react";
+import React, { useRef, useMemo } from "react";
 import { useFrame } from "@react-three/fiber";
 import { Float, Sphere, Torus, MeshDistortMaterial, MeshWobbleMaterial } from "@react-three/drei";
 import { Group } from "three";
@@ -18,24 +18,28 @@ interface DynamicBackgroundProps {
 export const DynamicBackground = ({ particleCount = 20 }: DynamicBackgroundProps) => {
   const groupRef = useRef<Group>(null);
   
-  // Create particles
-  const particles: Particle[] = [];
-  
-  for (let i = 0; i < particleCount; i++) {
-    const x = (Math.random() - 0.5) * 20;
-    const y = (Math.random() - 0.5) * 15;
-    const z = (Math.random() - 0.5) * 10;
-    const size = Math.random() * 0.5 + 0.1;
-    const color = [
-      "#14b8a6", // teal-500
-      "#0ea5e9", // sky-500
-      "#a855f7", // purple-500
-      "#121212", // dark-900
-      "#1e293b", // slate-800
-    ][Math.floor(Math.random() * 5)];
+  // Create particles using useMemo to prevent recreating on each render
+  const particles = useMemo(() => {
+    const tempParticles: Particle[] = [];
     
-    particles.push({ position: [x, y, z], size, color, id: i });
-  }
+    for (let i = 0; i < particleCount; i++) {
+      const x = (Math.random() - 0.5) * 20;
+      const y = (Math.random() - 0.5) * 15;
+      const z = (Math.random() - 0.5) * 10;
+      const size = Math.random() * 0.5 + 0.1;
+      const color = [
+        "#14b8a6", // teal-500
+        "#0ea5e9", // sky-500
+        "#a855f7", // purple-500
+        "#121212", // dark-900
+        "#1e293b", // slate-800
+      ][Math.floor(Math.random() * 5)];
+      
+      tempParticles.push({ position: [x, y, z], size, color, id: i });
+    }
+    
+    return tempParticles;
+  }, [particleCount]);
   
   // Automatic gentle animation using clock instead of mouse
   useFrame((state) => {

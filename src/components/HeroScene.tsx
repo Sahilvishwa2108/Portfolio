@@ -1,9 +1,18 @@
 "use client";
 import { Canvas } from "@react-three/fiber";
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
 import { PerspectiveCamera, Environment } from "@react-three/drei";
 import { DynamicBackground } from "./hero/DynamicBackground";
 import { AnimatedText } from "./hero/AnimatedText";
+import { ErrorBoundary } from "react-error-boundary";
+
+// Simple fallback component
+const ErrorFallback = () => (
+  <mesh position={[0, 0, 0]}>
+    <boxGeometry args={[1, 1, 1]} />
+    <meshStandardMaterial color="red" />
+  </mesh>
+);
 
 interface HeroSceneProps {
   showGreeting: boolean;
@@ -16,7 +25,9 @@ export const HeroScene = ({ showGreeting, showName }: HeroSceneProps) => {
       <PerspectiveCamera makeDefault position={[0, 0, 15]} fov={55} />
       <Suspense fallback={null}>
         <color attach="background" args={["#050505"]} />
-        <DynamicBackground particleCount={10} /> {/* Reduced particle count */}
+        <ErrorBoundary fallback={<ErrorFallback />}>
+          <DynamicBackground particleCount={10} />
+        </ErrorBoundary>
         <ambientLight intensity={0.2} />
         <spotLight
           position={[10, 10, 10]}
@@ -25,11 +36,14 @@ export const HeroScene = ({ showGreeting, showName }: HeroSceneProps) => {
           intensity={1}
           castShadow
         />
-        <Environment preset="city" />
-        <AnimatedText
-          showGreeting={showGreeting}
-          showName={showName}
-        />
+        {/* Change Environment preset from "city" to another available preset */}
+        <Environment preset="sunset" />
+        <ErrorBoundary fallback={<ErrorFallback />}>
+          <AnimatedText
+            showGreeting={showGreeting}
+            showName={showName}
+          />
+        </ErrorBoundary>
       </Suspense>
     </Canvas>
   );

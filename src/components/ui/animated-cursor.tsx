@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 
 export const AnimatedCursor: React.FC = () => {
@@ -7,14 +7,14 @@ export const AnimatedCursor: React.FC = () => {
   const [cursorVariant, setCursorVariant] = useState('default');
   const [isVisible, setIsVisible] = useState(false);
 
+  const handleMouseMove = useCallback((e: MouseEvent) => {
+    setMousePosition({ x: e.clientX, y: e.clientY });
+  }, []);
+
   useEffect(() => {
     // Don't show custom cursor on mobile/touch devices
     if (window.matchMedia('(pointer: fine)').matches) {
       setIsVisible(true);
-      
-      const handleMouseMove = (e: MouseEvent) => {
-        setMousePosition({ x: e.clientX, y: e.clientY });
-      };
       
       const handleMouseEnter = () => {
         setIsVisible(true);
@@ -56,7 +56,7 @@ export const AnimatedCursor: React.FC = () => {
         });
       };
     }
-  }, []);
+  }, [handleMouseMove]);
 
   const variants = {
     default: {
