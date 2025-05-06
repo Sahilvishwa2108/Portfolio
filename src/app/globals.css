@@ -263,3 +263,145 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Add these at the end of the file */
+
+/* Smooth scrolling for the entire site */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Glass morphism effect */
+.glass-morphism {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Enhanced transitions */
+.transition-all-ease {
+  transition: all 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+/* Improved hover effects */
+.hover-lift {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.hover-lift:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+/* Animation keyframes for staggered reveals */
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.reveal-animation {
+  animation: reveal 0.8s ease forwards;
+  opacity: 0;
+}
+
+.reveal-delay-1 { animation-delay: 0.1s; }
+.reveal-delay-2 { animation-delay: 0.2s; }
+.reveal-delay-3 { animation-delay: 0.3s; }
+.reveal-delay-4 { animation-delay: 0.4s; }
+.reveal-delay-5 { animation-delay: 0.5s; }
+
+/* Enhanced animated gradient backgrounds */
+.animated-gradient {
+  background-size: 400% 400%;
+  animation: gradient 15s ease infinite;
+  background-image: linear-gradient(-45deg, 
+    rgba(20, 184, 166, 0.15),
+    rgba(56, 189, 248, 0.15),
+    rgba(168, 85, 247, 0.15),
+    rgba(20, 184, 166, 0.15)
+  );
+}
+
+@keyframes gradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Optimize animations for users with reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Add these at the end of your globals.css file */
+
+/* 3D text effect for the hero section */
+.hero-text-3d {
+  text-shadow: 
+    0 1px 0 rgba(20, 184, 166, 0.4),
+    0 2px 0 rgba(20, 184, 166, 0.3),
+    0 3px 0 rgba(20, 184, 166, 0.2),
+    0 4px 0 rgba(20, 184, 166, 0.1),
+    0 5px 10px rgba(0, 0, 0, 0.4);
+  transform: perspective(500px) rotateX(10deg);
+  transform-origin: center top;
+}
+
+.hero-name-3d {
+  text-shadow: 
+    0 1px 0 rgb(45, 212, 191, 0.6),
+    0 2px 0 rgb(45, 212, 191, 0.5),
+    0 3px 0 rgb(45, 212, 191, 0.4),
+    0 4px 0 rgb(45, 212, 191, 0.3),
+    0 5px 0 rgb(45, 212, 191, 0.2),
+    0 6px 0 rgb(45, 212, 191, 0.1),
+    0 7px 10px rgba(0, 0, 0, 0.5),
+    0 10px 35px rgba(20, 184, 166, 0.4);
+  transform: perspective(800px) rotateX(8deg);
+  transform-origin: center;
+  transform-style: preserve-3d;
+}
+
+/* Enhanced text shadow with glow effect */
+.text-shadow-glow {
+  text-shadow: 0 0 15px rgba(20, 184, 166, 0.7);
+}
+
+/* Text hover effects */
+@media (hover: hover) {
+  .hero-text-3d:hover,
+  .hero-name-3d:hover {
+    transform: perspective(500px) rotateX(0deg);
+    transition: all 0.3s ease;
+  }
+}
+
+/* Text animation for letter-by-letter reveal */
+@keyframes float-text {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+.float-text {
+  display: inline-block;
+  animation: float-text 3s ease-in-out infinite;
+}
+
+.float-text:nth-child(2n) {
+  animation-delay: 0.1s;
+}
+
+.float-text:nth-child(3n) {
+  animation-delay: 0.2s;
+}

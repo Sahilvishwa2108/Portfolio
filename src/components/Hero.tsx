@@ -1,54 +1,41 @@
 "use client";
-import React, { useState, useRef, useEffect, Suspense } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import {
-  Float,
-  Text,
-  PerspectiveCamera,
-  MeshDistortMaterial,
-  Environment,
-  Sphere,
-  Torus,
-  MeshWobbleMaterial
-} from "@react-three/drei";
-import { Group } from "three";
 import Link from "next/link";
+import dynamic from 'next/dynamic';
+import { LetterPullup } from "./ui/letter-pullup"; // Import the LetterPullup component
 
-// Define type interfaces
-interface AnimatedTextProps {
-  showGreeting: boolean;
-  showName: boolean;
-  showIntro?: boolean; // Added missing property
-}
-
-interface Particle {
-  position: [number, number, number];
-  size: number;
-  color: string;
-  id: number;
-}
+// Dynamic import of the HeroScene component
+const DynamicScene = dynamic(
+  () => import('./HeroScene').then((mod) => mod.HeroScene),
+  { 
+    ssr: false,
+    loading: () => (
+      <div className="absolute inset-0 flex items-center justify-center">
+        <div className="w-12 h-12 rounded-full border-2 border-t-teal-500 border-r-transparent border-b-transparent border-l-transparent animate-spin"></div>
+      </div>
+    )
+  }
+);
 
 const Hero = () => {
   const containerRef = useRef(null);
   const [isLoaded, setIsLoaded] = useState(false);
-  
-  // Either use the mousePosition state or simply remove it
-  // Option 1: Remove the state and related handlers if not needed
   
   // Animation states
   const [showGreeting, setShowGreeting] = useState(false);
   const [showIntro, setShowIntro] = useState(false);
   const [showName, setShowName] = useState(false);
   const [showCTA, setShowCTA] = useState(false);
+  const [showLine1, setShowLine1] = useState(false);
+  const [showLine2, setShowLine2] = useState(false);
   
   // Parallax effect for content
   const { scrollYProgress } = useScroll({ target: containerRef });
   const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
   const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
 
-  // Option 2: Keep the mouse tracking but use it somewhere
-  // This creates a ref that makes the state "used" for ESLint
+  // Mouse position tracking
   const mousePositionRef = useRef({ x: 0, y: 0 });
   
   const handleMouseMove = (event: React.MouseEvent) => {
@@ -56,21 +43,39 @@ const Hero = () => {
       x: (event.clientX / window.innerWidth) * 2 - 1,
       y: -(event.clientY / window.innerHeight) * 2 + 1,
     };
-    // Now we're using the ref instead of the state
+  };
+
+  const rotateText = (e: React.MouseEvent) => {
+    const greeting = document.querySelector('.hero-text-3d');
+    const name = document.querySelector('.hero-name-3d');
+    
+    if (greeting && name) {
+      // Calculate rotation values based on mouse position
+      const x = (window.innerWidth / 2 - e.clientX) / 50;
+      const y = (window.innerHeight / 2 - e.clientY) / 50;
+      
+      // Apply rotation to text elements
+      greeting.setAttribute('style', `transform: perspective(500px) rotateX(${y * 0.5 + 8}deg) rotateY(${x * 0.3}deg);`);
+      name.setAttribute('style', `transform: perspective(800px) rotateX(${y * 0.3 + 5}deg) rotateY(${x * 0.2}deg);`);
+    }
   };
 
   // Trigger animations sequentially
   useEffect(() => {
     const timeoutGreeting = setTimeout(() => setShowGreeting(true), 500);
+    const timeoutLine1 = setTimeout(() => setShowLine1(true), 700);
     const timeoutIntro = setTimeout(() => setShowIntro(true), 1200);
     const timeoutName = setTimeout(() => setShowName(true), 1900);
-    const timeoutCTA = setTimeout(() => setShowCTA(true), 2500);
+    const timeoutLine2 = setTimeout(() => setShowLine2(true), 2100);
+    const timeoutCTA = setTimeout(() => setShowCTA(true), 2700);
     const loadedTimeout = setTimeout(() => setIsLoaded(true), 1000);
 
     return () => {
       clearTimeout(timeoutGreeting);
+      clearTimeout(timeoutLine1);
       clearTimeout(timeoutIntro);
       clearTimeout(timeoutName);
+      clearTimeout(timeoutLine2);
       clearTimeout(timeoutCTA);
       clearTimeout(loadedTimeout);
     };
@@ -80,40 +85,15 @@ const Hero = () => {
     <section 
       id="hero" 
       className="relative h-screen w-full overflow-hidden"
-      onMouseMove={handleMouseMove}
+      onMouseMove={(e) => {
+        handleMouseMove(e);
+        rotateText(e);
+      }}
       ref={containerRef}
     >
-      {/* 3D Background remains unchanged */}
+      {/* 3D Background with dynamic loading */}
       <div className="absolute inset-0 bg-gradient-to-b from-black via-gray-900 to-gray-800 pointer-events-none">
-        <Canvas dpr={[1, 2]} className="w-full h-full">
-          <PerspectiveCamera makeDefault position={[0, 0, 15]} fov={55} />
-          <Suspense fallback={null}>
-            <color attach="background" args={["#050505"]} />
-            
-            {/* Dynamic 3D scene */}
-            <DynamicBackground />
-            
-            {/* Ambient light */}
-            <ambientLight intensity={0.2} />
-            <spotLight
-              position={[10, 10, 10]}
-              angle={0.15}
-              penumbra={1}
-              intensity={1}
-              castShadow
-            />
-            
-            {/* Environment map for realistic reflections */}
-            <Environment preset="city" />
-            
-            {/* Animated text in 3D space */}
-            <AnimatedText
-              showGreeting={showGreeting}
-              showIntro={showIntro}
-              showName={showName}
-            />
-          </Suspense>
-        </Canvas>
+        <DynamicScene showGreeting={showGreeting} showName={showName} />
       </div>
 
       {/* Text content overlay */}
@@ -122,7 +102,7 @@ const Hero = () => {
         style={{ y, opacity }}
       >
         <div className="max-w-5xl w-full flex flex-col items-center">
-          {/* Animated text with gradient - unchanged */}
+          {/* Animated text with 3D effect */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: isLoaded ? 1 : 0 }}
@@ -136,27 +116,38 @@ const Hero = () => {
               animate={{ height: "auto" }}
               transition={{ duration: 0.8, delay: 0.7 }}
             >
-              <h2 className="text-xl md:text-2xl text-teal-400 font-medium">
-                <AnimatedLetters text="Hey, I'm" />
-              </h2>
+              {showLine1 && (
+                <h2 className="text-xl md:text-2xl text-teal-400 font-medium hero-text-3d">
+                  <LetterPullup 
+                    words="Hey, I'm" 
+                    delay={0.05}
+                    className="text-shadow-glow" 
+                  />
+                </h2>
+              )}
             </motion.div>
             
-            {/* Line 3: "Sahil Vishwakarma" */}
+            {/* Line 2: "Sahil Vishwakarma" with enhanced 3D effect */}
             <motion.div 
               className="overflow-hidden mt-2"
               initial={{ height: 0 }}
               animate={{ height: "auto" }}
               transition={{ duration: 0.8, delay: 1.3 }}
             >
-              <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-white via-teal-300 to-cyan-300">
-                <AnimatedLetters text="Sahil Vishwakarma" delay={1.9} />
-              </h1>
+              {showLine2 && (
+                <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-center hero-name-3d">
+                  <LetterPullup 
+                    words="Sahil Vishwakarma" 
+                    delay={0.04}
+                    className="text-transparent bg-clip-text bg-gradient-to-r from-white via-teal-300 to-cyan-300 drop-shadow-[0_5px_5px_rgba(20,184,166,0.3)]" 
+                  />
+                </h1>
+              )}
             </motion.div>
-            
           </motion.div>
         </div>
         
-        {/* Scroll indicator remains unchanged */}
+        {/* Scroll indicator */}
         <motion.div 
           className="absolute bottom-10 left-1/2 transform -translate-x-1/2 z-50"
           initial={{ opacity: 0 }}
@@ -190,7 +181,7 @@ const Hero = () => {
         </motion.div>
       </motion.div>
       
-      {/* BUTTONS - Properly positioned at 60% from top, centered */}
+      {/* BUTTONS - Properly positioned */}
       <div className="relative top-[77%] left-1/2 transform -translate-x-1/2 flex flex-col md:flex-row space-y-4 md:space-y-0 space-x-0 md:space-x-4 justify-center items-center z-[9999] pointer-events-auto">
         <AnimatePresence>
           {showCTA && (
@@ -225,227 +216,6 @@ const Hero = () => {
     </section>
   );
 };
-
-// Letter-by-letter animation component
-const AnimatedLetters = ({ text, delay = 0 }: { text: string; delay?: number }) => {
-  return (
-    <span className="inline-block">
-      {text.split('').map((char, index) => (
-        <motion.span
-          key={index}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{
-            duration: 0.3,
-            delay: delay + index * 0.05,
-          }}
-          className="inline-block"
-        >
-          {char === ' ' ? '\u00A0' : char}
-        </motion.span>
-      ))}
-    </span>
-  );
-};
-
-
-// 3D Text Component - Adjusted positioning for better overall layout
-const AnimatedText = ({ showGreeting, showName }: AnimatedTextProps) => {
-  const { size } = useThree();
-  const textRef = useRef<Group>(null);
-  
-  // Calculate responsive text sizing
-  const fontSize = {
-    greeting: size.width < 600 ? 0.7 : 0.9,
-    name: size.width < 600 ? 0.9 : 1.3,
-  };
-  
-  // Fixed positions with more vertical separation
-  const positions: {
-    greeting: [number, number, number];
-    name: [number, number, number];
-  } = {
-    greeting: [0, 2.2, 0],  // Moved up for better spacing
-    name: [0, -0.8, 0],     // Moved down for better spacing
-  };
-
-  // Automatic gentle animation
-  useFrame((state) => {
-    if (textRef.current) {
-      const time = state.clock.getElapsedTime();
-      textRef.current.rotation.y = Math.sin(time * 0.3) * 0.08;
-      textRef.current.rotation.x = Math.cos(time * 0.2) * 0.05;
-    }
-  });
-  
-  return (
-    <group ref={textRef} position={[0, 0, 5]}>
-      {showGreeting && (
-        <Float
-          speed={1.5}
-          rotationIntensity={0.15}
-          floatIntensity={0.4}
-          floatingRange={[-0.08, 0.08]}
-        >
-          <Text
-            fontSize={fontSize.greeting}
-            position={positions.greeting}
-            color="#14b8a6"
-            letterSpacing={0.05}
-            textAlign="center"
-            outlineWidth={0.01}
-            outlineColor="#0d9488"
-            maxWidth={8}
-          >
-            Hey, I&apos;m
-            <meshStandardMaterial 
-              color="#14b8a6" 
-              metalness={0.6}
-              roughness={0.2}
-              emissive="#14b8a6"
-              emissiveIntensity={0.3}
-            />
-          </Text>
-        </Float>
-      )}
-
-      {showName && (
-        <Float
-          speed={2}
-          rotationIntensity={0.2}
-          floatIntensity={0.4}
-          floatingRange={[-0.15, 0.15]}
-        >
-          <Text
-            fontSize={fontSize.name}
-            position={positions.name}
-            color="white"
-            letterSpacing={0.08}
-            textAlign="center"
-            outlineWidth={0.02}
-            outlineColor="#0d9488"
-            maxWidth={8}
-          >
-            SAHIL VISHWAKARMA
-            <meshPhysicalMaterial 
-              color="white" 
-              metalness={0.7}
-              roughness={0.1}
-              clearcoat={1}
-              clearcoatRoughness={0.2}
-              emissive="#14b8a6"
-              emissiveIntensity={0.2}
-            />
-          </Text>
-        </Float>
-      )}
-    </group>
-  );
-};
-
-// Dynamic 3D Background - Unchanged
-const DynamicBackground = () => {
-  const groupRef = useRef<Group>(null);
-  
-  // Create particles
-  const particles: Particle[] = [];
-  const particleCount = 20;
-  
-  for (let i = 0; i < particleCount; i++) {
-    const x = (Math.random() - 0.5) * 20;
-    const y = (Math.random() - 0.5) * 15;
-    const z = (Math.random() - 0.5) * 10;
-    const size = Math.random() * 0.5 + 0.1;
-    const color = [
-      "#14b8a6", // teal-500
-      "#0ea5e9", // sky-500
-      "#a855f7", // purple-500
-      "#121212", // dark-900
-      "#1e293b", // slate-800
-    ][Math.floor(Math.random() * 5)];
-    
-    particles.push({ position: [x, y, z], size, color, id: i });
-  }
-  
-  // Automatic gentle animation using clock instead of mouse
-  useFrame((state) => {
-    if (groupRef.current) {
-      // Create gentle automatic rotation using sine and cosine for smooth oscillation
-      const time = state.clock.getElapsedTime();
-      
-      // Slow, gentle automatic movement
-      groupRef.current.rotation.y = Math.sin(time * 0.15) * 0.05;
-      groupRef.current.rotation.x = Math.cos(time * 0.1) * 0.03;
-    }
-  });
-
-  return (
-    <group ref={groupRef}>
-      {/* Particles */}
-      {particles.map((particle) => (
-        <Float
-          key={particle.id}
-          speed={1.5}
-          rotationIntensity={2}
-          floatIntensity={2}
-          position={particle.position}
-        >
-          {particle.id % 3 === 0 ? (
-            <Sphere args={[particle.size, 16, 16]}>
-              <MeshDistortMaterial
-                color={particle.color}
-                speed={2}
-                distort={0.4}
-                opacity={0.7}
-                transparent
-              />
-            </Sphere>
-          ) : particle.id % 3 === 1 ? (
-            <Torus args={[particle.size, particle.size / 3, 16, 32]} rotation={[Math.random() * Math.PI, 0, 0]}>
-              <MeshWobbleMaterial
-                color={particle.color}
-                factor={0.4}
-                speed={2}
-                opacity={0.7}
-                transparent
-              />
-            </Torus>
-          ) : (
-            <mesh>
-              <icosahedronGeometry args={[particle.size, 1]} />
-              <meshStandardMaterial
-                color={particle.color}
-                metalness={0.8}
-                roughness={0.2}
-                opacity={0.7}
-                transparent
-              />
-            </mesh>
-          )}
-        </Float>
-      ))}
-      
-      {/* Main glowing orb */}
-      <Float
-        speed={1}
-        rotationIntensity={0.2}
-        floatIntensity={0.5}
-        position={[0, 0, -5]}
-      >
-        <Sphere args={[3, 64, 64]}>
-          <MeshDistortMaterial
-            color="#14b8a6"
-            speed={3}
-            distort={0.4}
-            opacity={0.15}
-            transparent
-          />
-        </Sphere>
-      </Float>
-    </group>
-  );
-};
-
 
 // GlowingButton component with hover effect
 interface GlowingButtonProps {

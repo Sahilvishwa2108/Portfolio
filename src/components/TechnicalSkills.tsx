@@ -6,6 +6,8 @@ import {
   SiNodedotjs, SiExpress, SiMongodb, SiPostgresql, SiRedis,
   SiGit, SiDocker, SiGithub, SiFirebase, SiCloudflare,
 } from 'react-icons/si';
+import { LazyLoad } from '@/components/LazyLoad';
+import { useOptimizedAnimation } from '@/hooks/useOptimizedAnimation';
 
 // Improved skill data structure with categories and clean organization
 const skillsData = {
@@ -50,13 +52,15 @@ interface Skill {
 // Modern 3D-looking skill card with glass effect
 const SkillCard = ({ skill, delay }: { skill: Skill; delay: number }) => {
   const [isHovered, setIsHovered] = useState(false);
+  const { ref, isActive } = useOptimizedAnimation(0.1, true);
   
   return (
     <motion.div
+      ref={ref}
       initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
+      animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
       exit={{ opacity: 0, y: 10, transition: { duration: 0.2 } }}
-      transition={{ duration: 0.5, delay }}
+      transition={{ duration: 0.5, delay: isActive ? delay : 0 }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       className="group"
@@ -214,20 +218,22 @@ const TechnicalSkills = () => {
 
         {/* Skills grid */}
         <div ref={containerRef} className="relative">
-          <AnimatePresence mode="sync">
-            <motion.div
-              key={category} // Force re-render when category changes
-              className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6"
-            >
-              {getDisplayedSkills().map((skill, index) => (
-                <SkillCard 
-                  key={skill.name} 
-                  skill={skill} 
-                  delay={0.1 + (index % 10) * 0.05} 
-                />
-              ))}
-            </motion.div>
-          </AnimatePresence>
+          <LazyLoad>
+            <AnimatePresence mode="sync">
+              <motion.div
+                key={category} // Force re-render when category changes
+                className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6"
+              >
+                {getDisplayedSkills().map((skill, index) => (
+                  <SkillCard 
+                    key={skill.name} 
+                    skill={skill} 
+                    delay={0.1 + (index % 10) * 0.05} 
+                  />
+                ))}
+              </motion.div>
+            </AnimatePresence>
+          </LazyLoad>
         </div>
       </div>
     </section>
