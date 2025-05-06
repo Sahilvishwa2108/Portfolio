@@ -39,7 +39,7 @@ export const projects = [
     des: "A feedback collection platform with AI-driven suggestions, secure authentication, and real-time updates using Next.js, React, TypeScript, NextAuth.js, and OpenAI API.",
     img: "/projects/truefeedback.png",
     iconList: [SiNextdotjs, SiTailwindcss, SiTypescript, SiReact, SiVercel],
-    link: "https://annonymousfeedbacks.vercel.app/",
+    link: "https://anonymousfeedbacks.vercel.app/",
     github: "https://github.com/Sahilvishwa2108/feedback_app",
     featured: true
   },
@@ -49,8 +49,8 @@ export const projects = [
     des: "A personal portfolio website built with Next.js, TypeScript and Tailwind CSS.",
     img: "/projects/portfolio.png",
     iconList: [SiNextdotjs, SiTailwindcss, SiTypescript, SiVercel],
-    link: "https://portfolio-sahil-vishwakarmas-projects.vercel.app/",
-    github: "https://github.com/Sahilvishwa2108/personal_portfolio"
+    link: "https://sahilvishwa2108.vercel.app/",
+    github: "https://github.com/Sahilvishwa2108/portfolio"
   },
   {
     id: 4,
