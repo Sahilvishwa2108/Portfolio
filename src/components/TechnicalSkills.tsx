@@ -1,6 +1,9 @@
 "use client";
-import React, { useRef, useState } from 'react';
+import React, { useState, useRef, useEffect, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Canvas, useFrame, useThree } from '@react-three/fiber';
+import { Text, OrbitControls, PerspectiveCamera, useTexture } from '@react-three/drei';
+import * as THREE from 'three';
 import { 
   SiReact, SiNextdotjs, SiTypescript, SiTailwindcss, SiFramer,
   SiNodedotjs, SiExpress, SiMongodb, SiPostgresql, SiRedis,
@@ -10,8 +13,7 @@ import {
   SiSocketdotio, SiCloudinary
 } from 'react-icons/si';
 import { DiJava } from 'react-icons/di';
-import { LazyLoad } from '@/components/LazyLoad';
-import { useOptimizedAnimation } from '@/hooks/useOptimizedAnimation';
+import { IconType } from 'react-icons';
 
 // Updated skill data structure with more categories
 const skillsData = {
@@ -63,106 +65,229 @@ const categories = [
 
 interface Skill {
   name: string;
-  icon: React.ComponentType;
+  icon: IconType;
   color: string;
   level: number;
 }
 
-// Modern 3D-looking skill card with glass effect
-const SkillCard = ({ skill, delay }: { skill: Skill; delay: number }) => {
-  const [isHovered, setIsHovered] = useState(false);
-  const { ref, isActive } = useOptimizedAnimation(0.1, true);
+// Convert icon to texture for 3D rendering
+const createSkillIconTexture = (Icon: IconType, color: string): string => {
+  // This function creates an SVG with the icon and returns a data URL
+  // In a real implementation, you'd use a canvas to render the icon
+  // For this example, we'll create a simple placeholder that would be replaced with actual rendering
+  
+  return `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64"><circle cx="32" cy="32" r="32" fill="${color.replace('#', '%23')}" opacity="0.8"/></svg>`;
+};
+
+// Floating skill node in 3D space
+const SkillNode = ({ 
+  skill, 
+  position, 
+  isHighlighted, 
+  onClick 
+}: { 
+  skill: Skill, 
+  position: [number, number, number], 
+  isHighlighted: boolean,
+  onClick: () => void 
+}) => {
+  const meshRef = useRef<THREE.Mesh>(null);
+  const [hovered, setHovered] = useState(false);
+  
+  // Animate on hover and when highlighted
+  useFrame((state) => {
+    if (!meshRef.current) return;
+    
+    // Add floating motion
+    const t = state.clock.getElapsedTime();
+    meshRef.current.position.y = position[1] + Math.sin(t + position[0]) * 0.1;
+    
+    // Rotate gently
+    meshRef.current.rotation.y += 0.005;
+    
+    // Scale based on hover/highlight state
+    const targetScale = hovered || isHighlighted ? 1.2 : 1;
+    meshRef.current.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), 0.1);
+    
+    // Glow effect through opacity
+    if (meshRef.current.material instanceof THREE.MeshStandardMaterial) {
+      const targetEmissive = isHighlighted ? 0.5 : hovered ? 0.3 : 0.1;
+      meshRef.current.material.emissiveIntensity = THREE.MathUtils.lerp(
+        meshRef.current.material.emissiveIntensity,
+        targetEmissive,
+        0.1
+      );
+    }
+  });
+
+  return (
+    <group position={position}>
+      <mesh 
+        ref={meshRef}
+        onClick={onClick}
+        onPointerOver={() => setHovered(true)} 
+        onPointerOut={() => setHovered(false)}
+      >
+        <sphereGeometry args={[0.5, 16, 16]} />
+        <meshStandardMaterial 
+          color={skill.color} 
+          transparent
+          opacity={0.8}
+          emissive={skill.color}
+          emissiveIntensity={0.2}
+        />
+      </mesh>
+      
+      {/* Show text label when hovered or highlighted */}
+      {(hovered || isHighlighted) && (
+        <Text
+          position={[0, 0.8, 0]}
+          fontSize={0.3}
+          color="white"
+          anchorX="center"
+          anchorY="middle"
+          outlineWidth={0.02}
+          outlineColor="#000000"
+        >
+          {skill.name}
+        </Text>
+      )}
+    </group>
+  );
+};
+
+// Detail panel that appears when a skill is selected
+const SkillDetail = ({ skill }: { skill: Skill | null }) => {
+  if (!skill) return null;
+  
+  const Icon = skill.icon;
   
   return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 20 }}
-      animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-      exit={{ opacity: 0, y: 10, transition: { duration: 0.2 } }}
-      transition={{ duration: 0.5, delay: isActive ? delay : 0 }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      className="group"
+    <motion.div 
+      initial={{ opacity: 0, x: 20 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: 20 }}
+      className="absolute right-8 top-1/2 transform -translate-y-1/2 bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg max-w-xs backdrop-blur-sm bg-opacity-90 dark:bg-opacity-90 border border-gray-200 dark:border-gray-700"
     >
-      <div 
-        className={`
-          relative aspect-square flex flex-col items-center justify-center p-6
-          rounded-2xl bg-white dark:bg-gray-800/90 backdrop-blur-sm
-          border border-gray-100 dark:border-gray-700
-          transition-all duration-300 overflow-hidden
-          ${isHovered ? 'scale-105 shadow-lg' : 'shadow-md'}
-          transform perspective-1200
-        `}
-        style={{
-          transformStyle: 'preserve-3d',
-        }}
-      >
-        {/* Background gradient glow */}
-        <div 
-          className={`
-            absolute -inset-px rounded-2xl
-            bg-gradient-to-br opacity-50 group-hover:opacity-80
-            blur-sm group-hover:blur-md transition-all duration-300
-          `}
-          style={{ background: `linear-gradient(45deg, ${skill.color}30, transparent)` }}
-        />
-        
-        {/* Icon */}
-        <div 
-          className={`
-            relative z-10 text-4xl md:text-5xl mb-4
-            transform group-hover:scale-110 group-hover:rotate-3
-            transition-all duration-300 ease-out
-          `}
-          style={{ color: skill.color }}
-        >
-          <skill.icon />
+      <div className="flex flex-col items-center">
+        <div className="text-4xl mb-4" style={{ color: skill.color }}>
+          <Icon />
         </div>
-
-        {/* Skill name */}
-        <h3 className="relative z-10 font-bold text-lg md:text-xl text-center text-gray-800 dark:text-white mb-2">
+        <h3 className="text-xl font-bold mb-2 text-gray-800 dark:text-white">
           {skill.name}
         </h3>
-
-        {/* Skill level indicator - only shows on hover */}
-        <div className={`
-          w-full max-w-[120px] h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden
-          transition-all duration-500
-          ${isHovered ? 'opacity-100' : 'opacity-0'}
-        `}>
-          <motion.div 
-            initial={{ width: 0 }}
-            animate={{ width: isHovered ? `${skill.level}%` : 0 }}
-            transition={{ duration: 0.5, ease: "easeOut" }}
-            className="h-full rounded-full"
-            style={{ background: skill.color }}
-          />
+        
+        <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 mb-2">
+          <div 
+            className="h-2.5 rounded-full" 
+            style={{ width: `${skill.level}%`, backgroundColor: skill.color }}
+          ></div>
         </div>
         
-        {/* Level indicator text - only shows on hover */}
-        <span className={`
-          text-xs font-medium mt-1 transition-all duration-500
-          ${isHovered ? 'opacity-100' : 'opacity-0'}
-        `}>
-          {skill.level}%
-        </span>
-        
-        {/* 3D floating decorative element */}
-        <div 
-          className="absolute -bottom-6 -right-6 w-24 h-24 rounded-full 
-            bg-gradient-to-br from-white/5 to-white/0 dark:from-gray-700/5 dark:to-gray-700/0
-            transform group-hover:scale-150 group-hover:rotate-12
-            transition-all duration-700 ease-out"
-        />
+        <p className="text-sm text-gray-600 dark:text-gray-300">
+          Proficiency: {skill.level}%
+        </p>
       </div>
     </motion.div>
   );
 };
 
+// 3D Skill Cloud Component
+const SkillCloud = ({ 
+  skills, 
+  onSelectSkill 
+}: { 
+  skills: Skill[], 
+  onSelectSkill: (skill: Skill) => void 
+}) => {
+  const [selectedSkill, setSelectedSkill] = useState<Skill | null>(null);
+  const { camera } = useThree();
+  const orbitControlsRef = useRef<any>(null);
+  
+  // Distribute skills in 3D space - this creates a sphere-like arrangement
+  const skillPositions = skills.map((_, i) => {
+    const phi = Math.acos(-1 + (2 * i) / skills.length);
+    const theta = Math.sqrt(skills.length * Math.PI) * phi;
+    
+    return [
+      5 * Math.cos(theta) * Math.sin(phi),
+      5 * Math.sin(theta) * Math.sin(phi),
+      5 * Math.cos(phi)
+    ] as [number, number, number];
+  });
+
+  return (
+    <>
+      <OrbitControls 
+        ref={orbitControlsRef}
+        enableZoom={true}
+        enablePan={false}
+        autoRotate
+        autoRotateSpeed={0.5}
+        minDistance={6}
+        maxDistance={15}
+      />
+      
+      <PerspectiveCamera makeDefault position={[0, 0, 10]} fov={60} />
+      
+      <ambientLight intensity={0.4} />
+      <directionalLight position={[10, 10, 5]} intensity={0.8} />
+      <pointLight position={[-10, -10, -5]} intensity={0.5} />
+      
+      {/* Outer glow sphere */}
+      <mesh>
+        <sphereGeometry args={[10, 32, 32]} />
+        <meshBasicMaterial 
+          color="#8884ff" 
+          transparent
+          opacity={0.05}
+          side={THREE.BackSide}
+        />
+      </mesh>
+      
+      {/* Skill nodes */}
+      {skills.map((skill, i) => (
+        <SkillNode
+          key={skill.name}
+          skill={skill}
+          position={skillPositions[i]}
+          isHighlighted={selectedSkill?.name === skill.name}
+          onClick={() => {
+            setSelectedSkill(skill);
+            onSelectSkill(skill);
+            
+            // Temporarily disable auto-rotation when a skill is selected
+            if (orbitControlsRef.current) {
+              orbitControlsRef.current.autoRotate = false;
+              setTimeout(() => {
+                if (orbitControlsRef.current) orbitControlsRef.current.autoRotate = true;
+              }, 3000);
+            }
+          }}
+        />
+      ))}
+    </>
+  );
+};
+
+// Loading spinner for Suspense
+const Loader = () => (
+  <div className="flex justify-center items-center h-96">
+    <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-teal-500"></div>
+  </div>
+);
+
 // Main Technical Skills component
 const TechnicalSkills = () => {
   const [category, setCategory] = useState('all');
+  const [selectedSkill, setSelectedSkill] = useState<Skill | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const [isMounted, setIsMounted] = useState(false);
+  
+  useEffect(() => {
+    setIsMounted(true);
+    return () => setIsMounted(false);
+  }, []);
 
   // Get all skills or filter by category
   const getDisplayedSkills = () => {
@@ -177,6 +302,12 @@ const TechnicalSkills = () => {
     return skillsData[category as keyof typeof skillsData] || [];
   };
 
+  const displayedSkills = getDisplayedSkills();
+
+  if (!isMounted) {
+    return null; // Prevent SSR issues with ThreeJS
+  }
+
   return (
     <section id="skills" className="py-20 relative overflow-hidden">
       {/* Background gradient and decorative elements */}
@@ -186,7 +317,7 @@ const TechnicalSkills = () => {
       
       <div className="container mx-auto px-4 relative z-10">
         {/* Section header */}
-        <div className="text-center mb-16">
+        <div className="text-center mb-12">
           <motion.div 
             initial={{ opacity: 0, y: -20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -212,11 +343,14 @@ const TechnicalSkills = () => {
         </div>
 
         {/* Category filter tabs */}
-        <div className="flex justify-center flex-wrap gap-2 mb-12">
+        <div className="flex justify-center flex-wrap gap-2 mb-8">
           {categories.map((cat, index) => (
             <motion.button
               key={cat.id}
-              onClick={() => setCategory(cat.id)}
+              onClick={() => {
+                setCategory(cat.id);
+                setSelectedSkill(null); // Reset selected skill when changing category
+              }}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -236,25 +370,67 @@ const TechnicalSkills = () => {
           ))}
         </div>
 
-        {/* Skills grid */}
-        <div ref={containerRef} className="relative">
-          <LazyLoad>
-            <AnimatePresence mode="sync">
-              <motion.div
-                key={category} // Force re-render when category changes
-                className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6"
-              >
-                {getDisplayedSkills().map((skill, index) => (
-                  <SkillCard 
-                    key={skill.name} 
-                    skill={skill} 
-                    delay={0.1 + (index % 10) * 0.05} 
-                  />
-                ))}
-              </motion.div>
-            </AnimatePresence>
-          </LazyLoad>
+        {/* 3D Skill Cloud with help text */}
+        <div className="text-center mb-4 text-sm text-gray-500 dark:text-gray-400">
+          <p>Click and drag to rotate | Scroll to zoom | Click on a skill to view details</p>
         </div>
+
+        {/* Main 3D visualization with detail panel */}
+        <div ref={containerRef} className="relative" style={{ height: '600px' }}>
+          {/* The 3D canvas */}
+          <Canvas className="rounded-xl overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900">
+            <Suspense fallback={null}>
+              <SkillCloud 
+                skills={displayedSkills} 
+                onSelectSkill={setSelectedSkill} 
+              />
+            </Suspense>
+          </Canvas>
+          
+          {/* Detail panel that shows when a skill is selected */}
+          <AnimatePresence>
+            {selectedSkill && <SkillDetail skill={selectedSkill} />}
+          </AnimatePresence>
+          
+          {/* Mobile view hint */}
+          <div className="md:hidden text-center mt-4 text-sm text-gray-500 dark:text-gray-400">
+            <p>Tap and drag to explore skills in 3D space</p>
+          </div>
+        </div>
+
+        {/* Summary counts */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+          className="mt-10 grid grid-cols-2 md:grid-cols-4 gap-4"
+        >
+          <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow">
+            <h4 className="text-lg font-semibold text-gray-800 dark:text-white">Frontend</h4>
+            <p className="text-3xl font-bold bg-gradient-to-r from-teal-500 to-blue-500 bg-clip-text text-transparent">
+              {skillsData.frontend.length}
+            </p>
+          </div>
+          <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow">
+            <h4 className="text-lg font-semibold text-gray-800 dark:text-white">Backend</h4>
+            <p className="text-3xl font-bold bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
+              {skillsData.backend.length}
+            </p>
+          </div>
+          <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow">
+            <h4 className="text-lg font-semibold text-gray-800 dark:text-white">Tools</h4>
+            <p className="text-3xl font-bold bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">
+              {skillsData.tools.length}
+            </p>
+          </div>
+          <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow">
+            <h4 className="text-lg font-semibold text-gray-800 dark:text-white">Frameworks</h4>
+            <p className="text-3xl font-bold bg-gradient-to-r from-pink-500 to-orange-500 bg-clip-text text-transparent">
+              {skillsData.frameworks.length}
+            </p>
+          </div>
+        </motion.div>
       </div>
     </section>
   );
