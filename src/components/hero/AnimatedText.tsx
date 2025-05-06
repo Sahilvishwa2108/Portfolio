@@ -23,6 +23,12 @@ export const AnimatedText = ({ showGreeting, showName }: AnimatedTextProps) => {
   const [greetingVisible, setGreetingVisible] = useState(false);
   const [nameVisible, setNameVisible] = useState(false);
   const [greetingAnimationComplete, setGreetingAnimationComplete] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    // Check if we're on mobile based on canvas size
+    setIsMobile(size.width < 600);
+  }, [size.width]);
 
   useEffect(() => {
     if (showGreeting) {
@@ -53,17 +59,17 @@ export const AnimatedText = ({ showGreeting, showName }: AnimatedTextProps) => {
   
   // Calculate responsive text sizing
   const fontSize = {
-    greeting: size.width < 600 ? 0.6 : 0.75, // Reduced from 0.7/0.9
-    name: size.width < 600 ? 0.9 : 1.3,
+    greeting: isMobile ? 0.45 : (size.width < 600 ? 0.6 : 0.75),
+    name: isMobile ? 0.7 : (size.width < 600 ? 0.9 : 1.3),
   };
   
-  // Fixed positions with better vertical separation
+  // Adjust positions for mobile
   const positions: {
     greeting: [number, number, number];
     name: [number, number, number];
   } = {
-    greeting: [0, 1.8, 0], // Moved up from 1.2 to avoid overlap
-    name: [0, -0.4, 0],
+    greeting: isMobile ? [0, 1.4, 0] : [0, 1.8, 0], 
+    name: isMobile ? [0, -0.2, 0] : [0, -0.4, 0],
   };
 
   // Name text blur-in animation
@@ -76,12 +82,13 @@ export const AnimatedText = ({ showGreeting, showName }: AnimatedTextProps) => {
     config: { mass: 3, tension: 130, friction: 30 }
   });
 
-  // Automatic gentle animation
+  // Reduce animation intensity on mobile
   useFrame((state) => {
     if (textRef.current) {
       const time = state.clock.getElapsedTime();
-      textRef.current.rotation.y = Math.sin(time * 0.3) * 0.08;
-      textRef.current.rotation.x = Math.cos(time * 0.2) * 0.05;
+      const intensityFactor = isMobile ? 0.5 : 1; // Reduce animation intensity on mobile
+      textRef.current.rotation.y = Math.sin(time * 0.3) * 0.08 * intensityFactor;
+      textRef.current.rotation.x = Math.cos(time * 0.2) * 0.05 * intensityFactor;
     }
   });
   
@@ -89,12 +96,15 @@ export const AnimatedText = ({ showGreeting, showName }: AnimatedTextProps) => {
   const greetingText = "Hey, I'm";
   
   return (
-    <group ref={textRef} position={[0, 0, 5]}>
+    <group 
+      ref={textRef} 
+      position={[0, 0, isMobile ? 6 : 5]} // Move closer to camera on mobile
+    >
       {showGreeting && (
         <Float
-          speed={1.5}
-          rotationIntensity={0.15}
-          floatIntensity={0.4}
+          speed={isMobile ? 1.0 : 1.5}
+          rotationIntensity={isMobile ? 0.1 : 0.15}
+          floatIntensity={isMobile ? 0.2 : 0.4}
           floatingRange={[-0.08, 0.08]}
         >
           <group position={positions.greeting}>
@@ -142,10 +152,10 @@ export const AnimatedText = ({ showGreeting, showName }: AnimatedTextProps) => {
 
       {showName && (
         <Float
-          speed={2}
-          rotationIntensity={0.2}
-          floatIntensity={0.4}
-          floatingRange={[-0.15, 0.15]}
+          speed={isMobile ? 1.2 : 2}
+          rotationIntensity={isMobile ? 0.1 : 0.2}
+          floatIntensity={isMobile ? 0.2 : 0.4}
+          floatingRange={[-0.1, 0.1]}
         >
           {/* Keep the blur-in effect for the name */}
           <AnimatedGroup 
@@ -159,7 +169,7 @@ export const AnimatedText = ({ showGreeting, showName }: AnimatedTextProps) => {
                 textAlign="center"
                 outlineWidth={0.02}
                 outlineColor="#0d9488"
-                maxWidth={8}
+                maxWidth={isMobile ? 6 : 8}
               >
                 SAHIL VISHWAKARMA
                 <animated.meshPhysicalMaterial 

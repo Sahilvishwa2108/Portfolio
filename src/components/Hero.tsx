@@ -37,6 +37,24 @@ const Hero = () => {
 
   // Mouse position tracking
   const mousePositionRef = useRef({ x: 0, y: 0 });
+  const [isMobile, setIsMobile] = useState(false);
+  
+  // Check if device is mobile
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    // Initial check
+    checkMobile();
+    
+    // Add resize listener
+    window.addEventListener('resize', checkMobile);
+    
+    return () => {
+      window.removeEventListener('resize', checkMobile);
+    };
+  }, []);
   
   const handleMouseMove = (event: React.MouseEvent) => {
     mousePositionRef.current = {
@@ -46,6 +64,9 @@ const Hero = () => {
   };
 
   const rotateText = (e: React.MouseEvent) => {
+    // Skip rotation effect on mobile
+    if (isMobile) return;
+    
     const greeting = document.querySelector('.hero-text-3d');
     const name = document.querySelector('.hero-name-3d');
     
@@ -87,8 +108,10 @@ const Hero = () => {
       id="hero" 
       className="relative h-screen w-full overflow-hidden"
       onMouseMove={(e) => {
-        handleMouseMove(e);
-        rotateText(e);
+        if (!isMobile) {
+          handleMouseMove(e);
+          rotateText(e);
+        }
       }}
       ref={containerRef}
     >
@@ -136,7 +159,7 @@ const Hero = () => {
               transition={{ duration: 0.8, delay: 1.3 }}
             >
               {showLine2 && (
-                <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-center hero-name-3d">
+                <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold text-center hero-name-3d">
                   <LetterPullup 
                     words="Sahil Vishwakarma" 
                     delay={0.04}
@@ -149,8 +172,8 @@ const Hero = () => {
         </div>
       </motion.div>
       
-      {/* BUTTONS - Properly positioned */}
-      <div className="relative top-[77%] left-1/2 transform -translate-x-1/2 flex flex-col md:flex-row space-y-4 md:space-y-0 space-x-0 md:space-x-4 justify-center items-center z-[9999] pointer-events-auto">
+      {/* BUTTONS - Improved responsive positioning */}
+      <div className={`absolute ${isMobile ? 'bottom-28' : 'top-[77%]'} left-1/2 transform -translate-x-1/2 flex flex-col sm:flex-row space-y-4 sm:space-y-0 space-x-0 sm:space-x-4 justify-center items-center z-[9999] pointer-events-auto`}>
         <AnimatePresence>
           {showCTA && (
             <>
@@ -182,8 +205,8 @@ const Hero = () => {
         </AnimatePresence>
       </div>
 
-      {/* STANDALONE SCROLL INDICATOR - Completely independent positioning */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex flex-col space-y-2 justify-center items-center z-[9999] pointer-events-auto">
+      {/* SCROLL INDICATOR - Responsive position */}
+      <div className={`absolute bottom-8 left-1/2 transform -translate-x-1/2 flex flex-col space-y-2 justify-center items-center z-[9999] pointer-events-auto ${isMobile ? 'bottom-4' : 'bottom-8'}`}>
         <AnimatePresence>
           {showCTA && (
             <motion.div
@@ -233,7 +256,7 @@ const Hero = () => {
   );
 };
 
-// GlowingButton component with hover effect
+// GlowingButton component with hover effect - improving touch feedback
 interface GlowingButtonProps {
   children: React.ReactNode;
   className?: string;
@@ -243,7 +266,7 @@ interface GlowingButtonProps {
 const GlowingButton: React.FC<GlowingButtonProps> = ({ children, className, ...props }) => {
   return (
     <div className="relative group">
-      <div className="absolute -inset-0.5 bg-gradient-to-r from-teal-500 to-purple-500 rounded-full blur opacity-60 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-pulse-slow"></div>
+      <div className="absolute -inset-0.5 bg-gradient-to-r from-teal-500 to-purple-500 rounded-full blur opacity-60 group-hover:opacity-100 active:opacity-100 transition duration-1000 group-hover:duration-200 animate-pulse-slow"></div>
       <button 
         className={`relative px-6 py-3 rounded-full transition-all duration-300 flex items-center justify-center font-semibold ${className || ''}`} 
         {...props}

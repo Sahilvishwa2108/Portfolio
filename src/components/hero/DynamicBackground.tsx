@@ -1,6 +1,6 @@
 "use client";
-import React, { useRef, useMemo } from "react";
-import { useFrame } from "@react-three/fiber";
+import React, { useRef, useMemo, useEffect, useState } from "react";
+import { useFrame, useThree } from "@react-three/fiber";
 import { Float, Sphere, Torus, MeshDistortMaterial, MeshWobbleMaterial } from "@react-three/drei";
 import { Group } from "three";
 
@@ -17,16 +17,26 @@ interface DynamicBackgroundProps {
 
 export const DynamicBackground = ({ particleCount = 20 }: DynamicBackgroundProps) => {
   const groupRef = useRef<Group>(null);
+  const { size } = useThree();
+  const [isMobile, setIsMobile] = useState(false);
+  
+  // Determine if we're on mobile based on canvas width
+  useEffect(() => {
+    setIsMobile(size.width < 768);
+  }, [size.width]);
+  
+  // Adjust particle count for mobile
+  const adjustedParticleCount = isMobile ? Math.min(10, particleCount) : particleCount;
   
   // Create particles using useMemo to prevent recreating on each render
   const particles = useMemo(() => {
     const tempParticles: Particle[] = [];
     
-    for (let i = 0; i < particleCount; i++) {
-      const x = (Math.random() - 0.5) * 20;
-      const y = (Math.random() - 0.5) * 15;
-      const z = (Math.random() - 0.5) * 10;
-      const size = Math.random() * 0.5 + 0.1;
+    for (let i = 0; i < adjustedParticleCount; i++) {
+      const x = (Math.random() - 0.5) * (isMobile ? 15 : 20);
+      const y = (Math.random() - 0.5) * (isMobile ? 10 : 15);
+      const z = (Math.random() - 0.5) * (isMobile ? 5 : 10);
+      const size = Math.random() * (isMobile ? 0.3 : 0.5) + 0.1;
       const color = [
         "#14b8a6", // teal-500
         "#0ea5e9", // sky-500
@@ -39,7 +49,7 @@ export const DynamicBackground = ({ particleCount = 20 }: DynamicBackgroundProps
     }
     
     return tempParticles;
-  }, [particleCount]);
+  }, [adjustedParticleCount, isMobile]);
   
   // Automatic gentle animation using clock instead of mouse
   useFrame((state) => {
@@ -47,9 +57,10 @@ export const DynamicBackground = ({ particleCount = 20 }: DynamicBackgroundProps
       // Create gentle automatic rotation using sine and cosine for smooth oscillation
       const time = state.clock.getElapsedTime();
       
-      // Slow, gentle automatic movement
-      groupRef.current.rotation.y = Math.sin(time * 0.15) * 0.05;
-      groupRef.current.rotation.x = Math.cos(time * 0.1) * 0.03;
+      // Slow, gentle automatic movement - reduced on mobile
+      const intensityFactor = isMobile ? 0.5 : 1;
+      groupRef.current.rotation.y = Math.sin(time * 0.15) * 0.05 * intensityFactor;
+      groupRef.current.rotation.x = Math.cos(time * 0.1) * 0.03 * intensityFactor;
     }
   });
 
@@ -59,13 +70,13 @@ export const DynamicBackground = ({ particleCount = 20 }: DynamicBackgroundProps
       {particles.map((particle) => (
         <Float
           key={particle.id}
-          speed={1.5}
-          rotationIntensity={2}
-          floatIntensity={2}
+          speed={isMobile ? 1.0 : 1.5}
+          rotationIntensity={isMobile ? 1.0 : 2.0}
+          floatIntensity={isMobile ? 1.0 : 2.0}
           position={particle.position}
         >
           {particle.id % 3 === 0 ? (
-            <Sphere args={[particle.size, 16, 16]}>
+            <Sphere args={[particle.size, isMobile ? 8 : 16, isMobile ? 8 : 16]}>
               <MeshDistortMaterial
                 color={particle.color}
                 speed={2}
@@ -75,7 +86,7 @@ export const DynamicBackground = ({ particleCount = 20 }: DynamicBackgroundProps
               />
             </Sphere>
           ) : particle.id % 3 === 1 ? (
-            <Torus args={[particle.size, particle.size / 3, 16, 32]} rotation={[Math.random() * Math.PI, 0, 0]}>
+            <Torus args={[particle.size, particle.size / 3, isMobile ? 8 : 16, isMobile ? 16 : 32]} rotation={[Math.random() * Math.PI, 0, 0]}>
               <MeshWobbleMaterial
                 color={particle.color}
                 factor={0.4}
@@ -86,7 +97,7 @@ export const DynamicBackground = ({ particleCount = 20 }: DynamicBackgroundProps
             </Torus>
           ) : (
             <mesh>
-              <icosahedronGeometry args={[particle.size, 1]} />
+              <icosahedronGeometry args={[particle.size, isMobile ? 0 : 1]} />
               <meshStandardMaterial
                 color={particle.color}
                 metalness={0.8}
@@ -99,14 +110,14 @@ export const DynamicBackground = ({ particleCount = 20 }: DynamicBackgroundProps
         </Float>
       ))}
       
-      {/* Main glowing orb */}
+      {/* Main glowing orb - smaller on mobile */}
       <Float
         speed={1}
         rotationIntensity={0.2}
         floatIntensity={0.5}
         position={[0, 0, -5]}
       >
-        <Sphere args={[3, 64, 64]}>
+        <Sphere args={[isMobile ? 2 : 3, isMobile ? 32 : 64, isMobile ? 32 : 64]}>
           <MeshDistortMaterial
             color="#14b8a6"
             speed={3}
