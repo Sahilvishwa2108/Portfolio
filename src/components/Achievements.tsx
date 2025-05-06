@@ -1,13 +1,13 @@
 "use client";
 import React, { useEffect, useState, useRef, Suspense, useMemo } from "react";
-import { motion, AnimatePresence, useAnimation } from "framer-motion";
-import { useInView } from "react-intersection-observer";
+import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Award, ExternalLink, ChevronRight, ChevronLeft } from "lucide-react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Float, Environment, PresentationControls, ContactShadows } from "@react-three/drei";
 import * as THREE from "three";
+import { useOptimizedAnimation } from "@/hooks/useOptimizedAnimation";
 
 // Define a proper certificate type
 interface Certificate {
@@ -50,49 +50,50 @@ const categoryNames: Record<number | string, string> = {
   27: "CSS"
 };
 
-// 3D Trophy Model component
+// Optimized 3D Trophy Model component
 const TrophyModel = ({ scale = 1.5 }) => {
   const trophyRef = useRef<THREE.Group>(null);
   
-  // Simple rotation animation
+  // Simple rotation animation with reduced speed
   useFrame((state) => {
     if (trophyRef.current) {
-      trophyRef.current.rotation.y = state.clock.getElapsedTime() * 0.2;
+      // Slower, smoother rotation
+      trophyRef.current.rotation.y = state.clock.getElapsedTime() * 0.15;
     }
   });
 
   return (
     <group ref={trophyRef} scale={[scale, scale, scale]}>
+      {/* Trophy base - simplified geometry */}
       <mesh position={[0, 0, 0]} castShadow receiveShadow>
-        {/* Trophy base */}
-        <cylinderGeometry args={[0.5, 0.7, 0.2, 32]} />
+        <cylinderGeometry args={[0.5, 0.7, 0.2, 24]} /> {/* Reduced segments */}
         <meshStandardMaterial color="#B08D57" metalness={0.7} roughness={0.2} />
       </mesh>
       
-      {/* Trophy stem */}
+      {/* Trophy stem - simplified geometry */}
       <mesh position={[0, 0.5, 0]} castShadow receiveShadow>
-        <cylinderGeometry args={[0.1, 0.1, 0.8, 16]} />
+        <cylinderGeometry args={[0.1, 0.1, 0.8, 12]} /> {/* Reduced segments */}
         <meshStandardMaterial color="#CFB53B" metalness={0.8} roughness={0.1} />
       </mesh>
       
-      {/* Trophy cup */}
+      {/* Trophy cup - simplified geometry */}
       <mesh position={[0, 1.1, 0]} castShadow receiveShadow>
-        <cylinderGeometry args={[0.4, 0.2, 0.8, 32]} />
+        <cylinderGeometry args={[0.4, 0.2, 0.8, 24]} /> {/* Reduced segments */}
         <meshStandardMaterial color="#FFD700" metalness={0.9} roughness={0.1} />
       </mesh>
       
-      {/* Trophy handles */}
+      {/* Trophy handles - simplified geometry */}
       <mesh position={[0.4, 1.1, 0]} castShadow receiveShadow>
-        <torusGeometry args={[0.15, 0.05, 16, 32, Math.PI]} />
+        <torusGeometry args={[0.15, 0.05, 12, 24, Math.PI]} /> {/* Reduced segments */}
         <meshStandardMaterial color="#FFD700" metalness={0.9} roughness={0.1} />
       </mesh>
       
       <mesh position={[-0.4, 1.1, 0]} rotation={[0, Math.PI, 0]} castShadow receiveShadow>
-        <torusGeometry args={[0.15, 0.05, 16, 32, Math.PI]} />
+        <torusGeometry args={[0.15, 0.05, 12, 24, Math.PI]} /> {/* Reduced segments */}
         <meshStandardMaterial color="#FFD700" metalness={0.9} roughness={0.1} />
       </mesh>
       
-      {/* Star on top */}
+      {/* Star on top - simplified */}
       <mesh position={[0, 1.6, 0]} rotation={[Math.PI/2, 0, 0]} castShadow>
         <octahedronGeometry args={[0.2, 0]} />
         <meshStandardMaterial color="#FFD700" metalness={1} roughness={0.1} emissive="#FFD700" emissiveIntensity={0.3} />
@@ -101,15 +102,16 @@ const TrophyModel = ({ scale = 1.5 }) => {
   );
 };
 
-// 3D Certificate Card component - Fixed position and rotation types
+// Optimized 3D Certificate Card component
 const CertificateCard = ({ 
   position = [0, 0, 0] as [number, number, number], 
   rotation = [0, 0, 0] as [number, number, number], 
   scale = 1 
 }) => {
+  // Simplified to use fewer geometries
   return (
     <group position={position} rotation={rotation} scale={[scale, scale, scale]}>
-      {/* Certificate paper */}
+      {/* Combined certificate elements into fewer meshes */}
       <mesh castShadow receiveShadow position={[0, 0, 0]}>
         <boxGeometry args={[1.4, 1, 0.05]} />
         <meshStandardMaterial color="#f5f5f5" />
@@ -121,73 +123,71 @@ const CertificateCard = ({
         <meshStandardMaterial color="#d4af37" />
       </mesh>
       
-      {/* Certificate content (simplified texture) */}
-      <mesh position={[0, 0, 0.04]}>
-        <planeGeometry args={[1.2, 0.8]} />
-        <meshStandardMaterial color="#ffffff" />
-      </mesh>
-      
-      {/* Certificate seal */}
+      {/* Certificate seal - simplified */}
       <mesh position={[0.45, -0.3, 0.06]} rotation={[0, 0, 0]}>
-        <cylinderGeometry args={[0.1, 0.1, 0.02, 32]} />
+        <cylinderGeometry args={[0.1, 0.1, 0.02, 16]} /> {/* Reduced segments */}
         <meshStandardMaterial color="#C0392B" metalness={0.5} roughness={0.2} />
       </mesh>
     </group>
   );
 };
 
-// Helper function to create star geometry
+// Optimized function to create star geometry
 const createStarGeometry = (radius = 1, innerRadius = 0.5, points = 5) => {
-  const geometry = new THREE.BufferGeometry();
-  const vertices = [];
-  const step = Math.PI / points;
-  
-  for (let i = 0; i < points * 2; i++) {
-    const r = i % 2 === 0 ? radius : innerRadius;
-    const angle = i * step;
-    vertices.push(r * Math.cos(angle), r * Math.sin(angle), 0);
-  }
-  
-  const indices = [];
-  for (let i = 0; i < points * 2 - 2; i++) {
-    indices.push(0, i + 1, i + 2);
-  }
-  
-  geometry.setIndex(indices);
-  geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
-  geometry.computeVertexNormals();
-  return geometry;
+  // Memoize the geometry creation for better performance
+  return useMemo(() => {
+    const geometry = new THREE.BufferGeometry();
+    const vertices = [];
+    const step = Math.PI / points;
+    
+    for (let i = 0; i < points * 2; i++) {
+      const r = i % 2 === 0 ? radius : innerRadius;
+      const angle = i * step;
+      vertices.push(r * Math.cos(angle), r * Math.sin(angle), 0);
+    }
+    
+    const indices = [];
+    for (let i = 0; i < points * 2 - 2; i++) {
+      indices.push(0, i + 1, i + 2);
+    }
+    
+    geometry.setIndex(indices);
+    geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+    geometry.computeVertexNormals();
+    return geometry;
+  }, [radius, innerRadius, points]);
 };
 
-// 3D Badge Model component - Fixed position type
+// Optimized 3D Badge Model component
 const BadgeModel = ({ 
   position = [0, 0, 0] as [number, number, number], 
   scale = 1 
 }) => {
   const badgeRef = useRef<THREE.Group>(null);
-  const starGeometry = useMemo(() => createStarGeometry(0.3, 0.15, 5), []);
+  const starGeometry = createStarGeometry(0.3, 0.15, 5);
   
+  // Reduced animation complexity
   useFrame((state) => {
     if (badgeRef.current) {
-      badgeRef.current.rotation.y = Math.sin(state.clock.getElapsedTime() * 0.5) * 0.2;
+      badgeRef.current.rotation.y = Math.sin(state.clock.getElapsedTime() * 0.3) * 0.15;
     }
   });
   
   return (
     <group ref={badgeRef} position={position} scale={[scale, scale, scale]}>
-      {/* Badge base */}
+      {/* Badge base - simplified geometry */}
       <mesh castShadow receiveShadow>
-        <cylinderGeometry args={[0.6, 0.6, 0.05, 32]} />
+        <cylinderGeometry args={[0.6, 0.6, 0.05, 24]} /> {/* Reduced segments */}
         <meshStandardMaterial color="#4285F4" metalness={0.7} roughness={0.3} />
       </mesh>
       
-      {/* Badge inner circle */}
+      {/* Badge inner circle - simplified */}
       <mesh position={[0, 0, 0.03]}>
-        <cylinderGeometry args={[0.5, 0.5, 0.05, 32]} />
+        <cylinderGeometry args={[0.5, 0.5, 0.05, 24]} /> {/* Reduced segments */}
         <meshStandardMaterial color="#ffffff" />
       </mesh>
       
-      {/* Badge star emblem - Fixed to use the created geometry */}
+      {/* Badge star emblem */}
       <mesh position={[0, 0, 0.06]}>
         <primitive object={starGeometry} attach="geometry" />
         <meshStandardMaterial color="#FBBC05" metalness={0.8} roughness={0.1} />
@@ -196,10 +196,17 @@ const BadgeModel = ({
   );
 };
 
-// 3D Scene component
+// Optimized 3D Scene component
 const AchievementsScene = () => {
+  // Use simpler lighting setup for better performance
   return (
-    <Canvas shadows dpr={[1, 2]} camera={{ position: [0, 0, 5], fov: 50 }}>
+    <Canvas 
+      shadows 
+      dpr={[1, 2]} 
+      camera={{ position: [0, 0, 5], fov: 45 }} // Reduced FOV for better focus
+      gl={{ antialias: true, powerPreference: 'high-performance' }} // Performance optimization
+      performance={{ min: 0.5 }} // Allow frame rate to drop during interaction
+    >
       <ambientLight intensity={0.5} />
       <spotLight 
         position={[10, 10, 10]} 
@@ -207,21 +214,19 @@ const AchievementsScene = () => {
         penumbra={1} 
         intensity={1} 
         castShadow 
+        shadow-mapSize={[512, 512]} // Reduced shadow resolution for performance
       />
-      <pointLight position={[-10, -10, -10]} intensity={0.5} />
       
       <PresentationControls
         global
         rotation={[0.13, 0.1, 0]}
         polar={[-0.4, 0.2]}
         azimuth={[-0.5, 0.5]}
-        // Remove the config prop and directly use spring properties
         speed={1.5}
         zoom={1.2}
         damping={0.15}
-        snap
       >
-        <Float rotationIntensity={0.2} floatIntensity={0.5}>
+        <Float rotationIntensity={0.2} floatIntensity={0.5} speed={2}>
           <TrophyModel scale={1.5} />
           
           <CertificateCard 
@@ -246,22 +251,34 @@ const AchievementsScene = () => {
         opacity={0.4} 
         scale={5} 
         blur={2.5} 
+        resolution={256} // Reduced for performance
       />
       <Environment preset="city" />
     </Canvas>
   );
 };
 
-// 3D Certificate Card for UI (framer motion) - Now with categoryNames prop
+// Optimized Certificate Card for UI with framer motion
 const Certificate3DCard = ({ 
   certificate, 
-  onClick 
+  onClick,
+  index = 0
 }: { 
   certificate: Certificate, 
-  onClick: () => void 
+  onClick: () => void,
+  index?: number
 }) => {
+  const { ref, isActive } = useOptimizedAnimation(0.1, false);
+  
   return (
     <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 20 }}
+      animate={isActive ? { 
+        opacity: 1, 
+        y: 0, 
+        transition: { duration: 0.5, delay: index * 0.1 } 
+      } : { opacity: 0, y: 20 }}
       whileHover={{ 
         rotateY: 5, 
         rotateX: -5, 
@@ -273,7 +290,7 @@ const Certificate3DCard = ({
         transformStyle: "preserve-3d",
         perspective: "1000px" 
       }}
-      className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 dark:border-gray-700/50 h-full flex flex-col cursor-pointer"
+      className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 dark:border-gray-700/50 h-full flex flex-col cursor-pointer transform-gpu"
       onClick={onClick}
     >
       <div className="relative pt-[56.25%]">
@@ -281,8 +298,9 @@ const Certificate3DCard = ({
           src={certificate.src}
           alt={certificate.title}
           fill
-          className="absolute inset-0 object-cover hover:scale-105 transition-transform duration-500"
+          className="absolute inset-0 object-fill hover:scale-105 transition-transform duration-500"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          loading={index < 3 ? "eager" : "lazy"} // Prioritize first few images
         />
         <motion.div 
           initial={{ opacity: 0 }}
@@ -325,13 +343,25 @@ const Certificate3DCard = ({
 };
 
 export function Achievements() {
-  const controls = useAnimation();
-  const [ref, inView] = useInView({ threshold: 0.1, triggerOnce: true });
   const [certificates, setCertificates] = useState<Certificate[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCertificate, setSelectedCertificate] = useState<Certificate | null>(null);
   const carouselRef = useRef<HTMLDivElement>(null);
+  
+  // Use optimized animation hook for better performance
+  const { ref: sectionRef, isActive } = useOptimizedAnimation(0.1);
+  const { ref: carouselSectionRef, isActive: isCarouselActive } = useOptimizedAnimation(0.1, true);
+
+  // Add these for scroll fade effect
+  const containerRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end start"]
+  });
+  
+  // Transform scrollYProgress to opacity - fade out as section leaves viewport
+  const opacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
 
   // Load certificates data
   useEffect(() => {
@@ -360,11 +390,7 @@ export function Achievements() {
     };
     
     fetchCertificates();
-    
-    if (inView) {
-      controls.start("visible");
-    }
-  }, [controls, inView]);
+  }, []);
 
   // Open certificate modal
   const openModal = (certificate: Certificate) => {
@@ -390,195 +416,195 @@ export function Achievements() {
     }
   };
 
-  // Animation variants
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1
-      }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 }
-  };
-
   return (
-    <section id="achievements" className="w-full py-20 bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-black/80">
+    <section 
+      id="achievements" 
+      className="w-full py-24 bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-black/80 relative overflow-hidden"
+      ref={containerRef}
+    >
       <motion.div
-        ref={ref}
-        initial="hidden"
-        animate={controls}
-        variants={containerVariants}
-        className="max-w-7xl mx-auto px-4 md:px-8"
+        className="relative z-10"
+        style={{ opacity }}
       >
-        <div className="text-center mb-12">
-          <motion.div 
-            className="inline-block"
-            variants={itemVariants}
-          >
-            <span className="inline-flex items-center px-3 py-1 text-sm font-medium rounded-full bg-teal-100 text-teal-800 dark:bg-teal-900/30 dark:text-teal-300">
-              <Award className="mr-1 h-4 w-4" />
-              RECOGNITION
-            </span>
-          </motion.div>
-          
-          <motion.h2
-            className="text-3xl md:text-4xl font-bold mt-4 dark:text-white"
-            variants={itemVariants}
-          >
-            My Certificates & Achievements
-          </motion.h2>
-          
-          <motion.p
-            className="mt-4 text-gray-600 dark:text-gray-300 max-w-2xl mx-auto"
-            variants={itemVariants}
-          >
-            Professional certifications and achievements that highlight my continuous learning journey and expertise in various technological domains.
-          </motion.p>
-        </div>
-
-        {/* 3D Trophy Scene - New Addition */}
-        <motion.div 
-          variants={itemVariants}
-          className="h-[300px] mb-16 relative"
-          style={{
-            perspective: "1000px",
-          }}
-        >
-          <Suspense fallback={
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-10 h-10 border-2 border-t-transparent border-teal-500 rounded-full animate-spin"></div>
-            </div>
-          }>
-            <AchievementsScene />
-          </Suspense>
-        </motion.div>
-
-        {isLoading ? (
-          <div className="flex justify-center py-20">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-teal-500"></div>
-          </div>
-        ) : certificates.length === 0 ? (
-          <div className="text-center py-10">
-            <p className="text-gray-500 dark:text-gray-400">No certificates found.</p>
-          </div>
-        ) : (
-          <>
-            {/* Featured Certificates - Now with 3D Effect */}
-            <motion.div
-              variants={itemVariants}
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12"
-              style={{ perspective: "1000px" }}
+        <div className="max-w-7xl mx-auto px-4 md:px-8">
+          {/* Section header using the optimized animation pattern */}
+          <div className="text-center mb-16" ref={sectionRef}>
+            <motion.div 
+              initial={{ opacity: 0, y: -20 }}
+              animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: -20 }}
+              transition={{ duration: 0.8 }}
+              className="inline-block"
             >
-              {certificates.slice(0, 3).map((certificate) => (
-                <Certificate3DCard
-                  key={certificate.id}
-                  certificate={certificate}
-                  onClick={() => openModal(certificate)}
-                />
-              ))}
+              <h2 className="text-xl md:text-2xl text-teal-600 font-semibold dark:text-teal-400">
+                RECOGNITION
+              </h2>
+              <div className="h-1 bg-gradient-to-r from-teal-500 via-blue-500 to-purple-500 mt-1 rounded-full"></div>
             </motion.div>
 
-            {/* Certificate Carousel - Enhanced with 3D effect */}
-            <motion.div 
-              variants={itemVariants}
-              className="relative mt-12 mb-4"
+            <motion.h3 
+              initial={{ opacity: 0, y: 20 }}
+              animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="text-3xl md:text-5xl font-bold mt-3 dark:text-white"
             >
-              <div className="flex justify-between items-center mb-6">
-                <h3 className="text-xl font-bold dark:text-white">More Certificates</h3>
-                <div className="flex gap-2">
-                  <motion.button 
-                    onClick={() => navigate("prev")}
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                    className="p-2 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-teal-100 dark:hover:bg-teal-900/30 transition-colors"
-                    aria-label="Previous certificates"
-                  >
-                    <ChevronLeft className="h-5 w-5 text-gray-600 dark:text-gray-300" />
-                  </motion.button>
-                  <motion.button 
-                    onClick={() => navigate("next")}
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                    className="p-2 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-teal-100 dark:hover:bg-teal-900/30 transition-colors"
-                    aria-label="Next certificates"
-                  >
-                    <ChevronRight className="h-5 w-5 text-gray-600 dark:text-gray-300" />
-                  </motion.button>
-                </div>
+              My Certificates & Achievements
+            </motion.h3>
+            
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+              className="mt-4 text-gray-500 dark:text-gray-400 max-w-2xl mx-auto"
+            >
+              Professional certifications and achievements that highlight my continuous learning journey and expertise in various technological domains.
+            </motion.p>
+          </div>
+
+          {/* 3D Trophy Scene - Optimized rendering */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            className="h-[300px] mb-16 relative"
+            style={{
+              perspective: "1000px",
+            }}
+          >
+            <Suspense fallback={
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="w-10 h-10 border-2 border-t-transparent border-teal-500 rounded-full animate-spin"></div>
               </div>
-              
-              <div 
-                ref={carouselRef}
-                className="flex gap-4 overflow-x-auto hide-scrollbar pb-4 px-1 snap-x snap-mandatory"
-                style={{ perspective: "1000px" }}
-              >
-                {certificates.slice(3).map((certificate, index) => (
-                  <motion.div
+            }>
+              <AchievementsScene />
+            </Suspense>
+          </motion.div>
+
+          {isLoading ? (
+            <div className="flex justify-center py-20">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-teal-500"></div>
+            </div>
+          ) : certificates.length === 0 ? (
+            <div className="text-center py-10">
+              <p className="text-gray-500 dark:text-gray-400">No certificates found.</p>
+            </div>
+          ) : (
+            <>
+              {/* Featured Certificates with optimized rendering */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+                {certificates.slice(0, 3).map((certificate, index) => (
+                  <Certificate3DCard
                     key={certificate.id}
-                    className="min-w-[280px] max-w-[280px] flex-shrink-0 snap-start"
+                    certificate={certificate}
                     onClick={() => openModal(certificate)}
-                    initial={{ opacity: 0, rotateY: -10, z: -100 }}
-                    animate={{ 
-                      opacity: 1, 
-                      rotateY: 0, 
-                      z: 0,
-                      transition: { delay: index * 0.05, duration: 0.4 } 
-                    }}
-                    whileHover={{ 
-                      rotateY: 5, 
-                      rotateX: -3, 
-                      scale: 1.04, 
-                      z: 10,
-                      transition: { duration: 0.2 } 
-                    }}
-                    style={{ 
-                      transformStyle: "preserve-3d",
-                      transformOrigin: "center center" 
-                    }}
-                  >
-                    <div className="bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 border border-gray-200 dark:border-gray-700/50 h-full flex flex-col cursor-pointer">
-                      <div className="relative pt-[56.25%]">
-                        <Image
-                          src={certificate.src}
-                          alt={certificate.title}
-                          fill
-                          className="absolute inset-0 object-cover hover:scale-105 transition-transform duration-500"
-                          sizes="280px"
-                        />
-                      </div>
-                      
-                      <div className="p-4" style={{ transform: "translateZ(10px)" }}>
-                        <div className="flex justify-between items-start mb-1">
-                          <span className="px-2 py-0.5 text-xs rounded-full bg-teal-100 text-teal-800 dark:bg-teal-900/30 dark:text-teal-300 text-[10px]">
-                            {certificate.category.toString() in categoryNames ? categoryNames[certificate.category] : "Certificate"}
-                          </span>
-                        </div>
-                        
-                        <h4 className="font-medium text-gray-900 dark:text-white text-sm line-clamp-1">
-                          {certificate.title}
-                        </h4>
-                      </div>
-                    </div>
-                  </motion.div>
+                    index={index}
+                  />
                 ))}
               </div>
-            </motion.div>
-          </>
-        )}
+
+              {/* Certificate Carousel - Optimized rendering */}
+              <motion.div 
+                ref={carouselSectionRef}
+                initial={{ opacity: 0, y: 20 }}
+                animate={isCarouselActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                transition={{ duration: 0.8, delay: 0.2 }}
+                className="relative mt-12 mb-4"
+              >
+                <div className="flex justify-between items-center mb-6">
+                  <h3 className="text-xl font-bold dark:text-white">More Certificates</h3>
+                  <div className="flex gap-2">
+                    <motion.button 
+                      onClick={() => navigate("prev")}
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                      className="p-2 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-teal-100 dark:hover:bg-teal-900/30 transition-colors"
+                      aria-label="Previous certificates"
+                    >
+                      <ChevronLeft className="h-5 w-5 text-gray-600 dark:text-gray-300" />
+                    </motion.button>
+                    <motion.button 
+                      onClick={() => navigate("next")}
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                      className="p-2 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-teal-100 dark:hover:bg-teal-900/30 transition-colors"
+                      aria-label="Next certificates"
+                    >
+                      <ChevronRight className="h-5 w-5 text-gray-600 dark:text-gray-300" />
+                    </motion.button>
+                  </div>
+                </div>
+                
+                {/* Virtualized carousel for better performance */}
+                <div 
+                  ref={carouselRef}
+                  className="flex gap-4 overflow-x-auto hide-scrollbar pb-4 px-1 snap-x snap-mandatory"
+                  style={{ perspective: "1000px" }}
+                >
+                  {certificates.slice(3).map((certificate, index) => (
+                    <motion.div
+                      key={certificate.id}
+                      className="min-w-[280px] max-w-[280px] flex-shrink-0 snap-start transform-gpu" // Combined classes
+                      onClick={() => openModal(certificate)}
+                      initial={{ opacity: 0, rotateY: -10, z: -100 }}
+                      animate={{ 
+                        opacity: 1, 
+                        rotateY: 0, 
+                        z: 0,
+                        transition: { delay: Math.min(index * 0.05, 0.5), duration: 0.4 } 
+                      }}
+                      whileHover={{ 
+                        rotateY: 5, 
+                        rotateX: -3, 
+                        scale: 1.04, 
+                        z: 10,
+                        transition: { duration: 0.2 } 
+                      }}
+                      style={{ 
+                        transformStyle: "preserve-3d",
+                        transformOrigin: "center center",
+                        willChange: "transform" // Optimization hint
+                      }}
+                    >
+                      <div className="bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 border border-gray-200 dark:border-gray-700/50 h-full flex flex-col cursor-pointer">
+                        <div className="relative pt-[56.25%]">
+                          <Image
+                            src={certificate.src}
+                            alt={certificate.title}
+                            fill
+                            className="absolute inset-0 object-fill hover:scale-105 transition-transform duration-500"
+                            sizes="280px"
+                            loading="lazy"
+                          />
+                        </div>
+                        
+                        <div className="p-4" style={{ transform: "translateZ(10px)" }}>
+                          <div className="flex justify-between items-start mb-1">
+                            <span className="px-2 py-0.5 text-xs rounded-full bg-teal-100 text-teal-800 dark:bg-teal-900/30 dark:text-teal-300 text-[10px]">
+                              {certificate.category.toString() in categoryNames ? categoryNames[certificate.category] : "Certificate"}
+                            </span>
+                          </div>
+                          
+                          <h4 className="font-medium text-gray-900 dark:text-white text-sm line-clamp-1">
+                            {certificate.title}
+                          </h4>
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              </motion.div>
+            </>
+          )}
+        </div>
       </motion.div>
 
-      {/* Certificate Modal - Enhanced with 3D effect */}
+      {/* Certificate Modal - Optimized for performance */}
       <AnimatePresence>
         {isModalOpen && selectedCertificate && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }} // Faster transition
             className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
             onClick={closeModal}
           >
@@ -587,8 +613,8 @@ export function Achievements() {
               animate={{ scale: 1, opacity: 1, rotateX: 0 }}
               exit={{ scale: 0.9, opacity: 0, rotateX: 5 }}
               transition={{ type: "spring", damping: 20 }}
-              className="bg-white dark:bg-gray-800 rounded-xl max-w-3xl w-full max-h-[90vh] overflow-hidden"
-              style={{ transformStyle: "preserve-3d", perspective: "1000px" }}
+              className="bg-white dark:bg-gray-800 rounded-xl max-w-3xl w-full max-h-[90vh] overflow-hidden transform-gpu"
+              style={{ willChange: "transform" }}
               onClick={(e) => e.stopPropagation()}
             >
               <div className="relative">
@@ -600,6 +626,7 @@ export function Achievements() {
                     fill
                     className="absolute inset-0 object-contain p-2"
                     sizes="(max-width: 768px) 100vw, 768px"
+                    priority={true} // Always load modal image immediately
                   />
                 </div>
                 
@@ -617,7 +644,7 @@ export function Achievements() {
               </div>
               
               {/* Certificate details */}
-              <div className="p-6" style={{ transform: "translateZ(20px)" }}>
+              <div className="p-6">
                 <div className="flex justify-between items-start mb-4">
                   <div>
                     <span className="px-2 py-1 text-xs rounded-full bg-teal-100 text-teal-800 dark:bg-teal-900/30 dark:text-teal-300">

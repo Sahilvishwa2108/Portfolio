@@ -2,7 +2,7 @@
 import React, { useState, useRef, useEffect, Suspense, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { Text, OrbitControls, PerspectiveCamera } from '@react-three/drei';
+import { Text, OrbitControls, PerspectiveCamera, Html } from '@react-three/drei';
 import * as THREE from 'three';
 import { 
   SiReact, SiNextdotjs, SiTypescript, SiTailwindcss, SiFramer,
@@ -14,6 +14,7 @@ import {
 } from 'react-icons/si';
 import { DiJava } from 'react-icons/di';
 import { IconType } from 'react-icons';
+import { useOptimizedAnimation } from "@/hooks/useOptimizedAnimation";
 
 // Skill data moved outside component to prevent recreation on re-renders
 const skillsData = {
@@ -107,7 +108,7 @@ const SkillDetail = React.memo(({ skill }: { skill: Skill | null }) => {
 
 SkillDetail.displayName = 'SkillDetail';
 
-// Performance-optimized 2D skill grid instead of 3D visualization
+// Performance-optimized 2D skill grid with improved styling
 const SkillsGrid = ({ 
   skills, 
   onSelectSkill 
@@ -116,27 +117,121 @@ const SkillsGrid = ({
   onSelectSkill: (skill: Skill) => void 
 }) => {
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-4">
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4 p-4 overflow-y-auto max-h-[calc(100%-2rem)] pb-8">
       {skills.map((skill, index) => (
         <motion.div
           key={skill.name}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: index * 0.05, duration: 0.5 }}
+          transition={{ delay: Math.min(index * 0.03, 0.8), duration: 0.4 }}
           whileHover={{ 
             scale: 1.05,
             boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1)'
           }}
-          className="bg-white dark:bg-gray-800 rounded-xl p-4 cursor-pointer flex flex-col items-center justify-center shadow-sm hover:shadow-md transition-all duration-300"
+          className="bg-white dark:bg-gray-800 rounded-xl p-3 cursor-pointer flex flex-col items-center justify-center shadow-sm hover:shadow-md transition-all duration-300 aspect-square"
           onClick={() => onSelectSkill(skill)}
         >
-          <div className="text-3xl mb-3" style={{ color: skill.color }}>
-            <skill.icon />
+          <div className="flex items-center justify-center h-12 mb-2.5">
+            <div 
+              className="flex items-center justify-center w-10 h-10 rounded-full"
+              style={{ backgroundColor: `${skill.color}20` }} // Light background matching skill color
+            >
+              <skill.icon size={18} color={skill.color} />
+            </div>
           </div>
-          <p className="text-sm font-medium text-gray-800 dark:text-gray-200">{skill.name}</p>
+          <p className="text-xs md:text-sm font-medium text-gray-800 dark:text-gray-200 text-center line-clamp-2">
+            {skill.name}
+          </p>
+          
+          {/* Small proficiency indicator */}
+          <div className="w-full mt-2 bg-gray-200 dark:bg-gray-700 rounded-full h-1.5">
+            <div 
+              className="h-1.5 rounded-full" 
+              style={{ width: `${skill.level}%`, backgroundColor: skill.color }}
+            ></div>
+          </div>
         </motion.div>
       ))}
     </div>
+  );
+};
+
+// A 3D skill sphere with icon
+const SkillSphere = ({ 
+  skill, 
+  position, 
+  selected, 
+  onClick 
+}: { 
+  skill: Skill, 
+  position: [number, number, number], 
+  selected: boolean,
+  onClick: () => void  
+}) => {
+  const sphereRef = useRef<THREE.Mesh>(null);
+  const { camera } = useThree();
+  const [hover, setHover] = useState(false);
+  
+  // Make the sphere face the camera
+  useFrame(() => {
+    if (sphereRef.current && camera) {
+      sphereRef.current.quaternion.copy(camera.quaternion);
+    }
+  });
+  
+  const Icon = skill.icon;
+  
+  return (
+    <mesh
+      position={position}
+      onClick={onClick}
+      onPointerOver={() => setHover(true)}
+      onPointerOut={() => setHover(false)}
+      ref={sphereRef}
+    >
+      <sphereGeometry args={[0.6, 32, 32]} />
+      <meshStandardMaterial 
+        color={skill.color} 
+        opacity={0.8}
+        transparent
+        emissive={skill.color}
+        emissiveIntensity={selected || hover ? 0.7 : 0.2}
+      />
+      
+      {/* Icon displayed on the sphere */}
+      <Html
+        center
+        distanceFactor={15}
+        sprite
+        transform
+        occlude
+        position={[0, 0, 0.1]}
+      >
+        <div 
+          className="text-white flex items-center justify-center"
+          style={{ pointerEvents: 'none', width: '20px', height: '20px' }}
+        >
+          <Icon size={14} />
+        </div>
+      </Html>
+      
+      {/* Name label that appears on hover or selection */}
+      {(hover || selected) && (
+        <Html
+          center
+          position={[0, 1.2, 0]}
+          distanceFactor={15}
+          sprite
+        >
+          <div 
+            className="px-2 py-1 bg-black bg-opacity-70 text-white rounded text-xs whitespace-nowrap"
+            style={{ pointerEvents: 'none' }}
+          >
+            {skill.name}
+          </div>
+        </Html>
+      )}
+    </mesh>
   );
 };
 
@@ -151,7 +246,6 @@ const OptimizedSkillCloud = ({
   performance: string
 }) => {
   const [selected, setSelected] = useState<string | null>(null);
-  const { camera } = useThree();
   const orbitControlsRef = useRef<any>(null);
 
   // Reduce number of particles based on performance level
@@ -185,16 +279,18 @@ const OptimizedSkillCloud = ({
         autoRotateSpeed={0.5}
         minDistance={6}
         maxDistance={15}
+        rotateSpeed={0.5}
       />
       
-      <PerspectiveCamera makeDefault position={[0, 0, 10]} fov={60} />
+      <PerspectiveCamera makeDefault position={[0, 0, 10]} fov={50} />
       
-      <ambientLight intensity={0.4} />
+      <ambientLight intensity={0.6} />
       <directionalLight position={[10, 10, 5]} intensity={0.8} />
+      <directionalLight position={[-10, -10, -5]} intensity={0.4} />
       
       {/* Simple ambient background */}
       <mesh>
-        <sphereGeometry args={[10, 16, 16]} />
+        <sphereGeometry args={[1, 32, 32]} />
         <meshBasicMaterial 
           color="#8884ff" 
           transparent
@@ -203,38 +299,18 @@ const OptimizedSkillCloud = ({
         />
       </mesh>
       
-      {/* Simplified skill spheres with optimized rendering */}
+      {/* Skill spheres with icons */}
       {displaySkills.map((skill, i) => (
-        <mesh
+        <SkillSphere
           key={skill.name}
+          skill={skill}
           position={skillPositions[i]}
+          selected={selected === skill.name}
           onClick={() => {
             setSelected(skill.name);
             onSelectSkill(skill);
           }}
-        >
-          <sphereGeometry args={[0.6, 16, 16]} />
-          <meshStandardMaterial 
-            color={skill.color} 
-            opacity={0.8}
-            transparent
-            emissive={skill.color}
-            emissiveIntensity={selected === skill.name ? 0.5 : 0.2}
-          />
-          {selected === skill.name && (
-            <Text
-              position={[0, 1.2, 0]}
-              fontSize={0.5}
-              color="white"
-              anchorX="center"
-              anchorY="middle"
-              outlineWidth={0.02}
-              outlineColor="#000000"
-            >
-              {skill.name}
-            </Text>
-          )}
-        </mesh>
+        />
       ))}
     </>
   );
@@ -248,6 +324,9 @@ const TechnicalSkills = () => {
   const [isMounted, setIsMounted] = useState(false);
   const [performanceLevel, setPerformanceLevel] = useState<'low' | 'medium' | 'high'>('low');
   const [showVisual, setShowVisual] = useState<'2d' | '3d'>('2d');
+  
+  // Use the optimized animation hook for better performance
+  const { ref: sectionRef, isActive } = useOptimizedAnimation(0.1);
   
   // Only run client-side performance check once on mount
   useEffect(() => {
@@ -315,13 +394,12 @@ const TechnicalSkills = () => {
       <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl" />
       
       <div className="container mx-auto px-4 relative z-10">
-        {/* Section header */}
-        <div className="text-center mb-12">
+        {/* Section header using the optimized animation pattern */}
+        <div className="text-center mb-12" ref={sectionRef}>
           <motion.div 
             initial={{ opacity: 0, y: -20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
+            animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: -20 }}
+            transition={{ duration: 0.8 }}
             className="inline-block"
           >
             <h2 className="text-xl md:text-2xl text-teal-600 font-semibold dark:text-teal-400">
@@ -332,24 +410,31 @@ const TechnicalSkills = () => {
 
           <motion.h3 
             initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
             className="text-3xl md:text-5xl font-bold mt-3 dark:text-white"
           >
             My Technical Skills
           </motion.h3>
+          
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+            className="mt-4 text-gray-500 dark:text-gray-400 max-w-2xl mx-auto"
+          >
+            Technologies and tools I've worked with professionally and in personal projects
+          </motion.p>
         </div>
 
-        {/* Category filter tabs - Using framer-motion batching for better performance */}
+        {/* Category filter tabs - Using improved animation pattern */}
         <motion.div 
           className="flex justify-center flex-wrap gap-2 mb-8"
           initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
+          animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
         >
-          {categories.map((cat) => (
+          {categories.map((cat, index) => (
             <motion.button
               key={cat.id}
               onClick={() => {
@@ -358,6 +443,9 @@ const TechnicalSkills = () => {
               }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+              transition={{ duration: 0.5, delay: 0.4 + index * 0.1 }}
               className={`
                 px-4 py-2 rounded-full text-sm font-medium transition-all duration-300
                 ${category === cat.id
@@ -373,24 +461,42 @@ const TechnicalSkills = () => {
 
         {/* Toggle 2D/3D view for medium performance devices */}
         {performanceLevel === 'medium' && (
-          <div className="text-center mb-6">
+          <motion.div 
+            className="text-center mb-6"
+            initial={{ opacity: 0 }}
+            animate={isActive ? { opacity: 1 } : { opacity: 0 }}
+            transition={{ duration: 0.5, delay: 0.6 }}
+          >
             <button 
               onClick={toggleVisual} 
-              className="text-sm bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-full"
+              className="text-sm bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-full hover:bg-teal-100 hover:text-teal-800 dark:hover:bg-teal-900/30 dark:hover:text-teal-300 transition-colors"
             >
               Switch to {showVisual === '2d' ? '3D' : '2D'} View
             </button>
             <p className="text-xs text-gray-500 mt-1">
               3D view may affect performance on some devices
             </p>
-          </div>
+          </motion.div>
         )}
 
         {/* Skills visualization - conditional rendering based on performance */}
-        <div ref={containerRef} className="relative" style={{ height: '500px' }}>
+        <motion.div 
+          ref={containerRef} 
+          className="relative bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800 rounded-2xl p-3 overflow-hidden shadow-xl border border-gray-100 dark:border-gray-700/50"
+          style={{ height: '500px' }}
+          initial={{ opacity: 0, y: 30 }}
+          animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+          transition={{ duration: 0.7, delay: 0.5 }}
+        >
           {showVisual === '3d' ? (
-            <Canvas className="rounded-xl overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900">
-              <Suspense fallback={null}>
+            <Canvas className="rounded-xl overflow-hidden">
+              <Suspense fallback={
+                <Html center>
+                  <div className="flex items-center justify-center h-full w-full">
+                    <div className="w-8 h-8 border-4 border-t-teal-500 border-b-transparent border-l-transparent border-r-transparent rounded-full animate-spin"></div>
+                  </div>
+                </Html>
+              }>
                 <OptimizedSkillCloud 
                   skills={displayedSkills} 
                   onSelectSkill={setSelectedSkill}
@@ -409,40 +515,58 @@ const TechnicalSkills = () => {
           <AnimatePresence>
             {selectedSkill && <SkillDetail skill={selectedSkill} />}
           </AnimatePresence>
-        </div>
+        </motion.div>
 
-        {/* Summary counts */}
+        {/* Summary counts with improved animations */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.3 }}
+          animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+          transition={{ duration: 0.5, delay: 0.7 }}
           className="mt-10 grid grid-cols-2 md:grid-cols-4 gap-4"
         >
-          <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow">
+          <motion.div 
+            whileHover={{ y: -5, boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)" }}
+            transition={{ type: "spring", stiffness: 400, damping: 10 }}
+            className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md border border-gray-100 dark:border-gray-700/50"
+          >
             <h4 className="text-lg font-semibold text-gray-800 dark:text-white">Frontend</h4>
             <p className="text-3xl font-bold bg-gradient-to-r from-teal-500 to-blue-500 bg-clip-text text-transparent">
               {skillsData.frontend.length}
             </p>
-          </div>
-          <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow">
+          </motion.div>
+          
+          <motion.div 
+            whileHover={{ y: -5, boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)" }}
+            transition={{ type: "spring", stiffness: 400, damping: 10 }}
+            className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md border border-gray-100 dark:border-gray-700/50"
+          >
             <h4 className="text-lg font-semibold text-gray-800 dark:text-white">Backend</h4>
             <p className="text-3xl font-bold bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
               {skillsData.backend.length}
             </p>
-          </div>
-          <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow">
+          </motion.div>
+          
+          <motion.div 
+            whileHover={{ y: -5, boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)" }}
+            transition={{ type: "spring", stiffness: 400, damping: 10 }}
+            className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md border border-gray-100 dark:border-gray-700/50"
+          >
             <h4 className="text-lg font-semibold text-gray-800 dark:text-white">Tools</h4>
             <p className="text-3xl font-bold bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">
               {skillsData.tools.length}
             </p>
-          </div>
-          <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow">
+          </motion.div>
+          
+          <motion.div 
+            whileHover={{ y: -5, boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)" }}
+            transition={{ type: "spring", stiffness: 400, damping: 10 }}
+            className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md border border-gray-100 dark:border-gray-700/50"
+          >
             <h4 className="text-lg font-semibold text-gray-800 dark:text-white">Frameworks</h4>
             <p className="text-3xl font-bold bg-gradient-to-r from-pink-500 to-orange-500 bg-clip-text text-transparent">
               {skillsData.frameworks.length}
             </p>
-          </div>
+          </motion.div>
         </motion.div>
       </div>
     </section>

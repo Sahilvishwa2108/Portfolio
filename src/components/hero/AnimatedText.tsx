@@ -60,7 +60,7 @@ export const AnimatedText = ({ showGreeting, showName }: AnimatedTextProps) => {
   // Calculate responsive text sizing
   const fontSize = {
     greeting: isMobile ? 0.45 : (size.width < 600 ? 0.6 : 0.75),
-    name: isMobile ? 0.7 : (size.width < 600 ? 0.9 : 1.3),
+    name: isMobile ? 0.7 : (size.width < 600 ? 0.8 : 1.0),
   };
   
   // Adjust positions for mobile

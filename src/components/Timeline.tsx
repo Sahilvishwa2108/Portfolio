@@ -1,6 +1,6 @@
 "use client";
-import React from "react";
-import { motion } from "framer-motion";
+import React, { useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { TimelineDemo } from "./ui/timeline";
 
 /**
@@ -8,15 +8,31 @@ import { TimelineDemo } from "./ui/timeline";
  * Uses the enhanced TimelineDemo component from ui/timeline
  */
 const Timeline = () => {
+  // Add these for scroll fade effect
+  const containerRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end start"]
+  });
+  
+  // Transform scrollYProgress to opacity - fade out as section leaves viewport
+  const opacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
+  
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
-      className="w-full"
+    <section 
+      ref={containerRef} 
+      className="w-full relative overflow-hidden"
     >
-      <TimelineDemo />
-    </motion.div>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+        className="w-full"
+        style={{ opacity }} // Apply the fade effect
+      >
+        <TimelineDemo />
+      </motion.div>
+    </section>
   );
 };
 

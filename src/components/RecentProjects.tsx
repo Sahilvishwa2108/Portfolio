@@ -1,13 +1,13 @@
 "use client";
-import { useEffect, useState, useRef } from "react";
+import { useRef } from "react";
 import { projects } from "@/data";
-import { motion, useAnimation, AnimatePresence, useSpring, useTransform } from "framer-motion";
-import { useInView } from "react-intersection-observer";
+import { motion, useSpring, useTransform } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { Github, ExternalLink } from "lucide-react";
 import React from "react";
 import { IconType } from "react-icons";
+import { useOptimizedAnimation } from "@/hooks/useOptimizedAnimation";
 
 // Create a mapping of icon components to their display names
 const iconToTechName: Record<string, string> = {
@@ -41,17 +41,6 @@ const getTechNameFromIcon = (Icon: IconType): string => {
   return iconToTechName[extractedName] || extractedName || "Tech";
 };
 
-// Technology categories for filtering
-const allCategories = [
-  "All",
-  "React",
-  "Next.js",
-  "TypeScript",
-  "Tailwind CSS",
-  "JavaScript",
-  "Node.js"
-];
-
 // Project type definition
 interface Project {
   id: string | number;
@@ -61,13 +50,23 @@ interface Project {
   link: string;
   github?: string;
   featured?: boolean;
-  iconList: IconType[]; // Change from iconLists to iconList
+  iconList: IconType[];
 }
 
-// Enhanced 3D project card component
+// Optimized 3D project card component
 const ProjectCard = ({ project, index }: { project: Project; index: number }) => {
   const cardRef = useRef<HTMLDivElement>(null);
+  const { ref: inViewRef, isActive } = useOptimizedAnimation(0.2);
   
+  // Combine refs
+  const combinedRef = (node: HTMLDivElement) => {
+    cardRef.current = node;
+    if (typeof inViewRef === 'function') {
+      inViewRef(node);
+    }
+  };
+  
+  // Only create springs when the card is in view
   const mouseX = useSpring(0, { stiffness: 150, damping: 20 });
   const mouseY = useSpring(0, { stiffness: 150, damping: 20 });
   
@@ -75,9 +74,9 @@ const ProjectCard = ({ project, index }: { project: Project; index: number }) =>
   const rotateX = useTransform(mouseY, [-100, 100], [10, -10]);
   const rotateY = useTransform(mouseX, [-100, 100], [-10, 10]);
   
-  // Handle mouse movement for 3D effect
+  // Handle mouse movement for 3D effect - only when active
   const handleMouseMove = (e: React.MouseEvent) => {
-    if (cardRef.current) {
+    if (isActive && cardRef.current) {
       const rect = cardRef.current.getBoundingClientRect();
       
       const centerX = rect.left + rect.width / 2;
@@ -99,27 +98,23 @@ const ProjectCard = ({ project, index }: { project: Project; index: number }) =>
   
   return (
     <motion.div
-      ref={cardRef}
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, scale: 0.9 }}
+      ref={combinedRef}
+      initial={{ opacity: 0, y: 50 }}
+      animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
       transition={{ 
-        duration: 0.5, 
-        delay: index * 0.1,
-        type: "spring",
-        stiffness: 100
+        duration: 0.7,
+        ease: "easeOut",
+        delay: index * 0.1 
       }}
-      whileHover={{ y: -10 }}
       style={{
-        rotateX,
-        rotateY,
+        rotateX: isActive ? rotateX : 0,
+        rotateY: isActive ? rotateY : 0,
         transformStyle: "preserve-3d"
       }}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       className="rounded-xl overflow-hidden flex flex-col h-full transform-gpu will-change-transform"
     >
-      {/* 3D Card with improved depth effect */}
       <div className="relative bg-gradient-to-br from-white via-gray-50 to-gray-100 dark:from-gray-800 dark:via-gray-800/95 dark:to-gray-900 shadow-xl transition-all duration-500 hover:shadow-2xl rounded-xl overflow-hidden flex flex-col h-full border border-white/20 dark:border-gray-700/30 backdrop-filter backdrop-blur-md">
         {/* Project Image with Enhanced Overlay */}
         <div 
@@ -130,7 +125,10 @@ const ProjectCard = ({ project, index }: { project: Project; index: number }) =>
             src={project.img}
             alt={project.title}
             fill
-            className="object-fill transition-transform duration-700 group-hover:scale-110 filter group-hover:brightness-105"
+            className="object-fill"
+            priority={index < 3} // Only prioritize first 3 images
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            loading={index < 3 ? "eager" : "lazy"}
           />
           
           {/* Improved gradient overlay */}
@@ -149,7 +147,7 @@ const ProjectCard = ({ project, index }: { project: Project; index: number }) =>
           
           {/* Enhanced featured badge */}
           {project.featured && (
-            <div className="absolute top-4 right-4 px-3 py-1.5 bg-gradient-to-r from-purple-500 to-blue-500 text-white text-xs font-semibold rounded-full shadow-lg backdrop-blur-sm border border-white/20 animate-pulse">
+            <div className="absolute top-4 right-4 px-3 py-1.5 bg-gradient-to-r from-purple-500 to-blue-500 text-white text-xs font-semibold rounded-full shadow-lg backdrop-blur-sm border border-white/20">
               Featured
             </div>
           )}
@@ -176,7 +174,7 @@ const ProjectCard = ({ project, index }: { project: Project; index: number }) =>
               return (
                 <div 
                   key={i} 
-                  className="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br from-white/80 to-white/30 dark:from-gray-700/80 dark:to-gray-800/30 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 hover:rotate-3 backdrop-blur-sm border border-white/20 dark:border-gray-700/50"
+                  className="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br from-white/80 to-white/30 dark:from-gray-700/80 dark:to-gray-800/30 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 backdrop-blur-sm border border-white/20 dark:border-gray-700/50"
                   title={getTechNameFromIcon(Icon)}
                 >
                   <Icon size={18} className="text-gray-700 dark:text-gray-200" />
@@ -196,22 +194,14 @@ const ProjectCard = ({ project, index }: { project: Project; index: number }) =>
           <span className="bg-gradient-to-r from-teal-600 to-blue-600 bg-clip-text text-transparent font-bold">
             View Project
           </span>
-          <motion.svg 
+          <svg 
             className="ml-2 h-5 w-5 text-teal-500" 
             fill="none" 
             viewBox="0 0 24 24" 
             stroke="currentColor"
-            animate={{ x: [0, 5, 0] }}
-            transition={{ 
-              repeat: Infinity, 
-              repeatType: "loop", 
-              duration: 1.5, 
-              ease: "easeInOut",
-              repeatDelay: 0.5
-            }}
           >
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-          </motion.svg>
+          </svg>
         </Link>
       </div>
     </motion.div>
@@ -219,144 +209,52 @@ const ProjectCard = ({ project, index }: { project: Project; index: number }) =>
 };
 
 const RecentProjects = () => {
-  const controls = useAnimation();
-  const [ref, inView] = useInView({ threshold: 0.1 });
-  const [activeFilter, setActiveFilter] = useState("All");
-  const [filteredProjects, setFilteredProjects] = useState(projects);
-
-  useEffect(() => {
-    if (inView) {
-      controls.start("visible");
-    }
-  }, [controls, inView]);
-
-  useEffect(() => {
-    if (activeFilter === "All") {
-      setFilteredProjects(projects);
-    } else {
-      const filtered = projects.filter(project => {
-        // Check if any of the icons match the filter
-        return project.iconList.some(Icon => {
-          const techName = getTechNameFromIcon(Icon);
-          return techName === activeFilter;
-        });
-      });
-      setFilteredProjects(filtered);
-    }
-  }, [activeFilter]);
+  const { ref, isActive } = useOptimizedAnimation(0.1);
 
   return (
-    <section ref={ref} id="projects" className="projects-section">
+    <section id="projects" className="projects-section py-24">
       <div className="container mx-auto px-4">
-        <motion.div
-          initial="hidden"
-          animate={controls}
-          variants={{
-            visible: { opacity: 1, y: 0 },
-            hidden: { opacity: 0, y: 50 }
-          }}
-          className="text-center mb-16"
-        >
-          <motion.h2
-            className="text-base text-teal-600 font-semibold tracking-wide uppercase"
-            variants={{
-              visible: { opacity: 1, y: 0 },
-              hidden: { opacity: 0, y: 20 }
-            }}
+        <div className="text-center mb-16" ref={ref}>
+          <motion.div 
+            initial={{ opacity: 0, y: -20 }}
+            animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: -20 }}
+            transition={{ duration: 0.8 }}
+            className="inline-block"
           >
-            MY WORK
-          </motion.h2>
-          <motion.h3
-            className="text-3xl md:text-4xl font-bold mt-2 dark:text-white text-black"
-            variants={{
-              visible: { opacity: 1, y: 0 },
-              hidden: { opacity: 0, y: 20 }
-            }}
-            transition={{ delay: 0.1 }}
+            <h2 className="text-xl md:text-2xl text-teal-600 font-semibold dark:text-teal-400">
+              MY WORK
+            </h2>
+            <div className="h-1 bg-gradient-to-r from-teal-500 via-blue-500 to-purple-500 mt-1 rounded-full"></div>
+          </motion.div>
+          
+          <motion.h3 
+            initial={{ opacity: 0, y: 20 }}
+            animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="text-3xl md:text-5xl font-bold mt-3 dark:text-white"
           >
             Recent Projects
           </motion.h3>
+          
           <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
             className="mt-4 text-gray-500 dark:text-gray-400 max-w-2xl mx-auto"
-            variants={{
-              visible: { opacity: 1, y: 0 },
-              hidden: { opacity: 0, y: 20 }
-            }}
-            transition={{ delay: 0.2 }}
           >
             Explore my latest work built with modern technologies and best practices.
           </motion.p>
-          
-          {/* Enhanced Filter Buttons */}
-          <motion.div 
-            className="flex flex-wrap justify-center gap-2 mt-8"
-            variants={{
-              visible: { opacity: 1, y: 0 },
-              hidden: { opacity: 0, y: 20 }
-            }}
-            transition={{ delay: 0.3 }}
-          >
-            {allCategories.map((category) => (
-              <motion.button
-                key={category}
-                onClick={() => setActiveFilter(category)}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 relative ${
-                  activeFilter === category
-                    ? "text-white"
-                    : "bg-white dark:bg-gray-800/60 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700"
-                }`}
-              >
-                {activeFilter === category && (
-                  <motion.div
-                    className="absolute inset-0 rounded-full bg-gradient-to-r from-teal-600 to-blue-600 z-0"
-                    layoutId="activeFilterBackground"
-                    initial={false}
-                    transition={{
-                      type: "spring",
-                      stiffness: 300,
-                      damping: 30
-                    }}
-                  />
-                )}
-                <span className="relative z-10">{category}</span>
-              </motion.button>
-            ))}
-          </motion.div>
-        </motion.div>
+        </div>
 
-        {/* Projects Grid with 3D cards */}
-        <AnimatePresence>
-          <motion.div
-            layout
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-2"
-            style={{ perspective: "1000px" }}
-          >
-            {filteredProjects.map((project, i) => (
-              <ProjectCard key={project.id} project={project} index={i} />
-            ))}
-          </motion.div>
-        </AnimatePresence>
-
-        {/* Show message when no projects match filter */}
-        {filteredProjects.length === 0 && (
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="py-20 text-center"
-          >
-            <p className="text-lg text-gray-500 dark:text-gray-400">
-              No projects found matching this filter.
-            </p>
-            <button 
-              onClick={() => setActiveFilter("All")}
-              className="mt-4 px-6 py-2 bg-gradient-to-r from-teal-600 to-blue-600 text-white rounded-md hover:opacity-90 transition-opacity"
-            >
-              Show All Projects
-            </button>
-          </motion.div>
-        )}
+        {/* Projects Grid with optimized rendering */}
+        <div 
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-2"
+          style={{ perspective: "1000px" }}
+        >
+          {projects.map((project, i) => (
+            <ProjectCard key={project.id} project={project} index={i} />
+          ))}
+        </div>
       </div>
     </section>
   );
