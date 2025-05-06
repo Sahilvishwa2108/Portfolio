@@ -15,7 +15,7 @@ const AboutSection = () => {
 
   // Parallax effect for content
   const y = useTransform(scrollYProgress, [0, 1], [100, -100]);
-  const opacity = useTransform(scrollYProgress, [0, 0.2, 0.3, 0.9], [0, 1, 1, 0]);
+  const opacity = useTransform(scrollYProgress, [0, 0.05, 0.15, 0.3, 0.9], [0, 0.5, 1, 1, 0]);
 
   return (
     <section id="about" className="min-h-screen py-20 relative overflow-hidden" ref={containerRef}>

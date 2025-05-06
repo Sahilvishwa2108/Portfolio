@@ -68,7 +68,8 @@ const Hero = () => {
     const timeoutName = setTimeout(() => setShowName(true), 1900);
     const timeoutLine2 = setTimeout(() => setShowLine2(true), 2100);
     const timeoutCTA = setTimeout(() => setShowCTA(true), 2700);
-    const loadedTimeout = setTimeout(() => setIsLoaded(true), 1000);
+    // Make sure this runs reliably with a shorter timeout
+    const loadedTimeout = setTimeout(() => setIsLoaded(true), 800);
 
     return () => {
       clearTimeout(timeoutGreeting);
@@ -146,39 +147,6 @@ const Hero = () => {
             </motion.div>
           </motion.div>
         </div>
-        
-        {/* Scroll indicator */}
-        <motion.div 
-          className="absolute bottom-10 left-1/2 transform -translate-x-1/2 z-50"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: isLoaded ? 1 : 0 }}
-          transition={{ delay: 2, duration: 1 }}
-        >
-          <motion.div 
-            animate={{ 
-              y: [0, 10, 0],
-            }}
-            transition={{ 
-              duration: 1.5, 
-              repeat: Infinity, 
-              repeatType: "loop"
-            }}
-            className="flex flex-col items-center"
-          >
-            <span className="text-gray-400 text-sm mb-2">Scroll Down</span>
-            <svg 
-              className="w-6 h-6 text-teal-500" 
-              fill="none" 
-              strokeLinecap="round" 
-              strokeLinejoin="round" 
-              strokeWidth="2" 
-              viewBox="0 0 24 24" 
-              stroke="currentColor"
-            >
-              <path d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
-            </svg>
-          </motion.div>
-        </motion.div>
       </motion.div>
       
       {/* BUTTONS - Properly positioned */}
@@ -210,6 +178,54 @@ const Hero = () => {
                 </Link>
               </motion.div>
             </>
+          )}
+        </AnimatePresence>
+      </div>
+
+      {/* STANDALONE SCROLL INDICATOR - Completely independent positioning */}
+      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex flex-col space-y-2 justify-center items-center z-[9999] pointer-events-auto">
+        <AnimatePresence>
+          {showCTA && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+              className="flex flex-col items-center"
+            >
+              <span className="text-gray-300 text-sm mb-2 font-medium">
+                <motion.span
+                  initial={{ filter: "blur(4px)", opacity: 0 }}
+                  animate={{ filter: "blur(0px)", opacity: 1 }}
+                  transition={{ duration: 0.8 }}
+                  className="inline-block"
+                >
+                  Scroll Down
+                </motion.span>
+              </span>
+              <motion.div
+                animate={{ 
+                  y: [0, 10, 0],
+                }}
+                transition={{ 
+                  duration: 1.5, 
+                  repeat: Infinity, 
+                  repeatType: "loop"
+                }}
+                className="p-1 rounded-full bg-gradient-to-r from-teal-500/20 to-purple-500/20"
+              >
+                <svg 
+                  className="w-6 h-6 text-teal-400" 
+                  fill="none" 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round" 
+                  strokeWidth="2" 
+                  viewBox="0 0 24 24" 
+                  stroke="currentColor"
+                >
+                  <path d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                </svg>
+              </motion.div>
+            </motion.div>
           )}
         </AnimatePresence>
       </div>

@@ -64,7 +64,7 @@ export default function Home() {
     
     // Ensure smooth anchor scrolling with offset for fixed header
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function (e) {
+      anchor.addEventListener('click', function(this: HTMLAnchorElement, e) {
         e.preventDefault();
         
         const targetId = this.getAttribute('href');
