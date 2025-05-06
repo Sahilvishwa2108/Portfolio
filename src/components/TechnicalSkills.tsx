@@ -1,8 +1,8 @@
 "use client";
-import React, { useState, useRef, useEffect, Suspense } from 'react';
+import React, { useState, useRef, useEffect, Suspense, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { Text, OrbitControls, PerspectiveCamera, useTexture } from '@react-three/drei';
+import { Text, OrbitControls, PerspectiveCamera } from '@react-three/drei';
 import * as THREE from 'three';
 import { 
   SiReact, SiNextdotjs, SiTypescript, SiTailwindcss, SiFramer,
@@ -15,7 +15,7 @@ import {
 import { DiJava } from 'react-icons/di';
 import { IconType } from 'react-icons';
 
-// Updated skill data structure with more categories
+// Skill data moved outside component to prevent recreation on re-renders
 const skillsData = {
   frontend: [
     { name: "React", icon: SiReact, color: "#61DAFB", level: 90 },
@@ -54,7 +54,6 @@ const skillsData = {
   ]
 };
 
-// Update categories for filtering
 const categories = [
   { id: "all", name: "All Skills" },
   { id: "frontend", name: "Frontend" },
@@ -70,94 +69,8 @@ interface Skill {
   level: number;
 }
 
-// Convert icon to texture for 3D rendering
-const createSkillIconTexture = (Icon: IconType, color: string): string => {
-  // This function creates an SVG with the icon and returns a data URL
-  // In a real implementation, you'd use a canvas to render the icon
-  // For this example, we'll create a simple placeholder that would be replaced with actual rendering
-  
-  return `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64"><circle cx="32" cy="32" r="32" fill="${color.replace('#', '%23')}" opacity="0.8"/></svg>`;
-};
-
-// Floating skill node in 3D space
-const SkillNode = ({ 
-  skill, 
-  position, 
-  isHighlighted, 
-  onClick 
-}: { 
-  skill: Skill, 
-  position: [number, number, number], 
-  isHighlighted: boolean,
-  onClick: () => void 
-}) => {
-  const meshRef = useRef<THREE.Mesh>(null);
-  const [hovered, setHovered] = useState(false);
-  
-  // Animate on hover and when highlighted
-  useFrame((state) => {
-    if (!meshRef.current) return;
-    
-    // Add floating motion
-    const t = state.clock.getElapsedTime();
-    meshRef.current.position.y = position[1] + Math.sin(t + position[0]) * 0.1;
-    
-    // Rotate gently
-    meshRef.current.rotation.y += 0.005;
-    
-    // Scale based on hover/highlight state
-    const targetScale = hovered || isHighlighted ? 1.2 : 1;
-    meshRef.current.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), 0.1);
-    
-    // Glow effect through opacity
-    if (meshRef.current.material instanceof THREE.MeshStandardMaterial) {
-      const targetEmissive = isHighlighted ? 0.5 : hovered ? 0.3 : 0.1;
-      meshRef.current.material.emissiveIntensity = THREE.MathUtils.lerp(
-        meshRef.current.material.emissiveIntensity,
-        targetEmissive,
-        0.1
-      );
-    }
-  });
-
-  return (
-    <group position={position}>
-      <mesh 
-        ref={meshRef}
-        onClick={onClick}
-        onPointerOver={() => setHovered(true)} 
-        onPointerOut={() => setHovered(false)}
-      >
-        <sphereGeometry args={[0.5, 16, 16]} />
-        <meshStandardMaterial 
-          color={skill.color} 
-          transparent
-          opacity={0.8}
-          emissive={skill.color}
-          emissiveIntensity={0.2}
-        />
-      </mesh>
-      
-      {/* Show text label when hovered or highlighted */}
-      {(hovered || isHighlighted) && (
-        <Text
-          position={[0, 0.8, 0]}
-          fontSize={0.3}
-          color="white"
-          anchorX="center"
-          anchorY="middle"
-          outlineWidth={0.02}
-          outlineColor="#000000"
-        >
-          {skill.name}
-        </Text>
-      )}
-    </group>
-  );
-};
-
-// Detail panel that appears when a skill is selected
-const SkillDetail = ({ skill }: { skill: Skill | null }) => {
+// Optimized skill detail panel - Memoized
+const SkillDetail = React.memo(({ skill }: { skill: Skill | null }) => {
   if (!skill) return null;
   
   const Icon = skill.icon;
@@ -190,37 +103,83 @@ const SkillDetail = ({ skill }: { skill: Skill | null }) => {
       </div>
     </motion.div>
   );
-};
+});
 
-// 3D Skill Cloud Component
-const SkillCloud = ({ 
+SkillDetail.displayName = 'SkillDetail';
+
+// Performance-optimized 2D skill grid instead of 3D visualization
+const SkillsGrid = ({ 
   skills, 
   onSelectSkill 
 }: { 
   skills: Skill[], 
   onSelectSkill: (skill: Skill) => void 
 }) => {
-  const [selectedSkill, setSelectedSkill] = useState<Skill | null>(null);
+  return (
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-4">
+      {skills.map((skill, index) => (
+        <motion.div
+          key={skill.name}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: index * 0.05, duration: 0.5 }}
+          whileHover={{ 
+            scale: 1.05,
+            boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1)'
+          }}
+          className="bg-white dark:bg-gray-800 rounded-xl p-4 cursor-pointer flex flex-col items-center justify-center shadow-sm hover:shadow-md transition-all duration-300"
+          onClick={() => onSelectSkill(skill)}
+        >
+          <div className="text-3xl mb-3" style={{ color: skill.color }}>
+            <skill.icon />
+          </div>
+          <p className="text-sm font-medium text-gray-800 dark:text-gray-200">{skill.name}</p>
+        </motion.div>
+      ))}
+    </div>
+  );
+};
+
+// Optimized 3D visualization with reduced complexity - Only loaded if device is powerful enough
+const OptimizedSkillCloud = ({ 
+  skills, 
+  onSelectSkill,
+  performance = 'low' // low, medium, high
+}: { 
+  skills: Skill[], 
+  onSelectSkill: (skill: Skill) => void,
+  performance: string
+}) => {
+  const [selected, setSelected] = useState<string | null>(null);
   const { camera } = useThree();
   const orbitControlsRef = useRef<any>(null);
+
+  // Reduce number of particles based on performance level
+  const displaySkills = useMemo(() => {
+    if (performance === 'high') return skills;
+    if (performance === 'medium') return skills.slice(0, Math.ceil(skills.length / 2));
+    return skills.slice(0, Math.min(8, skills.length)); // Show max 8 skills on low performance
+  }, [skills, performance]);
   
-  // Distribute skills in 3D space - this creates a sphere-like arrangement
-  const skillPositions = skills.map((_, i) => {
-    const phi = Math.acos(-1 + (2 * i) / skills.length);
-    const theta = Math.sqrt(skills.length * Math.PI) * phi;
-    
-    return [
-      5 * Math.cos(theta) * Math.sin(phi),
-      5 * Math.sin(theta) * Math.sin(phi),
-      5 * Math.cos(phi)
-    ] as [number, number, number];
-  });
+  // Efficient position calculation with useMemo
+  const skillPositions = useMemo(() => {
+    return displaySkills.map((_, i) => {
+      const phi = Math.acos(-1 + (2 * i) / displaySkills.length);
+      const theta = Math.sqrt(displaySkills.length * Math.PI) * phi;
+      
+      return [
+        4 * Math.cos(theta) * Math.sin(phi),
+        4 * Math.sin(theta) * Math.sin(phi),
+        4 * Math.cos(phi)
+      ] as [number, number, number];
+    });
+  }, [displaySkills]);
 
   return (
     <>
       <OrbitControls 
         ref={orbitControlsRef}
-        enableZoom={true}
+        enableZoom={false}
         enablePan={false}
         autoRotate
         autoRotateSpeed={0.5}
@@ -232,11 +191,10 @@ const SkillCloud = ({
       
       <ambientLight intensity={0.4} />
       <directionalLight position={[10, 10, 5]} intensity={0.8} />
-      <pointLight position={[-10, -10, -5]} intensity={0.5} />
       
-      {/* Outer glow sphere */}
+      {/* Simple ambient background */}
       <mesh>
-        <sphereGeometry args={[10, 32, 32]} />
+        <sphereGeometry args={[10, 16, 16]} />
         <meshBasicMaterial 
           color="#8884ff" 
           transparent
@@ -245,52 +203,88 @@ const SkillCloud = ({
         />
       </mesh>
       
-      {/* Skill nodes */}
-      {skills.map((skill, i) => (
-        <SkillNode
+      {/* Simplified skill spheres with optimized rendering */}
+      {displaySkills.map((skill, i) => (
+        <mesh
           key={skill.name}
-          skill={skill}
           position={skillPositions[i]}
-          isHighlighted={selectedSkill?.name === skill.name}
           onClick={() => {
-            setSelectedSkill(skill);
+            setSelected(skill.name);
             onSelectSkill(skill);
-            
-            // Temporarily disable auto-rotation when a skill is selected
-            if (orbitControlsRef.current) {
-              orbitControlsRef.current.autoRotate = false;
-              setTimeout(() => {
-                if (orbitControlsRef.current) orbitControlsRef.current.autoRotate = true;
-              }, 3000);
-            }
           }}
-        />
+        >
+          <sphereGeometry args={[0.6, 16, 16]} />
+          <meshStandardMaterial 
+            color={skill.color} 
+            opacity={0.8}
+            transparent
+            emissive={skill.color}
+            emissiveIntensity={selected === skill.name ? 0.5 : 0.2}
+          />
+          {selected === skill.name && (
+            <Text
+              position={[0, 1.2, 0]}
+              fontSize={0.5}
+              color="white"
+              anchorX="center"
+              anchorY="middle"
+              outlineWidth={0.02}
+              outlineColor="#000000"
+            >
+              {skill.name}
+            </Text>
+          )}
+        </mesh>
       ))}
     </>
   );
 };
 
-// Loading spinner for Suspense
-const Loader = () => (
-  <div className="flex justify-center items-center h-96">
-    <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-teal-500"></div>
-  </div>
-);
-
-// Main Technical Skills component
+// Main Technical Skills component with performance optimizations
 const TechnicalSkills = () => {
   const [category, setCategory] = useState('all');
   const [selectedSkill, setSelectedSkill] = useState<Skill | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [isMounted, setIsMounted] = useState(false);
+  const [performanceLevel, setPerformanceLevel] = useState<'low' | 'medium' | 'high'>('low');
+  const [showVisual, setShowVisual] = useState<'2d' | '3d'>('2d');
   
+  // Only run client-side performance check once on mount
   useEffect(() => {
     setIsMounted(true);
+    
+    // Simple performance check
+    const checkPerformance = () => {
+      const start = performance.now();
+      let sum = 0;
+      for (let i = 0; i < 100000; i++) {
+        sum += Math.random();
+      }
+      const duration = performance.now() - start;
+      
+      // Determine performance level based on execution time
+      if (duration < 5) {
+        setPerformanceLevel('high');
+        setShowVisual('3d');
+      } else if (duration < 15) {
+        setPerformanceLevel('medium');
+        // Let user choose on medium devices
+        const preferredVisual = localStorage.getItem('preferred-skills-visual');
+        setShowVisual(preferredVisual === '3d' ? '3d' : '2d');
+      } else {
+        setPerformanceLevel('low');
+        setShowVisual('2d');
+      }
+    };
+    
+    // Run performance check
+    checkPerformance();
+    
     return () => setIsMounted(false);
   }, []);
 
-  // Get all skills or filter by category
-  const getDisplayedSkills = () => {
+  // Memoize displayed skills to prevent recalculation
+  const displayedSkills = useMemo(() => {
     if (category === 'all') {
       return [
         ...skillsData.frontend,
@@ -300,9 +294,14 @@ const TechnicalSkills = () => {
       ];
     }
     return skillsData[category as keyof typeof skillsData] || [];
-  };
+  }, [category]);
 
-  const displayedSkills = getDisplayedSkills();
+  // Toggle between 2D and 3D view for medium-performance devices
+  const toggleVisual = () => {
+    const newVisual = showVisual === '2d' ? '3d' : '2d';
+    setShowVisual(newVisual);
+    localStorage.setItem('preferred-skills-visual', newVisual);
+  };
 
   if (!isMounted) {
     return null; // Prevent SSR issues with ThreeJS
@@ -342,19 +341,21 @@ const TechnicalSkills = () => {
           </motion.h3>
         </div>
 
-        {/* Category filter tabs */}
-        <div className="flex justify-center flex-wrap gap-2 mb-8">
-          {categories.map((cat, index) => (
+        {/* Category filter tabs - Using framer-motion batching for better performance */}
+        <motion.div 
+          className="flex justify-center flex-wrap gap-2 mb-8"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+        >
+          {categories.map((cat) => (
             <motion.button
               key={cat.id}
               onClick={() => {
                 setCategory(cat.id);
-                setSelectedSkill(null); // Reset selected skill when changing category
+                setSelectedSkill(null); 
               }}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.1 + index * 0.1 }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               className={`
@@ -368,34 +369,46 @@ const TechnicalSkills = () => {
               {cat.name}
             </motion.button>
           ))}
-        </div>
+        </motion.div>
 
-        {/* 3D Skill Cloud with help text */}
-        <div className="text-center mb-4 text-sm text-gray-500 dark:text-gray-400">
-          <p>Click and drag to rotate | Scroll to zoom | Click on a skill to view details</p>
-        </div>
+        {/* Toggle 2D/3D view for medium performance devices */}
+        {performanceLevel === 'medium' && (
+          <div className="text-center mb-6">
+            <button 
+              onClick={toggleVisual} 
+              className="text-sm bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-full"
+            >
+              Switch to {showVisual === '2d' ? '3D' : '2D'} View
+            </button>
+            <p className="text-xs text-gray-500 mt-1">
+              3D view may affect performance on some devices
+            </p>
+          </div>
+        )}
 
-        {/* Main 3D visualization with detail panel */}
-        <div ref={containerRef} className="relative" style={{ height: '600px' }}>
-          {/* The 3D canvas */}
-          <Canvas className="rounded-xl overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900">
-            <Suspense fallback={null}>
-              <SkillCloud 
-                skills={displayedSkills} 
-                onSelectSkill={setSelectedSkill} 
-              />
-            </Suspense>
-          </Canvas>
+        {/* Skills visualization - conditional rendering based on performance */}
+        <div ref={containerRef} className="relative" style={{ height: '500px' }}>
+          {showVisual === '3d' ? (
+            <Canvas className="rounded-xl overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900">
+              <Suspense fallback={null}>
+                <OptimizedSkillCloud 
+                  skills={displayedSkills} 
+                  onSelectSkill={setSelectedSkill}
+                  performance={performanceLevel}
+                />
+              </Suspense>
+            </Canvas>
+          ) : (
+            <SkillsGrid 
+              skills={displayedSkills} 
+              onSelectSkill={setSelectedSkill} 
+            />
+          )}
           
           {/* Detail panel that shows when a skill is selected */}
           <AnimatePresence>
             {selectedSkill && <SkillDetail skill={selectedSkill} />}
           </AnimatePresence>
-          
-          {/* Mobile view hint */}
-          <div className="md:hidden text-center mt-4 text-sm text-gray-500 dark:text-gray-400">
-            <p>Tap and drag to explore skills in 3D space</p>
-          </div>
         </div>
 
         {/* Summary counts */}

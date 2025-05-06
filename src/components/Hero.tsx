@@ -3,9 +3,8 @@ import React, { useState, useRef, useEffect } from "react";
 import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import dynamic from 'next/dynamic';
-import { LetterPullup } from "./ui/letter-pullup"; // Import the LetterPullup component
 
-// Dynamic import of the HeroScene component
+// Dynamic import with reduced initial loading priority
 const DynamicScene = dynamic(
   () => import('./HeroScene').then((mod) => mod.HeroScene),
   { 
@@ -14,7 +13,9 @@ const DynamicScene = dynamic(
       <div className="absolute inset-0 flex items-center justify-center">
         <div className="w-12 h-12 rounded-full border-2 border-t-teal-500 border-r-transparent border-b-transparent border-l-transparent animate-spin"></div>
       </div>
-    )
+    ),
+    // Lower priority to speed up initial page load
+    loading: () => null
   }
 );
 
@@ -22,13 +23,12 @@ const Hero = () => {
   const containerRef = useRef(null);
   const [isLoaded, setIsLoaded] = useState(false);
   
-  // Animation states
+  // Animation states with delayed initialization
   const [showGreeting, setShowGreeting] = useState(false);
   const [showIntro, setShowIntro] = useState(false);
   const [showName, setShowName] = useState(false);
   const [showCTA, setShowCTA] = useState(false);
-  const [showLine1, setShowLine1] = useState(false);
-  const [showLine2, setShowLine2] = useState(false);
+  const [scene3DLoaded, setScene3DLoaded] = useState(false);
   
   // Parallax effect for content
   const { scrollYProgress } = useScroll({ target: containerRef });
@@ -63,41 +63,25 @@ const Hero = () => {
     };
   };
 
-  const rotateText = (e: React.MouseEvent) => {
-    // Skip rotation effect on mobile
-    if (isMobile) return;
-    
-    const greeting = document.querySelector('.hero-text-3d');
-    const name = document.querySelector('.hero-name-3d');
-    
-    if (greeting && name) {
-      // Calculate rotation values based on mouse position
-      const x = (window.innerWidth / 2 - e.clientX) / 50;
-      const y = (window.innerHeight / 2 - e.clientY) / 50;
-      
-      // Apply rotation to text elements
-      greeting.setAttribute('style', `transform: perspective(500px) rotateX(${y * 0.5 + 8}deg) rotateY(${x * 0.3}deg);`);
-      name.setAttribute('style', `transform: perspective(800px) rotateX(${y * 0.3 + 5}deg) rotateY(${x * 0.2}deg);`);
-    }
-  };
-
-  // Trigger animations sequentially
+  // Trigger animations sequentially with improved timing for perceived performance
   useEffect(() => {
-    const timeoutGreeting = setTimeout(() => setShowGreeting(true), 500);
-    const timeoutLine1 = setTimeout(() => setShowLine1(true), 700);
-    const timeoutIntro = setTimeout(() => setShowIntro(true), 1200);
-    const timeoutName = setTimeout(() => setShowName(true), 1900);
-    const timeoutLine2 = setTimeout(() => setShowLine2(true), 2100);
-    const timeoutCTA = setTimeout(() => setShowCTA(true), 2700);
-    // Make sure this runs reliably with a shorter timeout
-    const loadedTimeout = setTimeout(() => setIsLoaded(true), 800);
+    // Start loading the 3D scene in background
+    const scene3DTimeout = setTimeout(() => setScene3DLoaded(true), 100);
+    
+    // Start animations in sequence, but don't wait for 3D scene
+    const timeoutGreeting = setTimeout(() => setShowGreeting(true), 300);
+    const timeoutIntro = setTimeout(() => setShowIntro(true), 800);
+    const timeoutName = setTimeout(() => setShowName(true), 1300);
+    const timeoutCTA = setTimeout(() => setShowCTA(true), 1800);
+    
+    // Mark as loaded when animations are done
+    const loadedTimeout = setTimeout(() => setIsLoaded(true), 2000);
 
     return () => {
+      clearTimeout(scene3DTimeout);
       clearTimeout(timeoutGreeting);
-      clearTimeout(timeoutLine1);
       clearTimeout(timeoutIntro);
       clearTimeout(timeoutName);
-      clearTimeout(timeoutLine2);
       clearTimeout(timeoutCTA);
       clearTimeout(loadedTimeout);
     };
@@ -110,69 +94,38 @@ const Hero = () => {
       onMouseMove={(e) => {
         if (!isMobile) {
           handleMouseMove(e);
-          rotateText(e);
         }
       }}
       ref={containerRef}
     >
-      {/* 3D Background with dynamic loading */}
+      {/* Gradient background shown immediately */}
       <div className="absolute inset-0 bg-gradient-to-b from-black via-gray-900 to-gray-800 pointer-events-none">
-        <DynamicScene showGreeting={showGreeting} showName={showName} />
+        {/* Only render 3D scene when ready to avoid initial load jank */}
+        {scene3DLoaded && (
+          <DynamicScene showGreeting={showGreeting} showName={showName} />
+        )}
       </div>
 
-      {/* Text content overlay */}
+      {/* Initial content placeholder with nice gradient */}
+      {!scene3DLoaded && (
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="text-center">
+            <h1 className="text-4xl md:text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-blue-500">
+              Loading...
+            </h1>
+          </div>
+        </div>
+      )}
+
+      {/* Content layout - kept simple until animations trigger */}
       <motion.div 
         className="absolute inset-0 flex flex-col items-center justify-center px-4 z-40"
         style={{ y, opacity }}
       >
-        <div className="max-w-5xl w-full flex flex-col items-center">
-          {/* Animated text with 3D effect */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: isLoaded ? 1 : 0 }}
-            transition={{ duration: 1, delay: 0.5 }}
-            className="flex flex-col items-center mb-8"
-          >
-            {/* Line 1: "Hey, I'm" */}
-            <motion.div 
-              className="overflow-hidden mb-2"
-              initial={{ height: 0 }}
-              animate={{ height: "auto" }}
-              transition={{ duration: 0.8, delay: 0.7 }}
-            >
-              {showLine1 && (
-                <h2 className="text-xl md:text-2xl text-teal-400 font-medium hero-text-3d">
-                  <LetterPullup 
-                    words="Hey, I'm" 
-                    delay={0.05}
-                    className="text-shadow-glow" 
-                  />
-                </h2>
-              )}
-            </motion.div>
-            
-            {/* Line 2: "Sahil Vishwakarma" with enhanced 3D effect */}
-            <motion.div 
-              className="overflow-hidden mt-2"
-              initial={{ height: 0 }}
-              animate={{ height: "auto" }}
-              transition={{ duration: 0.8, delay: 1.3 }}
-            >
-              {showLine2 && (
-                <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold text-center hero-name-3d">
-                  <LetterPullup 
-                    words="Sahil Vishwakarma" 
-                    delay={0.04}
-                    className="text-transparent bg-clip-text bg-gradient-to-r from-white via-teal-300 to-cyan-300 drop-shadow-[0_5px_5px_rgba(20,184,166,0.3)]" 
-                  />
-                </h1>
-              )}
-            </motion.div>
-          </motion.div>
-        </div>
+        {/* Content handled by AnimatedText in HeroScene.tsx */}
       </motion.div>
       
-      {/* BUTTONS - Improved responsive positioning */}
+      {/* Buttons with simplified animation */}
       <div className={`absolute ${isMobile ? 'bottom-28' : 'top-[77%]'} left-1/2 transform -translate-x-1/2 flex flex-col sm:flex-row space-y-4 sm:space-y-0 space-x-0 sm:space-x-4 justify-center items-center z-[9999] pointer-events-auto`}>
         <AnimatePresence>
           {showCTA && (
@@ -188,7 +141,7 @@ const Hero = () => {
                   </GlowingButton>
                 </Link>
               </motion.div>
-
+              
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -205,8 +158,8 @@ const Hero = () => {
         </AnimatePresence>
       </div>
 
-      {/* SCROLL INDICATOR - Responsive position */}
-      <div className={`absolute bottom-8 left-1/2 transform -translate-x-1/2 flex flex-col space-y-2 justify-center items-center z-[9999] pointer-events-auto ${isMobile ? 'bottom-4' : 'bottom-8'}`}>
+      {/* Scroll indicator */}
+      <div className={`absolute left-1/2 transform -translate-x-1/2 flex flex-col space-y-2 justify-center items-center z-[9999] pointer-events-auto ${isMobile ? 'bottom-4' : 'bottom-8'}`}>
         <AnimatePresence>
           {showCTA && (
             <motion.div
