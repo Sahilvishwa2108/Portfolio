@@ -133,7 +133,12 @@ const Hero = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.1 }}
               >
-                <Link href="https://drive.google.com/file/d/1XBDUNiAFqqSSmTG0vVb4het3jOX01-Ss/view?usp=sharing" target="_blank">
+                <Link 
+                  href="https://github.com/Sahilvishwa2108/Resume/raw/master/resume.pdf" 
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  download="Sahil_Vishwakarma_Resume.pdf"
+                >
                   <GlowingButton className="bg-black border-neutral-600 text-white">
                     <BlurIn word="Resume" />
                   </GlowingButton>
