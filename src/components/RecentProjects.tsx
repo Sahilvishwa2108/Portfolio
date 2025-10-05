@@ -115,7 +115,7 @@ const ProjectCard = ({ project, index }: { project: Project; index: number }) =>
       onMouseLeave={handleMouseLeave}
       className="rounded-xl overflow-hidden flex flex-col h-full transform-gpu will-change-transform"
     >
-      <div className="relative bg-gradient-to-br from-white via-gray-50 to-gray-100 dark:from-gray-800 dark:via-gray-800/95 dark:to-gray-900 shadow-xl transition-all duration-500 hover:shadow-2xl rounded-xl overflow-hidden flex flex-col h-full border border-white/20 dark:border-gray-700/30 backdrop-filter backdrop-blur-md">
+      <div className="relative glass-morphism-strong shadow-xl transition-all duration-500 hover:shadow-2xl hover:shadow-teal-500/10 rounded-xl overflow-hidden flex flex-col h-full border border-white/10 hover-lift">
         {/* Project Image with Enhanced Overlay */}
         <div 
           className="relative h-64 overflow-hidden group"
@@ -159,12 +159,12 @@ const ProjectCard = ({ project, index }: { project: Project; index: number }) =>
           style={{ transform: "translateZ(30px)" }}
         >
           {/* Title with improved styling */}
-          <h3 className="text-xl font-bold mb-3 bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
+          <h3 className="text-xl font-bold mb-3 text-white">
             {project.title}
           </h3>
           
           {/* Description with better typography */}
-          <p className="text-gray-600 dark:text-gray-300 mb-6 text-sm line-clamp-3 leading-relaxed">
+          <p className="text-gray-400 mb-6 text-sm line-clamp-3 leading-relaxed">
             {project.des}
           </p>
           
@@ -174,10 +174,10 @@ const ProjectCard = ({ project, index }: { project: Project; index: number }) =>
               return (
                 <div 
                   key={i} 
-                  className="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br from-white/80 to-white/30 dark:from-gray-700/80 dark:to-gray-800/30 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 backdrop-blur-sm border border-white/20 dark:border-gray-700/50"
+                  className="flex items-center justify-center w-10 h-10 rounded-full glass-morphism shadow-lg hover:shadow-xl hover:shadow-teal-500/20 transition-all duration-300 hover:scale-110 border border-teal-500/20"
                   title={getTechNameFromIcon(Icon)}
                 >
-                  <Icon size={18} className="text-gray-700 dark:text-gray-200" />
+                  <Icon size={18} className="text-teal-400" />
                 </div>
               );
             })}
@@ -188,14 +188,14 @@ const ProjectCard = ({ project, index }: { project: Project; index: number }) =>
         <Link 
           href={project.link} 
           target="_blank" 
-          className="py-4 px-6 text-center text-sm font-medium bg-gradient-to-r from-teal-500/10 to-blue-500/20 hover:from-teal-500/30 hover:to-blue-500/40 text-teal-600 dark:text-teal-300 transition-all duration-300 group flex items-center justify-center"
+          className="py-4 px-6 text-center text-sm font-medium bg-gradient-to-r from-teal-500/10 via-blue-500/10 to-purple-500/10 hover:from-teal-500/20 hover:via-blue-500/20 hover:to-purple-500/20 transition-all duration-300 group flex items-center justify-center border-t border-white/5"
           style={{ transform: "translateZ(10px)" }}
         >
-          <span className="bg-gradient-to-r from-teal-600 to-blue-600 bg-clip-text text-transparent font-bold">
+          <span className="gradient-text font-bold">
             View Project
           </span>
           <svg 
-            className="ml-2 h-5 w-5 text-teal-500" 
+            className="ml-2 h-5 w-5 text-teal-400 group-hover:translate-x-1 transition-transform" 
             fill="none" 
             viewBox="0 0 24 24" 
             stroke="currentColor"
@@ -212,8 +212,15 @@ const RecentProjects = () => {
   const { ref, isActive } = useOptimizedAnimation(0.1);
 
   return (
-    <section id="projects" className="projects-section py-24">
-      <div className="container mx-auto px-4">
+    <section id="projects" className="section-bg py-24 relative">
+      {/* Animated particles background */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute w-96 h-96 -top-48 -left-48 bg-teal-500/5 rounded-full blur-3xl"></div>
+        <div className="absolute w-96 h-96 top-1/2 right-0 bg-blue-500/5 rounded-full blur-3xl"></div>
+        <div className="absolute w-96 h-96 -bottom-48 left-1/3 bg-purple-500/5 rounded-full blur-3xl"></div>
+      </div>
+
+      <div className="container mx-auto px-4 relative z-10">
         <div className="text-center mb-16" ref={ref}>
           <motion.div 
             initial={{ opacity: 0, y: -20 }}
@@ -221,7 +228,7 @@ const RecentProjects = () => {
             transition={{ duration: 0.8 }}
             className="inline-block"
           >
-            <h2 className="text-xl md:text-2xl text-teal-600 font-semibold dark:text-teal-400">
+            <h2 className="gradient-text text-xl md:text-2xl font-semibold">
               MY WORK
             </h2>
             <div className="h-1 bg-gradient-to-r from-teal-500 via-blue-500 to-purple-500 mt-1 rounded-full"></div>
@@ -231,7 +238,7 @@ const RecentProjects = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-3xl md:text-5xl font-bold mt-3 dark:text-white"
+            className="text-3xl md:text-5xl font-bold mt-3 text-white"
           >
             Recent Projects
           </motion.h3>
@@ -240,7 +247,7 @@ const RecentProjects = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
             transition={{ duration: 0.8, delay: 0.3 }}
-            className="mt-4 text-gray-500 dark:text-gray-400 max-w-2xl mx-auto"
+            className="mt-4 text-gray-400 max-w-2xl mx-auto"
           >
             Explore my latest work built with modern technologies and best practices.
           </motion.p>

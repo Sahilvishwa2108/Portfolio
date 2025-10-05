@@ -25,41 +25,39 @@ const ExperienceCard = ({ experience, index }: { experience: any; index: number 
       {/* Enhanced glow effect */}
       <div 
         className={`absolute -inset-0.5 bg-gradient-to-r ${isEven ? 'from-teal-500 to-blue-600' : 'from-blue-600 to-purple-600'} 
-                   rounded-2xl blur opacity-20 group-hover:opacity-70 transition duration-700`}
+                   rounded-2xl blur opacity-0 group-hover:opacity-30 transition duration-700`}
       ></div>
       
-      {/* Card content with enhanced styling */}
-      <div className="relative bg-gradient-to-br from-white via-gray-50 to-gray-100 dark:from-gray-900 dark:via-gray-800/95 dark:to-gray-800 
-                    rounded-2xl shadow-xl p-6 border border-white/10 dark:border-gray-700/50
-                    hover:shadow-2xl transition-all duration-300 backdrop-filter backdrop-blur-sm">
+      {/* Card content with glass morphism */}
+      <div className="relative glass-morphism-strong rounded-2xl p-6 hover-lift">
         <div className="flex lg:flex-row flex-col lg:items-center gap-6">
-          {/* Logo container with improved styling */}
+          {/* Logo container */}
           <div className="lg:w-32 w-20 h-20 lg:h-32 relative flex-shrink-0 
-                         bg-gradient-to-br from-gray-100 to-white dark:from-gray-800 dark:to-gray-900 
-                         rounded-xl p-4 flex items-center justify-center
-                         shadow-lg border border-white/20 dark:border-gray-700/50">
+                         glass-morphism rounded-2xl p-4 flex items-center justify-center
+                         shadow-lg">
             <Image
               src={experience.thumbnail}
               alt={experience.title}
               width={128}
               height={128}
+              unoptimized
               className="w-full h-auto object-contain drop-shadow-md"
             />
-            <div className="absolute inset-0 bg-gradient-to-tr from-teal-500/10 to-transparent rounded-xl"></div>
+            <div className="absolute inset-0 bg-gradient-to-tr from-teal-500/10 to-transparent rounded-2xl"></div>
           </div>
           
-          {/* Content section with improved typography */}
+          {/* Content section */}
           <div className="flex-1">
             <div className="flex flex-wrap items-center justify-between mb-3">
-              <h3 className="text-xl md:text-2xl font-bold bg-gradient-to-r from-teal-600 to-blue-600 dark:from-teal-400 dark:to-blue-400 bg-clip-text text-transparent">
+              <h3 className="text-xl md:text-2xl font-bold gradient-text">
                 {experience.title}
               </h3>
-              <span className="text-sm text-gray-500 dark:text-gray-400 font-medium">
+              <span className="text-sm text-gray-400 font-medium">
                 {experience.duration || "2023 - Present"}
               </span>
             </div>
             
-            <p className="text-gray-700 dark:text-gray-300 text-sm md:text-base leading-relaxed">
+            <p className="text-gray-300 text-sm md:text-base leading-relaxed">
               {experience.desc}
             </p>
             
@@ -69,21 +67,20 @@ const ExperienceCard = ({ experience, index }: { experience: any; index: number 
                 experience.skills.map((skill: string, i: number) => (
                   <span 
                     key={i}
-                    className={`text-xs px-3 py-1.5 rounded-full font-medium
-                              ${i % 3 === 0 ? 'bg-teal-100 text-teal-800 dark:bg-teal-900/50 dark:text-teal-300' :
-                                i % 3 === 1 ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300' :
-                                'bg-purple-100 text-purple-800 dark:bg-purple-900/50 dark:text-purple-300'}`}
+                    className={`text-xs px-3 py-1.5 rounded-full font-medium glass-morphism
+                              ${i % 3 === 0 ? 'text-teal-300 border border-teal-500/30' :
+                                i % 3 === 1 ? 'text-blue-300 border border-blue-500/30' :
+                                'text-purple-300 border border-purple-500/30'}`}
                   >
                     {skill}
                   </span>
                 ))
               ) : (
-                // Fallback skills if not provided in data
                 <>
-                  <span className="text-xs bg-teal-100 text-teal-800 dark:bg-teal-900/50 dark:text-teal-300 px-3 py-1.5 rounded-full font-medium">
+                  <span className="text-xs glass-morphism text-teal-300 border border-teal-500/30 px-3 py-1.5 rounded-full font-medium">
                     {isEven ? 'Frontend' : 'Design'}
                   </span>
-                  <span className="text-xs bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300 px-3 py-1.5 rounded-full font-medium">
+                  <span className="text-xs glass-morphism text-blue-300 border border-blue-500/30 px-3 py-1.5 rounded-full font-medium">
                     {isEven ? 'React' : 'UI/UX'}
                   </span>
                 </>
@@ -98,26 +95,18 @@ const ExperienceCard = ({ experience, index }: { experience: any; index: number 
 
 const Experience = () => {
   const { ref, isActive } = useOptimizedAnimation(0.15);
-  
-  // Add these for scroll fade effect
-  const containerRef = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end start"]
-  });
-  
-  // Transform scrollYProgress to opacity - fade out as section leaves viewport
-  const opacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
 
   return (
     <section 
-      className="py-24 overflow-hidden relative"
-      ref={containerRef}
+      className="py-24 overflow-hidden relative section-bg"
     >
-      <motion.div
-        className="relative z-10"
-        style={{ opacity }}
-      >
+      {/* Animated background */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-1/3 left-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-1/3 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: "1s" }}></div>
+      </div>
+
+      <div className="relative z-10">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16" ref={ref}>
             <motion.div 
@@ -126,28 +115,28 @@ const Experience = () => {
               transition={{ duration: 0.8 }}
               className="inline-block"
             >
-              <h2 className="text-xl md:text-2xl text-teal-600 font-semibold dark:text-teal-400">
+              <h2 className="text-xl md:text-2xl font-semibold gradient-text">
                 PROFESSIONAL JOURNEY
               </h2>
-              <div className="h-1 bg-gradient-to-r from-teal-500 via-blue-500 to-purple-500 mt-1 rounded-full"></div>
+              <div className="h-1 bg-gradient-to-r from-teal-500 via-blue-500 to-purple-500 mt-2 rounded-full"></div>
             </motion.div>
             
             <motion.h3 
               initial={{ opacity: 0, y: 20 }}
               animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="text-3xl md:text-5xl font-bold mt-3 dark:text-white"
+              className="text-4xl md:text-6xl font-bold mt-4 text-white"
             >
-              Where I&apos;ve Worked
+              Where I&apos;ve <span className="gradient-text">Worked</span>
             </motion.h3>
             
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
               transition={{ duration: 0.8, delay: 0.3 }}
-              className="mt-4 text-gray-500 dark:text-gray-400 max-w-2xl mx-auto"
+              className="mt-6 text-gray-400 max-w-3xl mx-auto text-lg"
             >
-              My professional experiences working with amazing teams and clients.
+              My professional experiences working with amazing teams and clients
             </motion.p>
           </div>
 
@@ -162,7 +151,7 @@ const Experience = () => {
             ))}
           </div>
         </div>
-      </motion.div>
+      </div>
     </section>
   );
 };

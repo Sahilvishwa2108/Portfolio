@@ -264,19 +264,40 @@
   }
 }
 
-/* Add these at the end of the file */
-
 /* Smooth scrolling for the entire site */
 html {
   scroll-behavior: smooth;
 }
 
-/* Glass morphism effect */
-.glass-morphism {
-  background: rgba(255, 255, 255, 0.05);
+/* Unified Background System */
+body {
+  background: linear-gradient(to bottom, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%);
+  background-attachment: fixed;
+}
+
+.section-bg {
+  background: transparent;
+}
+
+.section-bg-dark {
+  background: rgba(0, 0, 0, 0.3);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Glass morphism effect */
+.glass-morphism {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.glass-morphism-strong {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 /* Enhanced transitions */
@@ -289,15 +310,30 @@ html {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 .hover-lift:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 20px 40px -10px rgba(20, 184, 166, 0.3);
+}
+
+/* Gradient text effects */
+.gradient-text {
+  background: linear-gradient(135deg, #14b8a6 0%, #3b82f6 50%, #8b5cf6 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-size: 200% 200%;
+  animation: gradient-shift 3s ease infinite;
+}
+
+@keyframes gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
 }
 
 /* Animation keyframes for staggered reveals */
 @keyframes reveal {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(30px);
   }
   to {
     opacity: 1;
@@ -319,12 +355,12 @@ html {
 /* Enhanced animated gradient backgrounds */
 .animated-gradient {
   background-size: 400% 400%;
-  animation: gradient 15s ease infinite;
+  animation: gradient 20s ease infinite;
   background-image: linear-gradient(-45deg, 
-    rgba(20, 184, 166, 0.15),
-    rgba(56, 189, 248, 0.15),
-    rgba(168, 85, 247, 0.15),
-    rgba(20, 184, 166, 0.15)
+    rgba(20, 184, 166, 0.1),
+    rgba(56, 189, 248, 0.08),
+    rgba(168, 85, 247, 0.08),
+    rgba(20, 184, 166, 0.1)
   );
 }
 
@@ -332,6 +368,95 @@ html {
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
+}
+
+/* Floating particles effect */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0) translateX(0);
+  }
+  25% {
+    transform: translateY(-20px) translateX(10px);
+  }
+  50% {
+    transform: translateY(-10px) translateX(-10px);
+  }
+  75% {
+    transform: translateY(-30px) translateX(5px);
+  }
+}
+
+.floating-particle {
+  animation: float 20s ease-in-out infinite;
+}
+
+/* Glow effects */
+.glow-teal {
+  box-shadow: 0 0 30px rgba(20, 184, 166, 0.3);
+}
+
+.glow-blue {
+  box-shadow: 0 0 30px rgba(59, 130, 246, 0.3);
+}
+
+.glow-purple {
+  box-shadow: 0 0 30px rgba(139, 92, 246, 0.3);
+}
+
+/* Card styles */
+.card-modern {
+  background: linear-gradient(135deg, rgba(20, 184, 166, 0.05) 0%, rgba(59, 130, 246, 0.05) 100%);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  transition: all 0.3s ease;
+}
+
+.card-modern:hover {
+  background: linear-gradient(135deg, rgba(20, 184, 166, 0.08) 0%, rgba(59, 130, 246, 0.08) 100%);
+  border-color: rgba(20, 184, 166, 0.3);
+  transform: translateY(-5px);
+}
+
+/* 3D text effect for the hero section */
+.hero-text-3d {
+  text-shadow: 
+    0 2px 10px rgba(20, 184, 166, 0.5),
+    0 4px 20px rgba(20, 184, 166, 0.3),
+    0 6px 30px rgba(20, 184, 166, 0.2);
+}
+
+.hero-name-3d {
+  text-shadow: 
+    0 2px 10px rgba(45, 212, 191, 0.7),
+    0 4px 20px rgba(45, 212, 191, 0.5),
+    0 6px 30px rgba(45, 212, 191, 0.3),
+    0 10px 50px rgba(20, 184, 166, 0.4);
+}
+
+/* Enhanced text shadow with glow effect */
+.text-shadow-glow {
+  text-shadow: 0 0 20px rgba(20, 184, 166, 0.8);
+}
+
+/* Text animation for letter-by-letter reveal */
+@keyframes float-text {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.float-text {
+  display: inline-block;
+  animation: float-text 3s ease-in-out infinite;
+}
+
+.float-text:nth-child(2n) {
+  animation-delay: 0.15s;
+}
+
+.float-text:nth-child(3n) {
+  animation-delay: 0.3s;
 }
 
 /* Optimize animations for users with reduced motion preferences */
@@ -342,66 +467,4 @@ html {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
-}
-
-/* Add these at the end of your globals.css file */
-
-/* 3D text effect for the hero section */
-.hero-text-3d {
-  text-shadow: 
-    0 1px 0 rgba(20, 184, 166, 0.4),
-    0 2px 0 rgba(20, 184, 166, 0.3),
-    0 3px 0 rgba(20, 184, 166, 0.2),
-    0 4px 0 rgba(20, 184, 166, 0.1),
-    0 5px 10px rgba(0, 0, 0, 0.4);
-  transform: perspective(500px) rotateX(10deg);
-  transform-origin: center top;
-}
-
-.hero-name-3d {
-  text-shadow: 
-    0 1px 0 rgb(45, 212, 191, 0.6),
-    0 2px 0 rgb(45, 212, 191, 0.5),
-    0 3px 0 rgb(45, 212, 191, 0.4),
-    0 4px 0 rgb(45, 212, 191, 0.3),
-    0 5px 0 rgb(45, 212, 191, 0.2),
-    0 6px 0 rgb(45, 212, 191, 0.1),
-    0 7px 10px rgba(0, 0, 0, 0.5),
-    0 10px 35px rgba(20, 184, 166, 0.4);
-  transform: perspective(800px) rotateX(8deg);
-  transform-origin: center;
-  transform-style: preserve-3d;
-}
-
-/* Enhanced text shadow with glow effect */
-.text-shadow-glow {
-  text-shadow: 0 0 15px rgba(20, 184, 166, 0.7);
-}
-
-/* Text hover effects */
-@media (hover: hover) {
-  .hero-text-3d:hover,
-  .hero-name-3d:hover {
-    transform: perspective(500px) rotateX(0deg);
-    transition: all 0.3s ease;
-  }
-}
-
-/* Text animation for letter-by-letter reveal */
-@keyframes float-text {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-5px); }
-}
-
-.float-text {
-  display: inline-block;
-  animation: float-text 3s ease-in-out infinite;
-}
-
-.float-text:nth-child(2n) {
-  animation-delay: 0.1s;
-}
-
-.float-text:nth-child(3n) {
-  animation-delay: 0.2s;
 }

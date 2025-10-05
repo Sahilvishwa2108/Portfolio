@@ -1,8 +1,8 @@
 "use client";
-import React, { useState, useRef, useEffect, Suspense, useMemo } from 'react';
+import React, { useState, useRef, useMemo, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { Text, OrbitControls, PerspectiveCamera, Html } from '@react-three/drei';
+import { OrbitControls, PerspectiveCamera, Html } from '@react-three/drei';
 import * as THREE from 'three';
 import { 
   SiReact, SiNextdotjs, SiTypescript, SiTailwindcss, SiFramer,
@@ -16,35 +16,35 @@ import { DiJava } from 'react-icons/di';
 import { IconType } from 'react-icons';
 import { useOptimizedAnimation } from "@/hooks/useOptimizedAnimation";
 
-// Skill data moved outside component to prevent recreation on re-renders
+// Skill data
 const skillsData = {
   frontend: [
     { name: "React", icon: SiReact, color: "#61DAFB", level: 90 },
-    { name: "Next.js", icon: SiNextdotjs, color: "#000000", level: 85 },
+    { name: "Next.js", icon: SiNextdotjs, color: "#FFFFFF", level: 85 },
     { name: "TypeScript", icon: SiTypescript, color: "#3178C6", level: 80 },
     { name: "Tailwind CSS", icon: SiTailwindcss, color: "#06B6D4", level: 95 },
-    { name: "Framer Motion", icon: SiFramer, color: "#0055FF", level: 75 },
+    { name: "Framer Motion", icon: SiFramer, color: "#FF0055", level: 75 },
     { name: "HTML5", icon: SiHtml5, color: "#E34F26", level: 90 },
     { name: "CSS3", icon: SiCss3, color: "#1572B6", level: 85 },
     { name: "JavaScript", icon: SiJavascript, color: "#F7DF1E", level: 88 },
   ],
   backend: [
     { name: "Node.js", icon: SiNodedotjs, color: "#339933", level: 85 },
-    { name: "Express", icon: SiExpress, color: "#000000", level: 80 },
+    { name: "Express", icon: SiExpress, color: "#FFFFFF", level: 80 },
     { name: "MongoDB", icon: SiMongodb, color: "#47A248", level: 70 },
     { name: "PostgreSQL", icon: SiPostgresql, color: "#336791", level: 75 },
     { name: "Redis", icon: SiRedis, color: "#DC382D", level: 65 },
     { name: "Prisma", icon: SiPrisma, color: "#2D3748", level: 70 },
     { name: "Java", icon: DiJava, color: "#007396", level: 80 },
-    { name: "Socket.io", icon: SiSocketdotio, color: "#010101", level: 65 },
+    { name: "Socket.io", icon: SiSocketdotio, color: "#FFFFFF", level: 65 },
   ],
   tools: [
     { name: "Git", icon: SiGit, color: "#F05032", level: 90 },
-    { name: "GitHub", icon: SiGithub, color: "#181717", level: 85 },
+    { name: "GitHub", icon: SiGithub, color: "#FFFFFF", level: 85 },
     { name: "Docker", icon: SiDocker, color: "#2496ED", level: 70 },
     { name: "Linux", icon: SiLinux, color: "#FCC624", level: 75 },
     { name: "Postman", icon: SiPostman, color: "#FF6C37", level: 80 },
-    { name: "AWS", icon: SiAmazon, color: "#232F3E", level: 65 },
+    { name: "AWS", icon: SiAmazon, color: "#FF9900", level: 65 },
     { name: "Cloudinary", icon: SiCloudinary, color: "#3448C5", level: 75 },
     { name: "Firebase", icon: SiFirebase, color: "#FFCA28", level: 80 },
   ],
@@ -70,7 +70,7 @@ interface Skill {
   level: number;
 }
 
-// Optimized skill detail panel - Memoized
+// Memoized skill detail panel
 const SkillDetail = React.memo(({ skill }: { skill: Skill | null }) => {
   if (!skill) return null;
   
@@ -78,28 +78,31 @@ const SkillDetail = React.memo(({ skill }: { skill: Skill | null }) => {
   
   return (
     <motion.div 
-      initial={{ opacity: 0, x: 20 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: 20 }}
-      className="absolute right-8 top-1/2 transform -translate-y-1/2 bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg max-w-xs backdrop-blur-sm bg-opacity-90 dark:bg-opacity-90 border border-gray-200 dark:border-gray-700"
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.9 }}
+      className="absolute right-4 top-1/2 transform -translate-y-1/2 glass-morphism-strong p-6 rounded-2xl max-w-xs z-50 hidden md:flex flex-col"
     >
       <div className="flex flex-col items-center">
-        <div className="text-4xl mb-4" style={{ color: skill.color }}>
+        <div className="text-5xl mb-4" style={{ color: skill.color }}>
           <Icon />
         </div>
-        <h3 className="text-xl font-bold mb-2 text-gray-800 dark:text-white">
+        <h3 className="text-xl font-bold mb-3 text-white text-center">
           {skill.name}
         </h3>
         
-        <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 mb-2">
-          <div 
-            className="h-2.5 rounded-full" 
-            style={{ width: `${skill.level}%`, backgroundColor: skill.color }}
-          ></div>
+        <div className="w-full bg-white/10 rounded-full h-3 mb-2">
+          <motion.div 
+            initial={{ width: 0 }}
+            animate={{ width: `${skill.level}%` }}
+            transition={{ duration: 1, ease: "easeOut" }}
+            className="h-3 rounded-full" 
+            style={{ backgroundColor: skill.color }}
+          ></motion.div>
         </div>
         
-        <p className="text-sm text-gray-600 dark:text-gray-300">
-          Proficiency: {skill.level}%
+        <p className="text-sm text-gray-300">
+          Proficiency: <span className="font-bold" style={{ color: skill.color }}>{skill.level}%</span>
         </p>
       </div>
     </motion.div>
@@ -108,55 +111,7 @@ const SkillDetail = React.memo(({ skill }: { skill: Skill | null }) => {
 
 SkillDetail.displayName = 'SkillDetail';
 
-// Performance-optimized 2D skill grid with improved styling
-const SkillsGrid = ({ 
-  skills, 
-  onSelectSkill 
-}: { 
-  skills: Skill[], 
-  onSelectSkill: (skill: Skill) => void 
-}) => {
-  return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4 p-4 overflow-y-auto max-h-[calc(100%-2rem)] pb-8">
-      {skills.map((skill, index) => (
-        <motion.div
-          key={skill.name}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: Math.min(index * 0.03, 0.8), duration: 0.4 }}
-          whileHover={{ 
-            scale: 1.05,
-            boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1)'
-          }}
-          className="bg-white dark:bg-gray-800 rounded-xl p-3 cursor-pointer flex flex-col items-center justify-center shadow-sm hover:shadow-md transition-all duration-300 aspect-square"
-          onClick={() => onSelectSkill(skill)}
-        >
-          <div className="flex items-center justify-center h-12 mb-2.5">
-            <div 
-              className="flex items-center justify-center w-10 h-10 rounded-full"
-              style={{ backgroundColor: `${skill.color}20` }} // Light background matching skill color
-            >
-              <skill.icon size={18} color={skill.color} />
-            </div>
-          </div>
-          <p className="text-xs md:text-sm font-medium text-gray-800 dark:text-gray-200 text-center line-clamp-2">
-            {skill.name}
-          </p>
-          
-          {/* Small proficiency indicator */}
-          <div className="w-full mt-2 bg-gray-200 dark:bg-gray-700 rounded-full h-1.5">
-            <div 
-              className="h-1.5 rounded-full" 
-              style={{ width: `${skill.level}%`, backgroundColor: skill.color }}
-            ></div>
-          </div>
-        </motion.div>
-      ))}
-    </div>
-  );
-};
-
-// A 3D skill sphere with icon
+// 3D skill sphere component
 const SkillSphere = ({ 
   skill, 
   position, 
@@ -172,7 +127,7 @@ const SkillSphere = ({
   const { camera } = useThree();
   const [hover, setHover] = useState(false);
   
-  // Make the sphere face the camera
+  // Make sphere face camera
   useFrame(() => {
     if (sphereRef.current && camera) {
       sphereRef.current.quaternion.copy(camera.quaternion);
@@ -189,16 +144,18 @@ const SkillSphere = ({
       onPointerOut={() => setHover(false)}
       ref={sphereRef}
     >
-      <sphereGeometry args={[0.6, 32, 32]} />
+      <sphereGeometry args={[0.7, 32, 32]} />
       <meshStandardMaterial 
         color={skill.color} 
-        opacity={0.8}
+        opacity={0.85}
         transparent
         emissive={skill.color}
-        emissiveIntensity={selected || hover ? 0.7 : 0.2}
+        emissiveIntensity={selected || hover ? 0.8 : 0.3}
+        metalness={0.3}
+        roughness={0.2}
       />
       
-      {/* Icon displayed on the sphere */}
+      {/* Icon on sphere */}
       <Html
         center
         distanceFactor={15}
@@ -209,22 +166,22 @@ const SkillSphere = ({
       >
         <div 
           className="text-white flex items-center justify-center"
-          style={{ pointerEvents: 'none', width: '20px', height: '20px' }}
+          style={{ pointerEvents: 'none', width: '24px', height: '24px' }}
         >
-          <Icon size={14} />
+          <Icon size={16} />
         </div>
       </Html>
       
-      {/* Name label that appears on hover or selection */}
+      {/* Name label */}
       {(hover || selected) && (
         <Html
           center
-          position={[0, 1.2, 0]}
+          position={[0, 1.3, 0]}
           distanceFactor={15}
           sprite
         >
           <div 
-            className="px-2 py-1 bg-black bg-opacity-70 text-white rounded text-xs whitespace-nowrap"
+            className="px-3 py-2 glass-morphism-strong text-white rounded-lg text-sm font-semibold whitespace-nowrap shadow-lg"
             style={{ pointerEvents: 'none' }}
           >
             {skill.name}
@@ -235,72 +192,53 @@ const SkillSphere = ({
   );
 };
 
-// Optimized 3D visualization with reduced complexity - Only loaded if device is powerful enough
-const OptimizedSkillCloud = ({ 
+// 3D Skills Cloud - Stable and optimized
+const SkillCloud = ({ 
   skills, 
-  onSelectSkill,
-  performance = 'low' // low, medium, high
+  onSelectSkill 
 }: { 
   skills: Skill[], 
-  onSelectSkill: (skill: Skill) => void,
-  performance: string
+  onSelectSkill: (skill: Skill) => void 
 }) => {
   const [selected, setSelected] = useState<string | null>(null);
   const orbitControlsRef = useRef<any>(null);
-
-  // Reduce number of particles based on performance level
-  const displaySkills = useMemo(() => {
-    if (performance === 'high') return skills;
-    if (performance === 'medium') return skills.slice(0, Math.ceil(skills.length / 2));
-    return skills.slice(0, Math.min(8, skills.length)); // Show max 8 skills on low performance
-  }, [skills, performance]);
   
-  // Efficient position calculation with useMemo
+  // Efficient position calculation
   const skillPositions = useMemo(() => {
-    return displaySkills.map((_, i) => {
-      const phi = Math.acos(-1 + (2 * i) / displaySkills.length);
-      const theta = Math.sqrt(displaySkills.length * Math.PI) * phi;
+    return skills.map((_, i) => {
+      const phi = Math.acos(-1 + (2 * i) / skills.length);
+      const theta = Math.sqrt(skills.length * Math.PI) * phi;
       
       return [
-        4 * Math.cos(theta) * Math.sin(phi),
-        4 * Math.sin(theta) * Math.sin(phi),
-        4 * Math.cos(phi)
+        5 * Math.cos(theta) * Math.sin(phi),
+        5 * Math.sin(theta) * Math.sin(phi),
+        5 * Math.cos(phi)
       ] as [number, number, number];
     });
-  }, [displaySkills]);
+  }, [skills]);
 
   return (
     <>
       <OrbitControls 
         ref={orbitControlsRef}
-        enableZoom={false}
+        enableZoom={true}
         enablePan={false}
         autoRotate
-        autoRotateSpeed={0.5}
-        minDistance={6}
-        maxDistance={15}
-        rotateSpeed={0.5}
+        autoRotateSpeed={0.8}
+        minDistance={8}
+        maxDistance={18}
+        rotateSpeed={0.6}
       />
       
-      <PerspectiveCamera makeDefault position={[0, 0, 10]} fov={50} />
+      <PerspectiveCamera makeDefault position={[0, 0, 12]} fov={50} />
       
-      <ambientLight intensity={0.6} />
-      <directionalLight position={[10, 10, 5]} intensity={0.8} />
-      <directionalLight position={[-10, -10, -5]} intensity={0.4} />
+      <ambientLight intensity={0.7} />
+      <directionalLight position={[10, 10, 8]} intensity={1.2} />
+      <directionalLight position={[-10, -10, -8]} intensity={0.6} />
+      <pointLight position={[0, 0, 0]} intensity={0.5} color="#14b8a6" />
       
-      {/* Simple ambient background */}
-      <mesh>
-        <sphereGeometry args={[1, 32, 32]} />
-        <meshBasicMaterial 
-          color="#8884ff" 
-          transparent
-          opacity={0.05}
-          side={THREE.BackSide}
-        />
-      </mesh>
-      
-      {/* Skill spheres with icons */}
-      {displaySkills.map((skill, i) => (
+      {/* Skill spheres */}
+      {skills.map((skill, i) => (
         <SkillSphere
           key={skill.name}
           skill={skill}
@@ -312,57 +250,19 @@ const OptimizedSkillCloud = ({
           }}
         />
       ))}
+      
+      {/* Central connecting lines effect - optional, can be removed if causing issues */}
     </>
   );
 };
 
-// Main Technical Skills component with performance optimizations
+// Main Technical Skills component
 const TechnicalSkills = () => {
   const [category, setCategory] = useState('all');
   const [selectedSkill, setSelectedSkill] = useState<Skill | null>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [isMounted, setIsMounted] = useState(false);
-  const [performanceLevel, setPerformanceLevel] = useState<'low' | 'medium' | 'high'>('low');
-  const [showVisual, setShowVisual] = useState<'2d' | '3d'>('2d');
-  
-  // Use the optimized animation hook for better performance
   const { ref: sectionRef, isActive } = useOptimizedAnimation(0.1);
-  
-  // Only run client-side performance check once on mount
-  useEffect(() => {
-    setIsMounted(true);
-    
-    // Simple performance check
-    const checkPerformance = () => {
-      const start = performance.now();
-      let sum = 0;
-      for (let i = 0; i < 100000; i++) {
-        sum += Math.random();
-      }
-      const duration = performance.now() - start;
-      
-      // Determine performance level based on execution time
-      if (duration < 5) {
-        setPerformanceLevel('high');
-        setShowVisual('3d');
-      } else if (duration < 15) {
-        setPerformanceLevel('medium');
-        // Let user choose on medium devices
-        const preferredVisual = localStorage.getItem('preferred-skills-visual');
-        setShowVisual(preferredVisual === '3d' ? '3d' : '2d');
-      } else {
-        setPerformanceLevel('low');
-        setShowVisual('2d');
-      }
-    };
-    
-    // Run performance check
-    checkPerformance();
-    
-    return () => setIsMounted(false);
-  }, []);
 
-  // Memoize displayed skills to prevent recalculation
+  // Memoize displayed skills
   const displayedSkills = useMemo(() => {
     if (category === 'all') {
       return [
@@ -375,61 +275,51 @@ const TechnicalSkills = () => {
     return skillsData[category as keyof typeof skillsData] || [];
   }, [category]);
 
-  // Toggle between 2D and 3D view for medium-performance devices
-  const toggleVisual = () => {
-    const newVisual = showVisual === '2d' ? '3d' : '2d';
-    setShowVisual(newVisual);
-    localStorage.setItem('preferred-skills-visual', newVisual);
-  };
-
-  if (!isMounted) {
-    return null; // Prevent SSR issues with ThreeJS
-  }
-
   return (
-    <section id="skills" className="py-20 relative overflow-hidden">
-      {/* Background gradient and decorative elements */}
-      <div className="absolute inset-0 bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-black -z-10" />
-      <div className="absolute -top-40 -right-40 w-80 h-80 bg-teal-500/10 rounded-full blur-3xl" />
-      <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl" />
+    <section id="skills" className="py-24 relative overflow-hidden section-bg">
+      {/* Animated background */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: "1.5s" }}></div>
+      </div>
       
       <div className="container mx-auto px-4 relative z-10">
-        {/* Section header using the optimized animation pattern */}
-        <div className="text-center mb-12" ref={sectionRef}>
+        {/* Section header */}
+        <div className="text-center mb-16" ref={sectionRef}>
           <motion.div 
             initial={{ opacity: 0, y: -20 }}
             animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: -20 }}
             transition={{ duration: 0.8 }}
             className="inline-block"
           >
-            <h2 className="text-xl md:text-2xl text-teal-600 font-semibold dark:text-teal-400">
+            <h2 className="text-xl md:text-2xl font-semibold gradient-text">
               TECH STACK
             </h2>
-            <div className="h-1 bg-gradient-to-r from-teal-500 via-blue-500 to-purple-500 mt-1 rounded-full"></div>
+            <div className="h-1 bg-gradient-to-r from-teal-500 via-blue-500 to-purple-500 mt-2 rounded-full"></div>
           </motion.div>
 
           <motion.h3 
             initial={{ opacity: 0, y: 20 }}
             animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-3xl md:text-5xl font-bold mt-3 dark:text-white"
+            className="text-4xl md:text-6xl font-bold mt-4 text-white"
           >
-            My Technical Skills
+            My Technical <span className="gradient-text">Arsenal</span>
           </motion.h3>
           
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
             transition={{ duration: 0.8, delay: 0.3 }}
-            className="mt-4 text-gray-500 dark:text-gray-400 max-w-2xl mx-auto"
+            className="mt-6 text-gray-400 max-w-3xl mx-auto text-lg"
           >
-            Technologies and tools I've worked with professionally and in personal projects
+            Explore my toolkit of technologies and frameworks - interact with the 3D visualization
           </motion.p>
         </div>
 
-        {/* Category filter tabs - Using improved animation pattern */}
+        {/* Category filter tabs */}
         <motion.div 
-          className="flex justify-center flex-wrap gap-2 mb-8"
+          className="flex justify-center flex-wrap gap-3 mb-12"
           initial={{ opacity: 0, y: 20 }}
           animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
           transition={{ duration: 0.5, delay: 0.4 }}
@@ -447,10 +337,10 @@ const TechnicalSkills = () => {
               animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
               transition={{ duration: 0.5, delay: 0.4 + index * 0.1 }}
               className={`
-                px-4 py-2 rounded-full text-sm font-medium transition-all duration-300
+                px-6 py-3 rounded-full text-sm font-semibold transition-all duration-300
                 ${category === cat.id
-                  ? "bg-gradient-to-r from-teal-500 to-blue-500 text-white shadow-lg"
-                  : "bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700"
+                  ? "bg-gradient-to-r from-teal-500 to-blue-500 text-white shadow-lg shadow-teal-500/50"
+                  : "glass-morphism text-gray-300 hover:bg-white/10"
                 }
               `}
             >
@@ -459,114 +349,66 @@ const TechnicalSkills = () => {
           ))}
         </motion.div>
 
-        {/* Toggle 2D/3D view for medium performance devices */}
-        {performanceLevel === 'medium' && (
-          <motion.div 
-            className="text-center mb-6"
-            initial={{ opacity: 0 }}
-            animate={isActive ? { opacity: 1 } : { opacity: 0 }}
-            transition={{ duration: 0.5, delay: 0.6 }}
-          >
-            <button 
-              onClick={toggleVisual} 
-              className="text-sm bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-full hover:bg-teal-100 hover:text-teal-800 dark:hover:bg-teal-900/30 dark:hover:text-teal-300 transition-colors"
-            >
-              Switch to {showVisual === '2d' ? '3D' : '2D'} View
-            </button>
-            <p className="text-xs text-gray-500 mt-1">
-              3D view may affect performance on some devices
-            </p>
-          </motion.div>
-        )}
-
-        {/* Skills visualization - conditional rendering based on performance */}
+        {/* 3D Skills visualization */}
         <motion.div 
-          ref={containerRef} 
-          className="relative bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800 rounded-2xl p-3 overflow-hidden shadow-xl border border-gray-100 dark:border-gray-700/50"
-          style={{ height: '500px' }}
+          className="relative glass-morphism-strong rounded-3xl p-4 overflow-hidden shadow-2xl"
+          style={{ height: '600px' }}
           initial={{ opacity: 0, y: 30 }}
           animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
           transition={{ duration: 0.7, delay: 0.5 }}
         >
-          {showVisual === '3d' ? (
-            <Canvas className="rounded-xl overflow-hidden">
-              <Suspense fallback={
-                <Html center>
-                  <div className="flex items-center justify-center h-full w-full">
-                    <div className="w-8 h-8 border-4 border-t-teal-500 border-b-transparent border-l-transparent border-r-transparent rounded-full animate-spin"></div>
-                  </div>
-                </Html>
-              }>
-                <OptimizedSkillCloud 
-                  skills={displayedSkills} 
-                  onSelectSkill={setSelectedSkill}
-                  performance={performanceLevel}
-                />
-              </Suspense>
-            </Canvas>
-          ) : (
-            <SkillsGrid 
-              skills={displayedSkills} 
-              onSelectSkill={setSelectedSkill} 
-            />
-          )}
+          <Canvas className="rounded-2xl">
+            <Suspense fallback={
+              <Html center>
+                <div className="flex items-center justify-center">
+                  <div className="w-12 h-12 border-4 border-t-teal-500 border-b-transparent border-l-transparent border-r-transparent rounded-full animate-spin"></div>
+                </div>
+              </Html>
+            }>
+              <SkillCloud 
+                skills={displayedSkills} 
+                onSelectSkill={setSelectedSkill}
+              />
+            </Suspense>
+          </Canvas>
           
-          {/* Detail panel that shows when a skill is selected */}
+          {/* Detail panel */}
           <AnimatePresence>
             {selectedSkill && <SkillDetail skill={selectedSkill} />}
           </AnimatePresence>
+          
+          {/* Instructions */}
+          <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 glass-morphism px-4 py-2 rounded-full text-sm text-gray-300">
+            <span className="hidden md:inline">Click on spheres • Drag to rotate • Scroll to zoom</span>
+            <span className="md:hidden">Tap to select • Drag to explore</span>
+          </div>
         </motion.div>
 
-        {/* Summary counts with improved animations */}
+        {/* Summary stats */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
           transition={{ duration: 0.5, delay: 0.7 }}
-          className="mt-10 grid grid-cols-2 md:grid-cols-4 gap-4"
+          className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-6"
         >
-          <motion.div 
-            whileHover={{ y: -5, boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)" }}
-            transition={{ type: "spring", stiffness: 400, damping: 10 }}
-            className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md border border-gray-100 dark:border-gray-700/50"
-          >
-            <h4 className="text-lg font-semibold text-gray-800 dark:text-white">Frontend</h4>
-            <p className="text-3xl font-bold bg-gradient-to-r from-teal-500 to-blue-500 bg-clip-text text-transparent">
-              {skillsData.frontend.length}
-            </p>
-          </motion.div>
-          
-          <motion.div 
-            whileHover={{ y: -5, boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)" }}
-            transition={{ type: "spring", stiffness: 400, damping: 10 }}
-            className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md border border-gray-100 dark:border-gray-700/50"
-          >
-            <h4 className="text-lg font-semibold text-gray-800 dark:text-white">Backend</h4>
-            <p className="text-3xl font-bold bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
-              {skillsData.backend.length}
-            </p>
-          </motion.div>
-          
-          <motion.div 
-            whileHover={{ y: -5, boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)" }}
-            transition={{ type: "spring", stiffness: 400, damping: 10 }}
-            className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md border border-gray-100 dark:border-gray-700/50"
-          >
-            <h4 className="text-lg font-semibold text-gray-800 dark:text-white">Tools</h4>
-            <p className="text-3xl font-bold bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">
-              {skillsData.tools.length}
-            </p>
-          </motion.div>
-          
-          <motion.div 
-            whileHover={{ y: -5, boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)" }}
-            transition={{ type: "spring", stiffness: 400, damping: 10 }}
-            className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md border border-gray-100 dark:border-gray-700/50"
-          >
-            <h4 className="text-lg font-semibold text-gray-800 dark:text-white">Frameworks</h4>
-            <p className="text-3xl font-bold bg-gradient-to-r from-pink-500 to-orange-500 bg-clip-text text-transparent">
-              {skillsData.frameworks.length}
-            </p>
-          </motion.div>
+          {[
+            { label: "Frontend", count: skillsData.frontend.length, gradient: "from-teal-500 to-cyan-500" },
+            { label: "Backend", count: skillsData.backend.length, gradient: "from-blue-500 to-indigo-500" },
+            { label: "Tools", count: skillsData.tools.length, gradient: "from-purple-500 to-pink-500" },
+            { label: "Frameworks", count: skillsData.frameworks.length, gradient: "from-pink-500 to-rose-500" }
+          ].map((stat, index) => (
+            <motion.div 
+              key={stat.label}
+              whileHover={{ y: -8, scale: 1.02 }}
+              transition={{ type: "spring", stiffness: 400, damping: 10 }}
+              className="glass-morphism-strong p-6 rounded-2xl text-center hover-lift"
+            >
+              <h4 className="text-lg font-semibold text-gray-300 mb-2">{stat.label}</h4>
+              <p className={`text-4xl font-bold bg-gradient-to-r ${stat.gradient} bg-clip-text text-transparent`}>
+                {stat.count}
+              </p>
+            </motion.div>
+          ))}
         </motion.div>
       </div>
     </section>

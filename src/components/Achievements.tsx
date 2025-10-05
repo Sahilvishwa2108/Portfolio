@@ -290,7 +290,7 @@ const Certificate3DCard = ({
         transformStyle: "preserve-3d",
         perspective: "1000px" 
       }}
-      className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 dark:border-gray-700/50 h-full flex flex-col cursor-pointer transform-gpu"
+      className="glass-morphism-strong rounded-xl overflow-hidden shadow-lg hover:shadow-xl hover:shadow-teal-500/10 transition-all duration-300 border border-white/10 h-full flex flex-col cursor-pointer hover-lift transform-gpu"
       onClick={onClick}
     >
       <div className="relative pt-[56.25%]">
@@ -315,22 +315,22 @@ const Certificate3DCard = ({
       
       <div className="p-5 flex flex-col flex-grow" style={{ transform: "translateZ(10px)" }}>
         <div className="flex justify-between items-start mb-2">
-          <span className="px-2 py-1 text-xs rounded-full bg-teal-100 text-teal-800 dark:bg-teal-900/30 dark:text-teal-300">
+          <span className="px-2 py-1 text-xs rounded-full glass-morphism border border-teal-500/20 text-teal-300">
             {certificate.category.toString() in categoryNames ? categoryNames[certificate.category] : "Certificate"}
           </span>
         </div>
         
-        <h3 className="font-bold text-lg text-gray-900 dark:text-white mb-2">
+        <h3 className="font-bold text-lg text-white mb-2">
           {certificate.title}
         </h3>
         
-        <p className="text-gray-600 dark:text-gray-300 text-sm flex-grow">
+        <p className="text-gray-400 text-sm flex-grow">
           {certificate.content?.substring(0, 100)}
           {certificate.content && certificate.content.length > 100 ? '...' : ''}
         </p>
         
         <motion.button 
-          className="mt-4 flex items-center text-teal-600 dark:text-teal-400 text-sm font-medium"
+          className="mt-4 flex items-center gradient-text text-sm font-medium"
           whileHover={{ x: 5 }}
           transition={{ type: "spring", stiffness: 400, damping: 10 }}
         >
@@ -419,9 +419,16 @@ export function Achievements() {
   return (
     <section 
       id="achievements" 
-      className="w-full py-24 bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-black/80 relative overflow-hidden"
+      className="section-bg w-full py-24 relative overflow-hidden"
       ref={containerRef}
     >
+      {/* Animated particles background */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute w-96 h-96 -top-48 -right-48 bg-purple-500/5 rounded-full blur-3xl"></div>
+        <div className="absolute w-96 h-96 top-1/2 -left-48 bg-teal-500/5 rounded-full blur-3xl"></div>
+        <div className="absolute w-96 h-96 -bottom-48 right-1/3 bg-blue-500/5 rounded-full blur-3xl"></div>
+      </div>
+
       <motion.div
         className="relative z-10"
         style={{ opacity }}
@@ -435,7 +442,7 @@ export function Achievements() {
               transition={{ duration: 0.8 }}
               className="inline-block"
             >
-              <h2 className="text-xl md:text-2xl text-teal-600 font-semibold dark:text-teal-400">
+              <h2 className="gradient-text text-xl md:text-2xl font-semibold">
                 RECOGNITION
               </h2>
               <div className="h-1 bg-gradient-to-r from-teal-500 via-blue-500 to-purple-500 mt-1 rounded-full"></div>
@@ -445,7 +452,7 @@ export function Achievements() {
               initial={{ opacity: 0, y: 20 }}
               animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="text-3xl md:text-5xl font-bold mt-3 dark:text-white"
+              className="text-3xl md:text-5xl font-bold mt-3 text-white"
             >
               My Certificates & Achievements
             </motion.h3>
@@ -454,7 +461,7 @@ export function Achievements() {
               initial={{ opacity: 0, y: 20 }}
               animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
               transition={{ duration: 0.8, delay: 0.3 }}
-              className="mt-4 text-gray-500 dark:text-gray-400 max-w-2xl mx-auto"
+              className="mt-4 text-gray-400 max-w-2xl mx-auto"
             >
               Professional certifications and achievements that highlight my continuous learning journey and expertise in various technological domains.
             </motion.p>
@@ -510,25 +517,25 @@ export function Achievements() {
                 className="relative mt-12 mb-4"
               >
                 <div className="flex justify-between items-center mb-6">
-                  <h3 className="text-xl font-bold dark:text-white">More Certificates</h3>
+                  <h3 className="text-xl font-bold text-white">More Certificates</h3>
                   <div className="flex gap-2">
                     <motion.button 
                       onClick={() => navigate("prev")}
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.9 }}
-                      className="p-2 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-teal-100 dark:hover:bg-teal-900/30 transition-colors"
+                      className="p-2 rounded-full glass-morphism hover:bg-teal-500/10 transition-colors border border-white/10"
                       aria-label="Previous certificates"
                     >
-                      <ChevronLeft className="h-5 w-5 text-gray-600 dark:text-gray-300" />
+                      <ChevronLeft className="h-5 w-5 text-teal-400" />
                     </motion.button>
                     <motion.button 
                       onClick={() => navigate("next")}
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.9 }}
-                      className="p-2 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-teal-100 dark:hover:bg-teal-900/30 transition-colors"
+                      className="p-2 rounded-full glass-morphism hover:bg-teal-500/10 transition-colors border border-white/10"
                       aria-label="Next certificates"
                     >
-                      <ChevronRight className="h-5 w-5 text-gray-600 dark:text-gray-300" />
+                      <ChevronRight className="h-5 w-5 text-teal-400" />
                     </motion.button>
                   </div>
                 </div>
@@ -564,7 +571,7 @@ export function Achievements() {
                         willChange: "transform" // Optimization hint
                       }}
                     >
-                      <div className="bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 border border-gray-200 dark:border-gray-700/50 h-full flex flex-col cursor-pointer">
+                      <div className="glass-morphism-strong rounded-lg overflow-hidden shadow-md hover:shadow-lg hover:shadow-teal-500/10 transition-all duration-300 border border-white/10 h-full flex flex-col cursor-pointer">
                         <div className="relative pt-[56.25%]">
                           <Image
                             src={certificate.src}
@@ -578,12 +585,12 @@ export function Achievements() {
                         
                         <div className="p-4" style={{ transform: "translateZ(10px)" }}>
                           <div className="flex justify-between items-start mb-1">
-                            <span className="px-2 py-0.5 text-xs rounded-full bg-teal-100 text-teal-800 dark:bg-teal-900/30 dark:text-teal-300 text-[10px]">
+                            <span className="px-2 py-0.5 text-xs rounded-full glass-morphism border border-teal-500/20 text-teal-300 text-[10px]">
                               {certificate.category.toString() in categoryNames ? categoryNames[certificate.category] : "Certificate"}
                             </span>
                           </div>
                           
-                          <h4 className="font-medium text-gray-900 dark:text-white text-sm line-clamp-1">
+                          <h4 className="font-medium text-white text-sm line-clamp-1">
                             {certificate.title}
                           </h4>
                         </div>
@@ -613,7 +620,7 @@ export function Achievements() {
               animate={{ scale: 1, opacity: 1, rotateX: 0 }}
               exit={{ scale: 0.9, opacity: 0, rotateX: 5 }}
               transition={{ type: "spring", damping: 20 }}
-              className="bg-white dark:bg-gray-800 rounded-xl max-w-3xl w-full max-h-[90vh] overflow-hidden transform-gpu"
+              className="glass-morphism-strong rounded-xl max-w-3xl w-full max-h-[90vh] overflow-hidden transform-gpu border border-white/10"
               style={{ willChange: "transform" }}
               onClick={(e) => e.stopPropagation()}
             >
@@ -647,23 +654,23 @@ export function Achievements() {
               <div className="p-6">
                 <div className="flex justify-between items-start mb-4">
                   <div>
-                    <span className="px-2 py-1 text-xs rounded-full bg-teal-100 text-teal-800 dark:bg-teal-900/30 dark:text-teal-300">
+                    <span className="px-2 py-1 text-xs rounded-full glass-morphism border border-teal-500/20 text-teal-300">
                       {selectedCertificate.category.toString() in categoryNames ? categoryNames[selectedCertificate.category] : "Certificate"}
                     </span>
-                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mt-2">
+                    <h3 className="text-xl font-bold text-white mt-2">
                       {selectedCertificate.title}
                     </h3>
                   </div>
                   
                   <motion.div whileHover={{ scale: 1.05 }}>
-                    <Link href={selectedCertificate.src} target="_blank" rel="noopener noreferrer" className="flex items-center px-3 py-1.5 rounded-lg bg-teal-600 hover:bg-teal-700 text-white transition-colors text-sm">
+                    <Link href={selectedCertificate.src} target="_blank" rel="noopener noreferrer" className="flex items-center px-3 py-1.5 rounded-lg bg-gradient-to-r from-teal-500 to-blue-500 hover:from-teal-600 hover:to-blue-600 text-white transition-all text-sm">
                       <ExternalLink className="mr-1.5 h-4 w-4" />
                       View Full Size
                     </Link>
                   </motion.div>
                 </div>
                 
-                <p className="text-gray-600 dark:text-gray-300">
+                <p className="text-gray-400">
                   {selectedCertificate.content || "Professional certification highlighting expertise and skill development."}
                 </p>
               </div>

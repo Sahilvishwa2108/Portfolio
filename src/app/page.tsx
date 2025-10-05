@@ -91,33 +91,31 @@ export default function Home() {
         <ScrollProgress />
         <Navbar />
         
-        <section id="hero" className="relative animated-gradient">
+        <section id="hero" className="relative">
           <Hero />
         </section>
         
-        <ScrollSection id="about" animation="fade" className="relative">
-          <div className="animated-gradient absolute inset-0 opacity-10"></div>
+        <ScrollSection id="about" animation="fade" className="relative section-bg">
           <About />
         </ScrollSection>
         
-        <ScrollSection id="skills" animation="slide-up">
+        <ScrollSection id="skills" animation="slide-up" className="section-bg">
           <TechnicalSkills />
         </ScrollSection>
         
-        <ScrollSection id="timeline" animation="fade">
+        <ScrollSection id="timeline" animation="fade" className="section-bg">
           <Timeline />
         </ScrollSection>
         
-        <ScrollSection id="recent-projects" animation="slide-up">
-          <div className="animated-gradient absolute inset-0 opacity-5"></div>
+        <ScrollSection id="recent-projects" animation="slide-up" className="section-bg">
           <RecentProjects />
         </ScrollSection>
         
-        <ScrollSection id="experience" animation="fade">
+        <ScrollSection id="experience" animation="fade" className="section-bg">
           <Experience />
         </ScrollSection>
         
-        <ScrollSection id="achievements" animation="slide-up">
+        <ScrollSection id="achievements" animation="slide-up" className="section-bg">
           <Achievements />
         </ScrollSection>
         
