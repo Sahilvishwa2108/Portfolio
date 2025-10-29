@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { OrbitControls, PerspectiveCamera, Html } from '@react-three/drei';
 import * as THREE from 'three';
+import type { OrbitControls as OrbitControlsType } from 'three-stdlib';
 import { 
   SiReact, SiNextdotjs, SiTypescript, SiTailwindcss, SiFramer,
   SiNodedotjs, SiExpress, SiMongodb, SiPostgresql, SiRedis,
@@ -201,7 +202,7 @@ const SkillCloud = ({
   onSelectSkill: (skill: Skill) => void 
 }) => {
   const [selected, setSelected] = useState<string | null>(null);
-  const orbitControlsRef = useRef<any>(null);
+  const orbitControlsRef = useRef<OrbitControlsType | null>(null);
   
   // Efficient position calculation
   const skillPositions = useMemo(() => {
@@ -396,7 +397,7 @@ const TechnicalSkills = () => {
             { label: "Backend", count: skillsData.backend.length, gradient: "from-blue-500 to-indigo-500" },
             { label: "Tools", count: skillsData.tools.length, gradient: "from-purple-500 to-pink-500" },
             { label: "Frameworks", count: skillsData.frameworks.length, gradient: "from-pink-500 to-rose-500" }
-          ].map((stat, index) => (
+          ].map((stat) => (
             <motion.div 
               key={stat.label}
               whileHover={{ y: -8, scale: 1.02 }}
@@ -415,4 +416,4 @@ const TechnicalSkills = () => {
   );
 };
 
-export default TechnicalSkills;
+export { TechnicalSkills };

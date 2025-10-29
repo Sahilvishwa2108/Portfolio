@@ -2,31 +2,30 @@
 
 import { useEffect } from 'react';
 import dynamic from 'next/dynamic';
-import { Navbar } from '@/components/Navbar';
 import { ScrollProgress } from '@/components/ScrollProgress';
 import { ScrollSection } from '@/components/ui/scroll-section';
 import { PageTransition } from '@/components/ui/page-transition';
-import Hero from '@/components/Hero';
-import About from '@/components/About';
+import { Hero } from '@/components/Hero';
+import { About } from '@/components/About';
 
 // Dynamically import heavy components
-const TechnicalSkills = dynamic(() => import('@/components/TechnicalSkills'), {
+const TechnicalSkills = dynamic(() => import('@/components/TechnicalSkills').then(mod => mod.TechnicalSkills), {
   loading: () => <div className="min-h-[400px] flex items-center justify-center">
     <div className="w-10 h-10 border-2 border-teal-500 border-t-transparent rounded-full animate-spin"></div>
   </div>,
   ssr: true
 });
 
-const Timeline = dynamic(() => import('@/components/Timeline'), {
+const Timeline = dynamic(() => import('@/components/Timeline').then(mod => mod.Timeline), {
   loading: () => <div className="min-h-[300px]"></div>,
   ssr: true
 });
 
-const RecentProjects = dynamic(() => import('@/components/RecentProjects'), {
+const RecentProjects = dynamic(() => import('@/components/RecentProjects').then(mod => mod.RecentProjects), {
   ssr: true
 });
 
-const Experience = dynamic(() => import('@/components/Experience'), {
+const Experience = dynamic(() => import('@/components/Experience').then(mod => mod.Experience), {
   ssr: true
 });
 
@@ -34,7 +33,7 @@ const Achievements = dynamic(() => import('@/components/Achievements').then(mod 
   ssr: false
 });
 
-const Footer = dynamic(() => import('@/components/Footer'), {
+const Footer = dynamic(() => import('@/components/Footer').then(mod => mod.Footer), {
   ssr: true
 });
 
@@ -89,7 +88,6 @@ export default function Home() {
     <PageTransition>
       <main className="flex min-h-screen flex-col overflow-hidden">
         <ScrollProgress />
-        <Navbar />
         
         <section id="hero" className="relative">
           <Hero />

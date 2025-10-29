@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { Navbar } from "@/components/Navbar";
+import { FloatingNav } from '@/components/ui/floating-navbar';
 import { AnimatedCursor } from '@/components/ui/animated-cursor';
+import { Home, User, Code, Clock, Grid, Send } from "lucide-react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -84,11 +85,44 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const navItems = [
+    {
+      name: "Home",
+      link: "#hero",
+      icon: <Home className="h-4 w-4" />,
+    },
+    {
+      name: "About",
+      link: "#about",
+      icon: <User className="h-4 w-4" />,
+    },
+    {
+      name: "Skills",
+      link: "#skills",
+      icon: <Code className="h-4 w-4" />,
+    },
+    {
+      name: "Timeline",
+      link: "#timeline",
+      icon: <Clock className="h-4 w-4" />,
+    },
+    {
+      name: "Projects",
+      link: "#recent-projects",
+      icon: <Grid className="h-4 w-4" />,
+    },
+    {
+      name: "Contact",
+      link: "#contact",
+      icon: <Send className="h-4 w-4" />,
+    },
+  ];
+
   return (
     <html lang="en" className="dark scroll-smooth">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <div className="relative w-full flex items-center">
-          <Navbar />
+          <FloatingNav navItems={navItems} />
         </div>
         {children}
         <AnimatedCursor />

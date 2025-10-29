@@ -2,8 +2,8 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import { Float, Text } from "@react-three/drei";
-import { Group, Vector3 } from "three";
-import { useSpring, animated, config } from "@react-spring/three";
+import { Group } from "three";
+import { useSpring, animated } from "@react-spring/three";
 
 // Use proper named imports for animated components
 const AnimatedGroup = animated.group;
@@ -14,6 +14,57 @@ interface AnimatedTextProps {
   showName: boolean;
   showIntro?: boolean;
 }
+
+// Separate component for animated letter to avoid hooks in loop
+const AnimatedLetter = ({ 
+  char, 
+  index, 
+  greetingVisible, 
+  fontSize, 
+  greetingLength 
+}: { 
+  char: string; 
+  index: number; 
+  greetingVisible: boolean; 
+  fontSize: number; 
+  greetingLength: number;
+}) => {
+  const springProps = useSpring({
+    scale: greetingVisible ? 1 : 0,
+    opacity: greetingVisible ? 1 : 0, 
+    delay: greetingVisible ? 300 + index * 120 : 0,
+    config: { mass: 1.2, tension: 280, friction: 14 }
+  });
+  
+  return (
+    <AnimatedMesh 
+      key={`greeting-${index}`}
+      position={[(index - greetingLength / 2 + 0.5) * fontSize * 0.6, 0, 0]}
+      scale={springProps.scale}
+      opacity={springProps.opacity}
+    >
+      <Text
+        fontSize={fontSize}
+        color="#14b8a6"
+        outlineWidth={0.01}
+        outlineColor="#0d9488"
+        anchorX="center"
+        anchorY="middle"
+      >
+        {char === ' ' ? '\u00A0' : char}
+        <animated.meshStandardMaterial 
+          color="#14b8a6" 
+          metalness={0.6}
+          roughness={0.2}
+          emissive="#14b8a6"
+          emissiveIntensity={0.3}
+          transparent
+          opacity={springProps.opacity}
+        />
+      </Text>
+    </AnimatedMesh>
+  );
+};
 
 export const AnimatedText = ({ showGreeting, showName }: AnimatedTextProps) => {
   const { size } = useThree();
@@ -108,44 +159,16 @@ export const AnimatedText = ({ showGreeting, showName }: AnimatedTextProps) => {
           floatingRange={[-0.08, 0.08]}
         >
           <group position={positions.greeting}>
-            {greetingText.split('').map((char, index) => {
-              // Create animation parameters for each letter
-              const springProps = useSpring({
-                scale: greetingVisible ? 1 : 0,
-                opacity: greetingVisible ? 1 : 0, 
-                delay: greetingVisible ? 300 + index * 120 : 0,
-                config: { mass: 1.2, tension: 280, friction: 14 }
-              });
-              
-              return (
-                <AnimatedMesh 
-                  key={`greeting-${index}`}
-                  position={[(index - greetingText.length / 2 + 0.5) * fontSize.greeting * 0.6, 0, 0]}
-                  scale={springProps.scale}
-                  opacity={springProps.opacity}
-                >
-                  <Text
-                    fontSize={fontSize.greeting}
-                    color="#14b8a6"
-                    outlineWidth={0.01}
-                    outlineColor="#0d9488"
-                    anchorX="center"
-                    anchorY="middle"
-                  >
-                    {char === ' ' ? '\u00A0' : char}
-                    <animated.meshStandardMaterial 
-                      color="#14b8a6" 
-                      metalness={0.6}
-                      roughness={0.2}
-                      emissive="#14b8a6"
-                      emissiveIntensity={0.3}
-                      transparent
-                      opacity={springProps.opacity}
-                    />
-                  </Text>
-                </AnimatedMesh>
-              );
-            })}
+            {greetingText.split('').map((char, index) => (
+              <AnimatedLetter
+                key={`greeting-${index}`}
+                char={char}
+                index={index}
+                greetingVisible={greetingVisible}
+                fontSize={fontSize.greeting}
+                greetingLength={greetingText.length}
+              />
+            ))}
           </group>
         </Float>
       )}

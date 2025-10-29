@@ -75,5 +75,3 @@ export const HeroScene = ({ showGreeting, showName }: HeroSceneProps) => {
     </Canvas>
   );
 };
-
-export default HeroScene;

@@ -1,12 +1,21 @@
 "use client";
-import React, { useRef } from "react";
+import React from "react";
 import { workExperience } from "@/data";
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { useOptimizedAnimation } from "@/hooks/useOptimizedAnimation";
-import { useScroll, useTransform } from "framer-motion";
 
-const ExperienceCard = ({ experience, index }: { experience: any; index: number }) => {
+interface WorkExperienceItem {
+  id: number;
+  title: string;
+  desc: string;
+  className?: string;
+  thumbnail: string;
+  skills?: string[];
+  duration?: string;
+}
+
+const ExperienceCard = ({ experience, index }: { experience: WorkExperienceItem; index: number }) => {
   const { ref: cardRef, isActive } = useOptimizedAnimation(0.1, false, "0px 100px");
   const isEven = index % 2 === 0;
 
@@ -156,4 +165,4 @@ const Experience = () => {
   );
 };
 
-export default Experience;
+export { Experience };

@@ -275,4 +275,4 @@ const AboutSection = () => {
   );
 };
 
-export default AboutSection;
+export { AboutSection as About };

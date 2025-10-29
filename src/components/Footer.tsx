@@ -4,7 +4,6 @@ import { motion } from "framer-motion";
 import { FaLocationArrow } from "react-icons/fa6";
 import { socialMedia } from "@/data";
 import Link from "next/link";
-import Image from "next/image";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -168,4 +167,4 @@ const Footer = () => {
   );
 };
 
-export default Footer;
+export { Footer };

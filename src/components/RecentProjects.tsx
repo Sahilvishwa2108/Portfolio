@@ -267,4 +267,4 @@ const RecentProjects = () => {
   );
 };
 
-export default RecentProjects;
+export { RecentProjects };

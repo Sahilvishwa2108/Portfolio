@@ -13,7 +13,6 @@ interface FloatingNavProps {
     link: string;
     icon: React.ReactNode;
   }[];
-  activeNavItem: string;
   className?: string;
 }
 
@@ -43,11 +42,52 @@ const getEnhancedIcon = (iconName: string, isActive: boolean) => {
   }
 };
 
-export const FloatingNav = ({ navItems, activeNavItem, className }: FloatingNavProps) => {
+export const FloatingNav = ({ navItems, className }: FloatingNavProps) => {
   const { scrollYProgress } = useScroll();
   const [visible, setVisible] = useState(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [activeNavItem, setActiveNavItem] = useState("#hero");
   const containerRef = useRef<HTMLDivElement>(null);
+  
+  // Track active section based on scroll position
+  useEffect(() => {
+    let timeoutId: ReturnType<typeof setTimeout>;
+    
+    const handleScroll = () => {
+      clearTimeout(timeoutId);
+      
+      timeoutId = setTimeout(() => {
+        const sections = document.querySelectorAll("section, [id]");
+        let currentSection = "#hero";
+        let minDistance = Infinity;
+
+        sections.forEach((section) => {
+          const sectionId = section.getAttribute("id");
+          if (!sectionId) return;
+          
+          const rect = section.getBoundingClientRect();
+          const distance = Math.abs(rect.top);
+          
+          // Find the section closest to the top of the viewport
+          if (distance < minDistance && rect.top <= 100) {
+            minDistance = distance;
+            currentSection = `#${sectionId}`;
+          }
+        });
+
+        setActiveNavItem(currentSection);
+      }, 100); // Small debounce for performance
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    // Initial check for the active section
+    handleScroll();
+    
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      clearTimeout(timeoutId);
+    };
+  }, []);
   
   useEffect(() => {
     // Handle body scroll lock for mobile menu

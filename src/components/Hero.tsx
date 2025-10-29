@@ -19,11 +19,9 @@ const DynamicScene = dynamic(
 
 const Hero = () => {
   const containerRef = useRef(null);
-  const [isLoaded, setIsLoaded] = useState(false);
   
   // Animation states with delayed initialization
   const [showGreeting, setShowGreeting] = useState(false);
-  const [showIntro, setShowIntro] = useState(false);
   const [showName, setShowName] = useState(false);
   const [showCTA, setShowCTA] = useState(false);
   const [scene3DLoaded, setScene3DLoaded] = useState(false);
@@ -68,20 +66,14 @@ const Hero = () => {
     
     // Start animations in sequence, but don't wait for 3D scene
     const timeoutGreeting = setTimeout(() => setShowGreeting(true), 300);
-    const timeoutIntro = setTimeout(() => setShowIntro(true), 800);
     const timeoutName = setTimeout(() => setShowName(true), 1300);
     const timeoutCTA = setTimeout(() => setShowCTA(true), 1800);
-    
-    // Mark as loaded when animations are done
-    const loadedTimeout = setTimeout(() => setIsLoaded(true), 2000);
 
     return () => {
       clearTimeout(scene3DTimeout);
       clearTimeout(timeoutGreeting);
-      clearTimeout(timeoutIntro);
       clearTimeout(timeoutName);
       clearTimeout(timeoutCTA);
-      clearTimeout(loadedTimeout);
     };
   }, []);
 
@@ -253,4 +245,4 @@ const BlurIn: React.FC<BlurInProps> = ({ word }) => {
   );
 };
 
-export default Hero;
+export { Hero };

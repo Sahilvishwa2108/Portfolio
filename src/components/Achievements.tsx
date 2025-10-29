@@ -1,13 +1,14 @@
 "use client";
-import React, { useEffect, useState, useRef, Suspense, useMemo } from "react";
+import React, { useEffect, useState, useRef, useMemo, Suspense } from "react";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Award, ExternalLink, ChevronRight, ChevronLeft } from "lucide-react";
+import { ArrowRight, ExternalLink, ChevronRight, ChevronLeft } from "lucide-react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Float, Environment, PresentationControls, ContactShadows } from "@react-three/drei";
 import * as THREE from "three";
 import { useOptimizedAnimation } from "@/hooks/useOptimizedAnimation";
+import { certificates as certificatesData } from "@/data";
 
 // Define a proper certificate type
 interface Certificate {
@@ -132,9 +133,8 @@ const CertificateCard = ({
   );
 };
 
-// Optimized function to create star geometry
-const createStarGeometry = (radius = 1, innerRadius = 0.5, points = 5) => {
-  // Memoize the geometry creation for better performance
+// Hook to create star geometry - moved outside component to avoid React hooks rules
+const useStarGeometry = (radius = 1, innerRadius = 0.5, points = 5) => {
   return useMemo(() => {
     const geometry = new THREE.BufferGeometry();
     const vertices = [];
@@ -164,7 +164,7 @@ const BadgeModel = ({
   scale = 1 
 }) => {
   const badgeRef = useRef<THREE.Group>(null);
-  const starGeometry = createStarGeometry(0.3, 0.15, 5);
+  const starGeometry = useStarGeometry(0.3, 0.15, 5);
   
   // Reduced animation complexity
   useFrame((state) => {
@@ -368,17 +368,9 @@ export function Achievements() {
     const fetchCertificates = async () => {
       try {
         setIsLoading(true);
-        const certificatesData = await import("@/data/certificates.json")
-          .then(module => module.default.certificates)
-          .catch(() => []);
-          
+        // Use the imported certificates data directly
         if (certificatesData && certificatesData.length > 0) {
-          // Add IDs if they don't exist
-          const processedData = certificatesData.map((cert, index) => ({
-            ...cert,
-            id: 'id' in cert ? (cert.id as string | number) : index + 1
-          }));
-          setCertificates(processedData);
+          setCertificates(certificatesData);
         } else {
           console.warn("No certificates data found");
         }

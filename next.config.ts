@@ -70,14 +70,12 @@ const nextConfig: NextConfig = {
     },
   ],
   
-  // Error handling - consider enabling in production later
+  // TypeScript and ESLint - properly handled, no ignoring errors
   typescript: {
-    // In production, you may want to set this to false and fix TS errors
-    ignoreBuildErrors: true,
+    ignoreBuildErrors: false,
   },
   eslint: {
-    // In production, you may want to set this to false and fix ESLint errors
-    ignoreDuringBuilds: true,
+    ignoreDuringBuilds: false,
   },
   
   // Miscellaneous optimization options
