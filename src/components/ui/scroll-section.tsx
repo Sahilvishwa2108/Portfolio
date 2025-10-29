@@ -1,73 +1,63 @@
-"use client";
-import React from 'react';
+'use client';
+
 import { motion } from 'framer-motion';
-import { useOptimizedAnimation } from '@/hooks/useOptimizedAnimation';
+import { ReactNode } from 'react';
 
 interface ScrollSectionProps {
-  children: React.ReactNode;
   id?: string;
+  children: ReactNode;
+  animation?: 'fade' | 'slide-up' | 'slide-left' | 'slide-right' | 'scale';
   className?: string;
   delay?: number;
-  threshold?: number;
-  animation?: 'fade' | 'slide-up' | 'slide-down' | 'zoom' | 'none';
 }
 
-export const ScrollSection: React.FC<ScrollSectionProps> = ({
-  children,
+export function ScrollSection({
   id,
-  className = "",
+  children,
+  animation = 'fade',
+  className = '',
   delay = 0,
-  threshold = 0.1,
-  animation = 'fade'
-}) => {
-  const { ref, isActive } = useOptimizedAnimation(threshold, true);
-  
-  // Define animation variants based on the type
-  const getVariants = () => {
-    switch(animation) {
-      case 'fade':
-        return {
-          hidden: { opacity: 0 },
-          visible: { opacity: 1, transition: { duration: 0.6, delay } }
-        };
-      case 'slide-up':
-        return {
-          hidden: { opacity: 0, y: 50 },
-          visible: { opacity: 1, y: 0, transition: { duration: 0.6, delay } }
-        };
-      case 'slide-down':
-        return {
-          hidden: { opacity: 0, y: -50 },
-          visible: { opacity: 1, y: 0, transition: { duration: 0.6, delay } }
-        };
-      case 'zoom':
-        return {
-          hidden: { opacity: 0, scale: 0.95 },
-          visible: { opacity: 1, scale: 1, transition: { duration: 0.6, delay } }
-        };
-      case 'none':
-      default:
-        return {
-          hidden: {},
-          visible: {},
-        };
-    }
+}: ScrollSectionProps) {
+  const animations = {
+    fade: {
+      initial: { opacity: 0 },
+      whileInView: { opacity: 1 },
+      transition: { duration: 0.6, delay },
+    },
+    'slide-up': {
+      initial: { opacity: 0, y: 50 },
+      whileInView: { opacity: 1, y: 0 },
+      transition: { duration: 0.6, delay },
+    },
+    'slide-left': {
+      initial: { opacity: 0, x: -50 },
+      whileInView: { opacity: 1, x: 0 },
+      transition: { duration: 0.6, delay },
+    },
+    'slide-right': {
+      initial: { opacity: 0, x: 50 },
+      whileInView: { opacity: 1, x: 0 },
+      transition: { duration: 0.6, delay },
+    },
+    scale: {
+      initial: { opacity: 0, scale: 0.8 },
+      whileInView: { opacity: 1, scale: 1 },
+      transition: { duration: 0.6, delay },
+    },
   };
 
+  const selectedAnimation = animations[animation];
+
   return (
-    <section 
-      id={id} 
-      ref={ref} 
+    <motion.section
+      id={id}
       className={className}
+      initial={selectedAnimation.initial}
+      whileInView={selectedAnimation.whileInView}
+      viewport={{ once: true, margin: '-100px' }}
+      transition={selectedAnimation.transition}
     >
-      <motion.div
-        initial="hidden"
-        animate={isActive ? "visible" : "hidden"}
-        variants={getVariants()}
-        className="w-full h-full"
-      >
-        {children}
-      </motion.div>
-    </section>
+      {children}
+    </motion.section>
   );
-};
+}
