@@ -83,12 +83,10 @@ const AboutSection = () => {
       id="about"
       className="py-24 relative overflow-hidden section-bg"
     >
-      {/* Animated background */}
+      {/* Subtle background blurs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-teal-500/5 rounded-full blur-3xl" 
-             style={{ animation: 'pulse-slow 6s ease-in-out infinite' }} />
-        <div className="absolute bottom-0 right-1/4 w-[600px] h-[600px] bg-purple-500/5 rounded-full blur-3xl" 
-             style={{ animation: 'pulse-slow 6s ease-in-out infinite 2s' }} />
+        <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-teal-500/[0.02] rounded-full blur-3xl" />
+        <div className="absolute bottom-0 right-1/4 w-[600px] h-[600px] bg-purple-500/[0.02] rounded-full blur-3xl" />
       </div>
 
       <div className="container mx-auto px-4 relative z-10 max-w-7xl">

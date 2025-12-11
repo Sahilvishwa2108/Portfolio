@@ -230,11 +230,11 @@ const RecentProjects = () => {
 
   return (
     <section id="projects" className="section-bg py-24 relative">
-      {/* Animated particles background */}
+      {/* Subtle background blurs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute w-96 h-96 -top-48 -left-48 bg-teal-500/5 rounded-full blur-3xl"></div>
-        <div className="absolute w-96 h-96 top-1/2 right-0 bg-blue-500/5 rounded-full blur-3xl"></div>
-        <div className="absolute w-96 h-96 -bottom-48 left-1/3 bg-purple-500/5 rounded-full blur-3xl"></div>
+        <div className="absolute w-96 h-96 -top-48 -left-48 bg-teal-500/[0.02] rounded-full blur-3xl"></div>
+        <div className="absolute w-96 h-96 top-1/2 right-0 bg-blue-500/[0.02] rounded-full blur-3xl"></div>
+        <div className="absolute w-96 h-96 -bottom-48 left-1/3 bg-purple-500/[0.02] rounded-full blur-3xl"></div>
       </div>
 
       <div className="container mx-auto px-4 relative z-10" ref={ref}>

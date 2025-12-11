@@ -414,11 +414,11 @@ export function Achievements() {
       className="section-bg w-full py-24 relative overflow-hidden"
       ref={containerRef}
     >
-      {/* Animated particles background */}
+      {/* Subtle background blurs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute w-96 h-96 -top-48 -right-48 bg-purple-500/5 rounded-full blur-3xl"></div>
-        <div className="absolute w-96 h-96 top-1/2 -left-48 bg-teal-500/5 rounded-full blur-3xl"></div>
-        <div className="absolute w-96 h-96 -bottom-48 right-1/3 bg-blue-500/5 rounded-full blur-3xl"></div>
+        <div className="absolute w-96 h-96 -top-48 -right-48 bg-purple-500/[0.02] rounded-full blur-3xl"></div>
+        <div className="absolute w-96 h-96 top-1/2 -left-48 bg-teal-500/[0.02] rounded-full blur-3xl"></div>
+        <div className="absolute w-96 h-96 -bottom-48 right-1/3 bg-blue-500/[0.02] rounded-full blur-3xl"></div>
       </div>
 
       <motion.div

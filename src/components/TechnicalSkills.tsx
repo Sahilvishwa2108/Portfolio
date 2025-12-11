@@ -292,12 +292,10 @@ const TechnicalSkills = () => {
 
   return (
     <section id="skills" className="py-24 relative overflow-hidden section-bg">
-      {/* Animated background */}
+      {/* Subtle animated background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl" 
-             style={{ animation: 'pulse-slow 4s ease-in-out infinite' }}></div>
-        <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl" 
-             style={{ animation: 'pulse-slow 4s ease-in-out infinite 1.5s' }}></div>
+        <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-teal-500/[0.03] rounded-full blur-3xl"></div>
+        <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-blue-500/[0.03] rounded-full blur-3xl"></div>
       </div>
       
       <div className="container mx-auto px-4 relative z-10" ref={sectionRef}>

@@ -168,6 +168,16 @@
   animation: cursor-blink 0.8s infinite;
 }
 
+/* Animated border spin for buttons */
+@keyframes border-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.animate-border-spin {
+  animation: border-spin 3s linear infinite;
+}
+
 /* Slow pulse animation for hero background blurs */
 @keyframes pulse-slow {
   0%, 100% {
@@ -307,12 +317,43 @@ html {
 
 /* Unified Background System */
 body {
-  background: linear-gradient(to bottom, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%);
+  background: linear-gradient(135deg, #0a0a0a 0%, #111111 25%, #0d1117 50%, #111111 75%, #0a0a0a 100%);
   background-attachment: fixed;
 }
 
 .section-bg {
   background: transparent;
+  position: relative;
+}
+
+/* Section Divider - Smooth gradient transition between sections */
+.section-divider {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 200px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.section-divider-top {
+  top: -100px;
+  background: linear-gradient(to bottom, transparent, rgba(20, 184, 166, 0.03) 30%, rgba(59, 130, 246, 0.02) 70%, transparent);
+}
+
+.section-divider-bottom {
+  bottom: -100px;
+  background: linear-gradient(to top, transparent, rgba(139, 92, 246, 0.03) 30%, rgba(20, 184, 166, 0.02) 70%, transparent);
+}
+
+/* Mesh gradient overlay for sections */
+.section-mesh {
+  position: absolute;
+  inset: 0;
+  background: 
+    radial-gradient(ellipse 80% 50% at 20% 40%, rgba(20, 184, 166, 0.04), transparent),
+    radial-gradient(ellipse 60% 50% at 80% 60%, rgba(59, 130, 246, 0.03), transparent);
+  pointer-events: none;
 }
 
 .section-bg-dark {
@@ -339,6 +380,73 @@ body {
 /* Enhanced transitions */
 .transition-all-ease {
   transition: all 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+/* Modern Button Styles */
+.btn-modern {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.btn-modern::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.6s ease;
+}
+
+.btn-modern:hover::before {
+  transform: translateX(100%);
+}
+
+.btn-glow-effect {
+  position: relative;
+}
+
+.btn-glow-effect::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  background: linear-gradient(90deg, #14b8a6, #3b82f6, #8b5cf6, #14b8a6);
+  background-size: 300% 100%;
+  border-radius: inherit;
+  z-index: -1;
+  opacity: 0;
+  filter: blur(10px);
+  transition: opacity 0.3s ease;
+  animation: gradient-shift 3s ease infinite;
+}
+
+.btn-glow-effect:hover::after {
+  opacity: 0.7;
+}
+
+@keyframes gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%) rotate(15deg); }
+  100% { transform: translateX(100%) rotate(15deg); }
+}
+
+.btn-shimmer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  transform: translateX(-100%) rotate(15deg);
+}
+
+.btn-shimmer:hover::before {
+  animation: shimmer 0.8s ease-out;
 }
 
 /* Improved hover effects */

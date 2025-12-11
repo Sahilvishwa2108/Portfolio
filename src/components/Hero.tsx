@@ -156,7 +156,8 @@ export function Hero() {
   return (
     <section
       ref={containerRef}
-      className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 pt-20"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20"
+      style={{ background: 'transparent' }}
     >
       <div className="absolute inset-0 z-0">
         <Canvas
@@ -224,16 +225,34 @@ export function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.8 }}
-          className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12"
+          className="flex flex-col sm:flex-row gap-5 justify-center items-center mb-12"
         >
           <Link href="#recent-projects">
             <motion.button
-              whileHover={{ scale: 1.05, boxShadow: '0 0 30px rgba(20, 184, 166, 0.5)' }}
-              whileTap={{ scale: 0.95 }}
-              className="group px-8 py-4 rounded-full bg-gradient-to-r from-teal-500 to-blue-500 text-white font-semibold flex items-center gap-2 shadow-lg hover:shadow-teal-500/50 transition-all duration-300"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="group relative px-8 py-4 rounded-2xl font-semibold text-white overflow-hidden btn-glow-effect"
             >
-              View My Work
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              {/* Animated gradient background */}
+              <div className="absolute inset-0 bg-gradient-to-r from-teal-500 via-blue-500 to-purple-500 opacity-100" />
+              <div className="absolute inset-0 bg-gradient-to-r from-purple-500 via-teal-500 to-blue-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              
+              {/* Shine effect */}
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100">
+                <div className="absolute inset-0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+              </div>
+              
+              {/* Inner border glow */}
+              <div className="absolute inset-[1px] rounded-2xl bg-gradient-to-b from-white/20 to-transparent opacity-50" />
+              
+              {/* Content */}
+              <span className="relative z-10 flex items-center gap-3">
+                <span className="relative">
+                  View My Work
+                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-white group-hover:w-full transition-all duration-300" />
+                </span>
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
+              </span>
             </motion.button>
           </Link>
 
@@ -244,12 +263,33 @@ export function Hero() {
                   download="Sahil_Vishwakarma_Resume.pdf"
                 >
             <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="px-8 py-4 rounded-full bg-white/5 backdrop-blur-sm border border-white/10 text-white font-semibold flex items-center gap-2 hover:bg-white/10 transition-all duration-300"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="group relative px-8 py-4 rounded-2xl font-semibold text-white overflow-hidden"
             >
-              <Download className="w-5 h-5" />
-              Download Resume
+              {/* Animated border */}
+              <div className="absolute inset-0 rounded-2xl p-[1px] bg-gradient-to-r from-teal-500/50 via-blue-500/50 to-purple-500/50">
+                <div className="absolute inset-0 rounded-2xl bg-gray-900/90 backdrop-blur-xl" />
+              </div>
+              
+              {/* Hover gradient fill */}
+              <div className="absolute inset-[1px] rounded-2xl bg-gradient-to-r from-teal-500/10 via-blue-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              
+              {/* Animated border on hover */}
+              <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div className="absolute inset-0 rounded-2xl animate-border-spin bg-[conic-gradient(from_0deg,#14b8a6,#3b82f6,#8b5cf6,#14b8a6)] p-[1px]">
+                  <div className="w-full h-full rounded-2xl bg-gray-900/95" />
+                </div>
+              </div>
+              
+              {/* Content */}
+              <span className="relative z-10 flex items-center gap-3">
+                <Download className="w-5 h-5 group-hover:animate-bounce" style={{ animationDuration: '1s' }} />
+                <span className="relative">
+                  Download Resume
+                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-teal-400 to-blue-400 group-hover:w-full transition-all duration-300" />
+                </span>
+              </span>
             </motion.button>
           </Link>
         </motion.div>

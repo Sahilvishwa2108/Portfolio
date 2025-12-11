@@ -65,7 +65,7 @@ const educationData = [
   },
 ];
 
-// Timeline Item Component
+// Timeline Item Component - Modern Premium Design
 function TimelineItem({ 
   item, 
   index, 
@@ -114,84 +114,109 @@ function TimelineItem({
       {/* Card Content */}
       <div className={`w-full md:w-5/12 ${isLeft ? 'text-right' : 'text-left'}`}>
         <motion.div
-          className="cursor-pointer"
+          className="cursor-pointer perspective-1200"
           onClick={() => setIsFlipped(!isFlipped)}
-          whileHover={{ scale: 1.03 }}
+          whileHover={{ scale: 1.02 }}
           transition={{ duration: 0.3 }}
         >
           <div 
-            className="relative transition-all duration-700 ease-out"
+            className="relative transition-all duration-700 ease-out preserve-3d"
             style={{
               transformStyle: 'preserve-3d',
               transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
             }}
           >
-            {/* Front Side - Modern Glassmorphism Card */}
+            {/* Front Side - Ultra Modern Card */}
             <div 
-              className="w-full"
+              className="w-full backface-hidden"
               style={{ backfaceVisibility: 'hidden' }}
             >
               <div className="relative group">
-                {/* Gradient Border Effect */}
-                <div className={`absolute -inset-0.5 bg-gradient-to-r ${item.color} rounded-2xl blur opacity-30 group-hover:opacity-50 transition duration-300`} />
+                {/* Animated gradient border */}
+                <div className={`absolute -inset-[1px] rounded-3xl bg-gradient-to-r ${item.color} opacity-0 group-hover:opacity-100 blur-sm transition-all duration-500`} />
+                <div className={`absolute -inset-[1px] rounded-3xl bg-gradient-to-r ${item.color} opacity-20 group-hover:opacity-40 transition-all duration-500`} />
                 
-                {/* Card Content */}
-                <div className="relative p-8 rounded-2xl bg-gray-900/80 backdrop-blur-xl border border-white/10 shadow-2xl">
-                  {/* Icon and Title Section */}
-                  <div className={`flex ${isLeft ? 'flex-row-reverse justify-end' : 'flex-row'} items-start gap-4 mb-6`}>
-                    <div className={`relative p-3.5 rounded-xl bg-gradient-to-br ${item.color} shadow-lg`}>
-                      <Icon className="w-7 h-7 text-white" />
-                      {/* Icon Glow Effect */}
-                      <div className={`absolute inset-0 rounded-xl bg-gradient-to-br ${item.color} blur-md opacity-50`} />
+                {/* Card Glass Container */}
+                <div className="relative rounded-3xl bg-gradient-to-br from-gray-900/95 via-gray-900/90 to-gray-800/95 backdrop-blur-2xl border border-white/[0.08] shadow-2xl overflow-hidden">
+                  {/* Top gradient accent */}
+                  <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${item.color}`} />
+                  
+                  {/* Noise texture overlay */}
+                  <div className="absolute inset-0 opacity-[0.015] bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIGJhc2VGcmVxdWVuY3k9Ii43NSIgc3RpdGNoVGlsZXM9InN0aXRjaCIgdHlwZT0iZnJhY3RhbE5vaXNlIi8+PC9maWx0ZXI+PHJlY3Qgd2lkdGg9IjMwMCIgaGVpZ2h0PSIzMDAiIGZpbHRlcj0idXJsKCNhKSIgb3BhY2l0eT0iMC4wNSIvPjwvc3ZnPg==')]" />
+                  
+                  <div className="relative p-8">
+                    {/* Header with Icon */}
+                    <div className={`flex ${isLeft ? 'flex-row-reverse justify-end' : 'flex-row'} items-start gap-5 mb-6`}>
+                      {/* Floating Icon Badge */}
+                      <div className="relative">
+                        <div className={`absolute inset-0 bg-gradient-to-br ${item.color} rounded-2xl blur-xl opacity-40 group-hover:opacity-60 transition-opacity duration-500`} />
+                        <div className={`relative p-4 rounded-2xl bg-gradient-to-br ${item.color} shadow-xl transform group-hover:scale-105 group-hover:-rotate-3 transition-all duration-500`}>
+                          <Icon className="w-7 h-7 text-white" />
+                        </div>
+                      </div>
+                      
+                      <div className={`flex-1 ${isLeft ? 'text-right' : 'text-left'}`}>
+                        <h3 className="text-xl sm:text-2xl font-bold text-white mb-3 leading-tight group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-gray-300 transition-all duration-300">
+                          {item.degree}
+                        </h3>
+                        <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r ${item.color} bg-opacity-10 border border-white/10`}>
+                          <span className="text-sm font-bold text-white">{item.grade}</span>
+                        </div>
+                      </div>
                     </div>
-                    
-                    <div className={`flex-1 ${isLeft ? 'text-right' : 'text-left'}`}>
-                      <h3 className="text-2xl font-bold text-white mb-2 leading-tight">
-                        {item.degree}
-                      </h3>
-                      <p className={`inline-block px-3 py-1 rounded-full bg-gradient-to-r ${item.color} bg-opacity-20 text-teal-400 font-semibold text-sm border border-teal-500/30`}>
-                        {item.grade}
-                      </p>
+
+                    {/* Institution */}
+                    <h4 className={`text-lg font-semibold text-gray-200 mb-5 ${isLeft ? 'text-right' : 'text-left'}`}>
+                      {item.institution}
+                    </h4>
+
+                    {/* Meta Info Pills */}
+                    <div className={`flex ${isLeft ? 'flex-row-reverse' : 'flex-row'} flex-wrap gap-3 mb-6`}>
+                      <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm">
+                        <Calendar className="w-4 h-4 text-teal-400" />
+                        <span className="text-sm text-gray-300 font-medium">{item.period}</span>
+                      </div>
+                      <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm">
+                        <MapPin className="w-4 h-4 text-blue-400" />
+                        <span className="text-sm text-gray-300">{item.location}</span>
+                      </div>
                     </div>
-                  </div>
 
-                  {/* Institution & Details */}
-                  <h4 className={`text-xl font-semibold text-white mb-4 ${isLeft ? 'text-right' : 'text-left'}`}>
-                    {item.institution}
-                  </h4>
+                    {/* Description */}
+                    <p className={`text-gray-400 text-sm leading-relaxed mb-6 ${isLeft ? 'text-right' : 'text-left'}`}>
+                      {item.description}
+                    </p>
 
-                  <div className="space-y-2.5 mb-5">
-                    <div className={`flex ${isLeft ? 'flex-row-reverse' : 'flex-row'} items-center gap-2.5 text-gray-300`}>
-                      <Calendar className="w-4 h-4 text-teal-400" />
-                      <span className="text-sm font-medium">{item.period}</span>
+                    {/* Skills Tags - Modern Chips */}
+                    <div className={`flex ${isLeft ? 'flex-row-reverse' : 'flex-row'} flex-wrap gap-2 mb-6`}>
+                      {item.skills.map((skill, i) => (
+                        <motion.span
+                          key={skill}
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          whileInView={{ opacity: 1, scale: 1 }}
+                          transition={{ delay: i * 0.05 }}
+                          className="px-3 py-1.5 rounded-xl text-xs font-medium text-gray-300 bg-gradient-to-r from-white/5 to-white/[0.02] border border-white/10 hover:border-teal-500/30 hover:bg-white/10 transition-all duration-300 cursor-default"
+                        >
+                          {skill}
+                        </motion.span>
+                      ))}
                     </div>
-                    <div className={`flex ${isLeft ? 'flex-row-reverse' : 'flex-row'} items-center gap-2.5 text-gray-300`}>
-                      <MapPin className="w-4 h-4 text-blue-400" />
-                      <span className="text-sm">{item.location}</span>
-                    </div>
-                  </div>
 
-                  {/* Description */}
-                  <p className={`text-gray-400 text-sm leading-relaxed mb-5 ${isLeft ? 'text-right' : 'text-left'}`}>
-                    {item.description}
-                  </p>
-
-                  {/* Skills Tags */}
-                  <div className={`flex ${isLeft ? 'flex-row-reverse' : 'flex-row'} flex-wrap gap-2 mb-4`}>
-                    {item.skills.map((skill) => (
-                      <span
-                        key={skill}
-                        className="px-3 py-1.5 rounded-lg bg-white/5 backdrop-blur-sm text-xs text-gray-300 border border-white/10 hover:border-teal-500/50 hover:bg-white/10 transition-all duration-300 font-medium"
+                    {/* CTA Footer */}
+                    <div className={`flex ${isLeft ? 'flex-row-reverse' : 'flex-row'} items-center gap-3 pt-5 border-t border-white/10`}>
+                      <div className={`flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r ${item.color} bg-opacity-10 group-hover:bg-opacity-20 transition-all`}>
+                        <Award className="w-4 h-4 text-teal-400" />
+                        <span className="text-xs text-gray-300 font-medium">Click for achievements</span>
+                      </div>
+                      <div className="flex-1" />
+                      <motion.div
+                        animate={{ x: [0, 5, 0] }}
+                        transition={{ duration: 1.5, repeat: Infinity }}
+                        className={`text-teal-400 ${isLeft ? 'rotate-180' : ''}`}
                       >
-                        {skill}
-                      </span>
-                    ))}
-                  </div>
-
-                  {/* Flip Hint */}
-                  <div className={`flex ${isLeft ? 'flex-row-reverse' : 'flex-row'} items-center gap-2 mt-5 pt-4 border-t border-white/10`}>
-                    <Award className="w-4 h-4 text-teal-400 animate-pulse" />
-                    <p className="text-xs text-gray-400 font-medium">Click to view achievements</p>
+                        →
+                      </motion.div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -199,48 +224,58 @@ function TimelineItem({
 
             {/* Back Side - Achievements */}
             <div 
-              className="absolute inset-0 w-full"
+              className="absolute inset-0 w-full backface-hidden"
               style={{ 
                 backfaceVisibility: 'hidden',
                 transform: 'rotateY(180deg)'
               }}
             >
               <div className="relative group h-full">
-                {/* Gradient Border Effect */}
-                <div className={`absolute -inset-0.5 bg-gradient-to-r ${item.color} rounded-2xl blur opacity-40 group-hover:opacity-60 transition duration-300`} />
+                {/* Animated gradient border */}
+                <div className={`absolute -inset-[1px] rounded-3xl bg-gradient-to-r ${item.color} opacity-30 group-hover:opacity-50 transition-all duration-500`} />
                 
-                {/* Card Content */}
-                <div className="relative h-full p-8 rounded-2xl bg-gray-900/90 backdrop-blur-xl border border-white/10 shadow-2xl">
-                  <div className="flex items-center gap-3 mb-6 pb-4 border-b border-white/10">
-                    <div className={`p-2 rounded-lg bg-gradient-to-br ${item.color} bg-opacity-20`}>
-                      <TrendingUp className="w-6 h-6 text-teal-400" />
+                {/* Card */}
+                <div className="relative h-full rounded-3xl bg-gradient-to-br from-gray-900/95 via-gray-900/90 to-gray-800/95 backdrop-blur-2xl border border-white/[0.08] shadow-2xl overflow-hidden">
+                  {/* Top gradient accent */}
+                  <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${item.color}`} />
+                  
+                  <div className="p-8">
+                    {/* Header */}
+                    <div className="flex items-center gap-4 mb-6 pb-5 border-b border-white/10">
+                      <div className={`p-3 rounded-xl bg-gradient-to-br ${item.color}`}>
+                        <TrendingUp className="w-6 h-6 text-white" />
+                      </div>
+                      <div>
+                        <h4 className="text-xl font-bold text-white">Key Achievements</h4>
+                        <p className="text-sm text-gray-400">Highlights & Accomplishments</p>
+                      </div>
                     </div>
-                    <h4 className="text-xl font-bold text-white">Key Achievements</h4>
-                  </div>
 
-                  <ul className="space-y-4 mb-6">
-                    {item.achievements.map((achievement, i) => (
-                      <motion.li
-                        key={i}
-                        initial={{ opacity: 0, x: isLeft ? 20 : -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: i * 0.1 }}
-                        className="flex items-start gap-3 group/item"
-                      >
-                        <div className={`mt-1 p-1.5 rounded-lg bg-gradient-to-br ${item.color} bg-opacity-20 border border-teal-500/30 group-hover/item:scale-110 transition-transform`}>
-                          <Award className="w-4 h-4 text-teal-400" />
-                        </div>
-                        <p className="text-gray-200 text-sm leading-relaxed flex-1">
-                          {achievement}
-                        </p>
-                      </motion.li>
-                    ))}
-                  </ul>
+                    {/* Achievements List */}
+                    <ul className="space-y-4 mb-6">
+                      {item.achievements.map((achievement, i) => (
+                        <motion.li
+                          key={i}
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: i * 0.1 }}
+                          className="flex items-start gap-4 group/item"
+                        >
+                          <div className={`mt-0.5 p-2 rounded-lg bg-gradient-to-br ${item.color} bg-opacity-20 border border-white/10 group-hover/item:scale-110 transition-transform duration-300`}>
+                            <Award className="w-4 h-4 text-teal-400" />
+                          </div>
+                          <p className="text-gray-200 text-sm leading-relaxed flex-1">
+                            {achievement}
+                          </p>
+                        </motion.li>
+                      ))}
+                    </ul>
 
-                  {/* Flip Back Hint */}
-                  <div className="flex items-center gap-2 mt-auto pt-4 border-t border-white/10">
-                    <div className="w-2 h-2 rounded-full bg-teal-400 animate-pulse" />
-                    <p className="text-xs text-gray-400 font-medium">Click to go back</p>
+                    {/* Back Button */}
+                    <div className="flex items-center gap-3 pt-5 border-t border-white/10">
+                      <div className="w-2 h-2 rounded-full bg-teal-400 animate-pulse" />
+                      <p className="text-sm text-gray-400">Click to flip back</p>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -327,15 +362,16 @@ export function Timeline() {
   return (
     <section
       ref={containerRef}
-      className="relative py-24 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 overflow-hidden"
+      className="relative py-24 overflow-hidden"
       id="timeline"
     >
-      {/* Smooth Background Gradient Overlays */}
-      <div className="absolute inset-0 opacity-20">
-        <div className="absolute top-0 left-0 w-full h-96 bg-gradient-to-b from-gray-900 to-transparent" />
-        <div className="absolute top-40 left-20 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '8s' }} />
-        <div className="absolute bottom-40 right-20 w-[500px] h-[500px] bg-purple-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '10s', animationDelay: '2s' }} />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-500/5 rounded-full blur-3xl" />
+      {/* Smooth Background - Matching global theme */}
+      <div className="absolute inset-0">
+        {/* Subtle mesh gradient */}
+        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent via-gray-900/20 to-transparent" />
+        <div className="absolute top-40 left-20 w-[500px] h-[500px] bg-teal-500/[0.03] rounded-full blur-3xl" />
+        <div className="absolute bottom-40 right-20 w-[600px] h-[600px] bg-purple-500/[0.03] rounded-full blur-3xl" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-blue-500/[0.02] rounded-full blur-3xl" />
       </div>
 
       {/* Header */}
