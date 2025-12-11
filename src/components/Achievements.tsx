@@ -3,14 +3,14 @@ import React, { useEffect, useState, useRef, useMemo, Suspense } from "react";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, ExternalLink, ChevronRight, ChevronLeft } from "lucide-react";
+import { ArrowRight, ExternalLink, ChevronRight, ChevronLeft, Award, Star, Shield, Sparkles } from "lucide-react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Float, Environment, PresentationControls, ContactShadows } from "@react-three/drei";
 import * as THREE from "three";
 import { useOptimizedAnimation } from "@/hooks/useOptimizedAnimation";
-import { certificates as certificatesData } from "@/data";
+import { certificates as certificatesData, premiumCertificates } from "@/data";
 
-// Define a proper certificate type
+// Define certificate types
 interface Certificate {
   id?: number | string;
   src: string;
@@ -18,6 +18,20 @@ interface Certificate {
   category: number | string;
   content?: string;
   description?: string;
+}
+
+interface PremiumCertificate {
+  id: string;
+  src: string;
+  title: string;
+  issuer: string;
+  category: string;
+  level: string;
+  date: string;
+  validUntil?: string;
+  score?: string;
+  color: string;
+  content: string;
 }
 
 // Categories mapping
@@ -342,16 +356,139 @@ const Certificate3DCard = ({
   );
 };
 
+// Premium Certificate Card - Modern, Innovative Design
+const PremiumCertificateCard = ({ 
+  certificate, 
+  onClick,
+  index = 0
+}: { 
+  certificate: PremiumCertificate, 
+  onClick: () => void,
+  index?: number
+}) => {
+  const { ref, isActive } = useOptimizedAnimation(0.1, false);
+  const isOracle = certificate.issuer.includes('Oracle');
+  const isProfessional = certificate.level === 'Professional';
+  
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 30, scale: 0.95 }}
+      animate={isActive ? { 
+        opacity: 1, 
+        y: 0, 
+        scale: 1,
+        transition: { duration: 0.5, delay: index * 0.08 } 
+      } : { opacity: 0, y: 30, scale: 0.95 }}
+      whileHover={{ 
+        y: -8,
+        transition: { duration: 0.3 } 
+      }}
+      className="group relative cursor-pointer"
+      onClick={onClick}
+    >
+      {/* Animated gradient border */}
+      <div className={`absolute -inset-[1px] rounded-2xl bg-gradient-to-r ${certificate.color} opacity-0 group-hover:opacity-100 blur-sm transition-all duration-500`} />
+      <div className={`absolute -inset-[1px] rounded-2xl bg-gradient-to-r ${certificate.color} opacity-30 group-hover:opacity-50 transition-all duration-500`} />
+      
+      {/* Card Container */}
+      <div className="relative rounded-2xl bg-gradient-to-br from-gray-900/95 via-gray-900/90 to-gray-800/95 backdrop-blur-xl border border-white/[0.08] shadow-2xl overflow-hidden">
+        {/* Top accent bar */}
+        <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${certificate.color}`} />
+        
+        {/* Corner glow */}
+        <div className={`absolute -top-20 -right-20 w-40 h-40 bg-gradient-to-br ${certificate.color} opacity-10 blur-3xl group-hover:opacity-20 transition-opacity`} />
+        
+        {/* Level Badge */}
+        <div className="absolute top-4 right-4 z-10">
+          <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gradient-to-r ${certificate.color} shadow-lg`}>
+            {isProfessional ? <Star className="w-3.5 h-3.5 text-white" /> : <Shield className="w-3.5 h-3.5 text-white" />}
+            <span className="text-xs font-bold text-white">{certificate.level}</span>
+          </div>
+        </div>
+        
+        {/* Certificate Image */}
+        <div className="relative h-48 overflow-hidden">
+          <Image
+            src={certificate.src}
+            alt={certificate.title}
+            fill
+            className="object-cover group-hover:scale-105 transition-transform duration-700"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            loading={index < 6 ? "eager" : "lazy"}
+          />
+          {/* Gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/50 to-transparent" />
+          
+          {/* Issuer Logo/Badge */}
+          <div className="absolute bottom-4 left-4 flex items-center gap-2">
+            <div className={`p-2 rounded-lg bg-gradient-to-br ${certificate.color} shadow-lg`}>
+              {isOracle ? (
+                <span className="text-white font-bold text-xs">OCI</span>
+              ) : (
+                <Award className="w-4 h-4 text-white" />
+              )}
+            </div>
+            <span className="text-sm font-medium text-white/90">{certificate.issuer}</span>
+          </div>
+        </div>
+        
+        {/* Content */}
+        <div className="p-5">
+          {/* Category & Date Row */}
+          <div className="flex items-center justify-between mb-3">
+            <span className={`px-3 py-1 text-xs font-medium rounded-full bg-gradient-to-r ${certificate.color} bg-opacity-10 text-white border border-white/10`}>
+              {certificate.category}
+            </span>
+            <span className="text-xs text-gray-400">{certificate.date}</span>
+          </div>
+          
+          {/* Title */}
+          <h3 className={`font-bold text-lg mb-2 bg-gradient-to-r ${certificate.color} bg-clip-text text-transparent leading-tight`}>
+            {certificate.title}
+          </h3>
+          
+          {/* Description */}
+          <p className="text-gray-400 text-sm mb-4 line-clamp-2">
+            {certificate.content}
+          </p>
+          
+          {/* Footer */}
+          <div className="flex items-center justify-between pt-3 border-t border-white/10">
+            {certificate.score ? (
+              <div className="flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-amber-400" />
+                <span className="text-sm font-semibold text-amber-300">Score: {certificate.score}</span>
+              </div>
+            ) : certificate.validUntil ? (
+              <span className="text-xs text-gray-500">Valid until {certificate.validUntil}</span>
+            ) : null}
+            
+            <motion.div 
+              className={`flex items-center gap-1 text-sm font-medium bg-gradient-to-r ${certificate.color} bg-clip-text text-transparent`}
+              whileHover={{ x: 3 }}
+            >
+              View
+              <ArrowRight className="w-4 h-4 text-current" />
+            </motion.div>
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+};
+
 export function Achievements() {
   const [certificates, setCertificates] = useState<Certificate[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedCertificate, setSelectedCertificate] = useState<Certificate | null>(null);
+  const [selectedCertificate, setSelectedCertificate] = useState<Certificate | PremiumCertificate | null>(null);
   const carouselRef = useRef<HTMLDivElement>(null);
   
   // Use optimized animation hook for better performance
   const { ref: sectionRef, isActive } = useOptimizedAnimation(0.1);
   const { ref: carouselSectionRef, isActive: isCarouselActive } = useOptimizedAnimation(0.1, true);
+  const { ref: premiumSectionRef, isActive: isPremiumActive } = useOptimizedAnimation(0.1, true);
 
   // Add these for scroll fade effect
   const containerRef = useRef<HTMLElement>(null);
@@ -385,7 +522,7 @@ export function Achievements() {
   }, []);
 
   // Open certificate modal
-  const openModal = (certificate: Certificate) => {
+  const openModal = (certificate: Certificate | PremiumCertificate) => {
     setSelectedCertificate(certificate);
     setIsModalOpen(true);
     document.body.style.overflow = "hidden";
@@ -482,63 +619,86 @@ export function Achievements() {
             <div className="flex justify-center py-20">
               <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-teal-500"></div>
             </div>
-          ) : certificates.length === 0 ? (
-            <div className="text-center py-10">
-              <p className="text-gray-500 dark:text-gray-400">No certificates found.</p>
-            </div>
           ) : (
             <>
-              {/* Featured Certificates with optimized rendering */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-                {certificates.slice(0, 3).map((certificate, index) => (
-                  <Certificate3DCard
-                    key={certificate.id}
-                    certificate={certificate}
-                    onClick={() => openModal(certificate)}
-                    index={index}
-                  />
-                ))}
-              </div>
-
-              {/* Certificate Carousel - Optimized rendering */}
-              <motion.div 
-                ref={carouselSectionRef}
+              {/* Premium Certificates Section - Oracle & NPTEL */}
+              <motion.div
+                ref={premiumSectionRef}
                 initial={{ opacity: 0, y: 20 }}
-                animate={isCarouselActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-                transition={{ duration: 0.8, delay: 0.2 }}
-                className="relative mt-12 mb-4"
+                animate={isPremiumActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                transition={{ duration: 0.6 }}
+                className="mb-16"
               >
-                <div className="flex justify-between items-center mb-6">
-                  <h3 className="text-xl font-bold text-white">More Certificates</h3>
-                  <div className="flex gap-2">
-                    <motion.button 
-                      onClick={() => navigate("prev")}
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.9 }}
-                      className="p-2 rounded-full glass-morphism hover:bg-teal-500/10 transition-colors border border-white/10"
-                      aria-label="Previous certificates"
-                    >
-                      <ChevronLeft className="h-5 w-5 text-teal-400" />
-                    </motion.button>
-                    <motion.button 
-                      onClick={() => navigate("next")}
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.9 }}
-                      className="p-2 rounded-full glass-morphism hover:bg-teal-500/10 transition-colors border border-white/10"
-                      aria-label="Next certificates"
-                    >
-                      <ChevronRight className="h-5 w-5 text-teal-400" />
-                    </motion.button>
+                {/* Section Header for Premium Certs */}
+                <div className="flex items-center gap-3 mb-8">
+                  <div className="p-2 rounded-lg bg-gradient-to-r from-red-500 to-orange-500 shadow-lg shadow-red-500/20">
+                    <Award className="w-5 h-5 text-white" />
                   </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-white">Featured Certifications</h3>
+                    <p className="text-sm text-gray-400">Oracle Cloud Infrastructure & NPTEL</p>
+                  </div>
+                  <div className="flex-1 h-px bg-gradient-to-r from-red-500/50 via-purple-500/30 to-transparent ml-4" />
                 </div>
-                
-                {/* Virtualized carousel for better performance */}
-                <div 
-                  ref={carouselRef}
-                  className="flex gap-4 overflow-x-auto hide-scrollbar pb-4 px-1 snap-x snap-mandatory"
-                  style={{ perspective: "1000px" }}
+
+                {/* Premium Certificate Grid - 3x3 */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {premiumCertificates.map((certificate, index) => (
+                    <PremiumCertificateCard
+                      key={certificate.id}
+                      certificate={certificate}
+                      onClick={() => openModal(certificate)}
+                      index={index}
+                    />
+                  ))}
+                </div>
+              </motion.div>
+
+              {/* Other Certificates Section */}
+              {certificates.length > 0 && (
+                <motion.div 
+                  ref={carouselSectionRef}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={isCarouselActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                  transition={{ duration: 0.8, delay: 0.2 }}
+                  className="relative mt-12 mb-4"
                 >
-                  {certificates.slice(3).map((certificate, index) => (
+                  <div className="flex justify-between items-center mb-6">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 rounded-lg bg-gradient-to-r from-teal-500 to-blue-500">
+                        <Star className="w-5 h-5 text-white" />
+                      </div>
+                      <h3 className="text-xl font-bold text-white">More Certificates</h3>
+                    </div>
+                    <div className="flex gap-2">
+                      <motion.button 
+                        onClick={() => navigate("prev")}
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
+                        className="p-2 rounded-full glass-morphism hover:bg-teal-500/10 transition-colors border border-white/10"
+                        aria-label="Previous certificates"
+                      >
+                        <ChevronLeft className="h-5 w-5 text-teal-400" />
+                      </motion.button>
+                      <motion.button 
+                        onClick={() => navigate("next")}
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
+                        className="p-2 rounded-full glass-morphism hover:bg-teal-500/10 transition-colors border border-white/10"
+                        aria-label="Next certificates"
+                      >
+                        <ChevronRight className="h-5 w-5 text-teal-400" />
+                      </motion.button>
+                    </div>
+                  </div>
+                  
+                  {/* Virtualized carousel for better performance */}
+                  <div 
+                    ref={carouselRef}
+                    className="flex gap-4 overflow-x-auto hide-scrollbar pb-4 px-1 snap-x snap-mandatory"
+                    style={{ perspective: "1000px" }}
+                  >
+                    {certificates.map((certificate, index) => (
                     <motion.div
                       key={certificate.id}
                       className="min-w-[280px] max-w-[280px] flex-shrink-0 snap-start transform-gpu" // Combined classes
@@ -591,6 +751,7 @@ export function Achievements() {
                   ))}
                 </div>
               </motion.div>
+              )}
             </>
           )}
         </div>

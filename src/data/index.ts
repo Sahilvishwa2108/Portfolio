@@ -158,45 +158,145 @@ export const socialMedia = [
   },
 ];
 
-// Certificates data
+// Premium Certificates - Oracle & NPTEL (Featured)
+export const premiumCertificates = [
+  // Oracle Cloud Infrastructure Certifications (2025)
+  {
+    id: 'oci-genai',
+    src: "/certificates/OCI_2025_Certified_GenAI_professional.png",
+    title: "OCI 2025 Certified Generative AI Professional",
+    issuer: "Oracle University",
+    category: "Cloud & AI",
+    level: "Professional",
+    date: "August 2025",
+    validUntil: "August 2027",
+    color: "from-red-500 to-orange-500",
+    content: "Oracle Cloud Infrastructure 2025 Certified Generative AI Professional - Expertise in building and deploying generative AI solutions on OCI."
+  },
+  {
+    id: 'oci-developer',
+    src: "/certificates/OCI_2025_Certified_Developer_professional.png",
+    title: "OCI 2025 Certified Developer Professional",
+    issuer: "Oracle University",
+    category: "Cloud Development",
+    level: "Professional",
+    date: "August 2025",
+    validUntil: "August 2027",
+    color: "from-red-500 to-rose-500",
+    content: "Oracle Cloud Infrastructure 2025 Certified Developer Professional - Advanced cloud-native application development on OCI."
+  },
+  {
+    id: 'oci-datascience',
+    src: "/certificates/OCI_2025_Certified_Datascience_professional.png",
+    title: "OCI 2025 Certified Data Science Professional",
+    issuer: "Oracle University",
+    category: "Data Science",
+    level: "Professional",
+    date: "August 2025",
+    validUntil: "August 2027",
+    color: "from-purple-500 to-pink-500",
+    content: "Oracle Cloud Infrastructure 2025 Certified Data Science Professional - Machine learning and data science expertise on OCI."
+  },
+  {
+    id: 'oci-architect',
+    src: "/certificates/OCI_2025_Certified_Architect_Associate.png",
+    title: "OCI 2025 Certified Architect Associate",
+    issuer: "Oracle University",
+    category: "Cloud Architecture",
+    level: "Associate",
+    date: "August 2025",
+    validUntil: "August 2027",
+    color: "from-blue-500 to-indigo-500",
+    content: "Oracle Cloud Infrastructure 2025 Certified Architect Associate - Cloud architecture and infrastructure design expertise."
+  },
+  {
+    id: 'oci-foundations',
+    src: "/certificates/OCI_2025_Certified_foundations_associate.png",
+    title: "OCI 2025 Certified Foundations Associate",
+    issuer: "Oracle University",
+    category: "Cloud Foundations",
+    level: "Associate",
+    date: "August 2025",
+    validUntil: "August 2027",
+    color: "from-teal-500 to-cyan-500",
+    content: "Oracle Cloud Infrastructure 2025 Certified Foundations Associate - Core OCI services and cloud concepts."
+  },
+  {
+    id: 'oci-ai-foundations',
+    src: "/certificates/OCI_2025_AI_foundations_associate.png",
+    title: "OCI 2025 Certified AI Foundations Associate",
+    issuer: "Oracle University",
+    category: "AI Foundations",
+    level: "Associate",
+    date: "August 2025",
+    validUntil: "August 2027",
+    color: "from-emerald-500 to-teal-500",
+    content: "Oracle Cloud Infrastructure 2025 Certified AI Foundations Associate - Fundamentals of AI and machine learning on OCI."
+  },
+  // NPTEL Certifications (IIT)
+  {
+    id: 'nptel-java',
+    src: "/certificates/nptel_java.png",
+    title: "Programming in Java - NPTEL Elite",
+    issuer: "IIT Kharagpur / NPTEL",
+    category: "Programming",
+    level: "Elite",
+    date: "April 2025",
+    score: "82%",
+    color: "from-amber-500 to-orange-500",
+    content: "NPTEL Elite certification in Java programming with 82% score. Comprehensive course covering OOP, data structures, and advanced Java concepts."
+  },
+  {
+    id: 'nptel-dbms',
+    src: "/certificates/nptel_dbms.png",
+    title: "Database Management System - NPTEL",
+    issuer: "IIT Kharagpur / NPTEL",
+    category: "Database",
+    level: "Certified",
+    date: "March 2025",
+    score: "56%",
+    color: "from-blue-500 to-sky-500",
+    content: "NPTEL certification in Database Management Systems covering SQL, normalization, transaction processing, and database design principles."
+  },
+  {
+    id: 'nptel-networking',
+    src: "/certificates/nptel_computerNetworks.png",
+    title: "Demystifying Networking - NPTEL",
+    issuer: "IIT Bombay / NPTEL",
+    category: "Networking",
+    level: "Certified",
+    date: "August 2025",
+    score: "57%",
+    color: "from-violet-500 to-purple-500",
+    content: "NPTEL certification in Computer Networking covering network protocols, TCP/IP, and modern networking concepts."
+  }
+];
+
+// Other Certificates (Carousel)
 export const certificates = [
   {
     id: 1,
-    src: "/certificates/dbms.png",
-    title: "NPTEL Programming in Java",
-    category: 1,
-    content: "Comprehensive certification in Java programming fundamentals, OOP concepts, and advanced Java features from NPTEL."
-  },
-  {
-    id: 2,
-    src: "/certificates/dbms.png",
-    title: "NPTEL Database Management System",
-    category: 2,
-    content: "Certification in database design principles, SQL, normalization, transaction processing, and database administration."
-  },
-  {
-    id: 3,
     src: "/certificates/infosys2.png",
     title: "High Impact Presentations",
     category: 3,
     content: "Learn to deliver high-impact presentations that generate results."
   },
   {
-    id: 4,
+    id: 2,
     src: "/certificates/infosys3.png",
     title: "Java Language Features",
     category: 4,
     content: "Master the advanced features of Java programming with our comprehensive course."
   },
   {
-    id: 5,
+    id: 3,
     src: "/certificates/delta.jpg",
     title: "Full Stack Web Development",
     category: 5,
     content: "Learn to build full stack web applications with our comprehensive course."
   },
   {
-    id: 6,
+    id: 4,
     src: "/certificates/pwhacking.jpg",
     title: "Introduction to Ethical Hacking",
     category: 6,
