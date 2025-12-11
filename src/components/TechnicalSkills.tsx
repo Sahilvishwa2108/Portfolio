@@ -10,58 +10,61 @@ import {
   SiNodedotjs, SiExpress, SiMongodb, SiPostgresql, SiRedis,
   SiGit, SiDocker, SiGithub, SiFirebase, SiCloudflare,
   SiJavascript, SiHtml5, SiCss3, SiLinux,
-  SiPrisma, SiPostman, SiAmazon, SiZod, SiAuth0,
+  SiPrisma, SiPostman, SiZod, SiAuth0,
   SiSocketdotio, SiCloudinary
 } from 'react-icons/si';
 import { DiJava } from 'react-icons/di';
 import { IconType } from 'react-icons';
 import { useOptimizedAnimation } from "@/hooks/useOptimizedAnimation";
 
-// Skill data
+// Skill data - Updated according to resume
 const skillsData = {
-  frontend: [
+  // Programming Languages from resume: Java, JavaScript, TypeScript, SQL, HTML, CSS
+  programming: [
+    { name: "Java", icon: DiJava, color: "#007396", level: 85 },
+    { name: "JavaScript", icon: SiJavascript, color: "#F7DF1E", level: 90 },
+    { name: "TypeScript", icon: SiTypescript, color: "#3178C6", level: 85 },
+    { name: "HTML5", icon: SiHtml5, color: "#E34F26", level: 95 },
+    { name: "CSS3", icon: SiCss3, color: "#1572B6", level: 90 },
+  ],
+  // Technologies from resume: Next.js, React.js, Express.js, Node.js, Tailwind CSS, Prisma, PostgreSQL, MongoDB
+  technologies: [
+    { name: "Next.js", icon: SiNextdotjs, color: "#FFFFFF", level: 90 },
     { name: "React", icon: SiReact, color: "#61DAFB", level: 90 },
-    { name: "Next.js", icon: SiNextdotjs, color: "#FFFFFF", level: 85 },
-    { name: "TypeScript", icon: SiTypescript, color: "#3178C6", level: 80 },
-    { name: "Tailwind CSS", icon: SiTailwindcss, color: "#06B6D4", level: 95 },
-    { name: "Framer Motion", icon: SiFramer, color: "#FF0055", level: 75 },
-    { name: "HTML5", icon: SiHtml5, color: "#E34F26", level: 90 },
-    { name: "CSS3", icon: SiCss3, color: "#1572B6", level: 85 },
-    { name: "JavaScript", icon: SiJavascript, color: "#F7DF1E", level: 88 },
-  ],
-  backend: [
+    { name: "Express", icon: SiExpress, color: "#FFFFFF", level: 85 },
     { name: "Node.js", icon: SiNodedotjs, color: "#339933", level: 85 },
-    { name: "Express", icon: SiExpress, color: "#FFFFFF", level: 80 },
-    { name: "MongoDB", icon: SiMongodb, color: "#47A248", level: 70 },
-    { name: "PostgreSQL", icon: SiPostgresql, color: "#336791", level: 75 },
-    { name: "Redis", icon: SiRedis, color: "#DC382D", level: 65 },
-    { name: "Prisma", icon: SiPrisma, color: "#2D3748", level: 70 },
-    { name: "Java", icon: DiJava, color: "#007396", level: 80 },
-    { name: "Socket.io", icon: SiSocketdotio, color: "#FFFFFF", level: 65 },
+    { name: "Tailwind CSS", icon: SiTailwindcss, color: "#06B6D4", level: 95 },
+    { name: "Prisma", icon: SiPrisma, color: "#2D3748", level: 80 },
+    { name: "PostgreSQL", icon: SiPostgresql, color: "#336791", level: 80 },
+    { name: "MongoDB", icon: SiMongodb, color: "#47A248", level: 75 },
   ],
+  // Tools from resume: Git, GitHub Actions, Docker, Postman, Redis, Agile/Scrum, CI/CD, RESTful APIs
   tools: [
     { name: "Git", icon: SiGit, color: "#F05032", level: 90 },
-    { name: "GitHub", icon: SiGithub, color: "#FFFFFF", level: 85 },
-    { name: "Docker", icon: SiDocker, color: "#2496ED", level: 70 },
+    { name: "GitHub", icon: SiGithub, color: "#FFFFFF", level: 90 },
+    { name: "Docker", icon: SiDocker, color: "#2496ED", level: 75 },
+    { name: "Postman", icon: SiPostman, color: "#FF6C37", level: 85 },
+    { name: "Redis", icon: SiRedis, color: "#DC382D", level: 70 },
     { name: "Linux", icon: SiLinux, color: "#FCC624", level: 75 },
-    { name: "Postman", icon: SiPostman, color: "#FF6C37", level: 80 },
-    { name: "AWS", icon: SiAmazon, color: "#FF9900", level: 65 },
-    { name: "Cloudinary", icon: SiCloudinary, color: "#3448C5", level: 75 },
-    { name: "Firebase", icon: SiFirebase, color: "#FFCA28", level: 80 },
+    { name: "Firebase", icon: SiFirebase, color: "#FFCA28", level: 75 },
+    { name: "Cloudinary", icon: SiCloudinary, color: "#3448C5", level: 70 },
   ],
-  frameworks: [
+  // Additional libraries used
+  libraries: [
+    { name: "Framer Motion", icon: SiFramer, color: "#FF0055", level: 80 },
+    { name: "Socket.io", icon: SiSocketdotio, color: "#FFFFFF", level: 70 },
     { name: "NextAuth", icon: SiAuth0, color: "#EB5424", level: 75 },
-    { name: "Zod", icon: SiZod, color: "#3068B7", level: 70 },
-    { name: "Cloudflare", icon: SiCloudflare, color: "#F38020", level: 75 },
+    { name: "Zod", icon: SiZod, color: "#3068B7", level: 75 },
+    { name: "Cloudflare", icon: SiCloudflare, color: "#F38020", level: 70 },
   ]
 };
 
 const categories = [
   { id: "all", name: "All Skills" },
-  { id: "frontend", name: "Frontend" },
-  { id: "backend", name: "Backend" },
-  { id: "tools", name: "DevOps & Tools" },
-  { id: "frameworks", name: "Libraries & Frameworks" }
+  { id: "programming", name: "Languages" },
+  { id: "technologies", name: "Technologies" },
+  { id: "tools", name: "Tools" },
+  { id: "libraries", name: "Libraries" }
 ];
 
 interface Skill {
@@ -267,10 +270,10 @@ const TechnicalSkills = () => {
   const displayedSkills = useMemo(() => {
     if (category === 'all') {
       return [
-        ...skillsData.frontend,
-        ...skillsData.backend,
+        ...skillsData.programming,
+        ...skillsData.technologies,
         ...skillsData.tools,
-        ...skillsData.frameworks
+        ...skillsData.libraries
       ];
     }
     return skillsData[category as keyof typeof skillsData] || [];
@@ -409,10 +412,10 @@ const TechnicalSkills = () => {
           className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-6"
         >
           {[
-            { label: "Frontend", count: skillsData.frontend.length, gradient: "from-teal-500 to-cyan-500" },
-            { label: "Backend", count: skillsData.backend.length, gradient: "from-blue-500 to-indigo-500" },
+            { label: "Languages", count: skillsData.programming.length, gradient: "from-teal-500 to-cyan-500" },
+            { label: "Technologies", count: skillsData.technologies.length, gradient: "from-blue-500 to-indigo-500" },
             { label: "Tools", count: skillsData.tools.length, gradient: "from-purple-500 to-pink-500" },
-            { label: "Frameworks", count: skillsData.frameworks.length, gradient: "from-pink-500 to-rose-500" }
+            { label: "Libraries", count: skillsData.libraries.length, gradient: "from-pink-500 to-rose-500" }
           ].map((stat) => (
             <motion.div 
               key={stat.label}

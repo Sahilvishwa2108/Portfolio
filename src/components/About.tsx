@@ -1,24 +1,30 @@
 "use client";
-import React, { useRef, useState } from "react";
+import React from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { useOptimizedAnimation } from "@/hooks/useOptimizedAnimation";
-import { Code2, Rocket, Brain, Heart, Award, Zap } from "lucide-react";
+import { 
+  Code2, 
+  Rocket, 
+  Brain, 
+  Layers, 
+  Terminal,
+  Database,
+  Globe,
+  Sparkles,
+  GraduationCap,
+  MapPin,
+  Briefcase,
+  Trophy
+} from "lucide-react";
 
 const AboutSection = () => {
-  const { ref: sectionRef, isActive } = useOptimizedAnimation(0.15, true);
-  const { ref: contentRef, isActive: isContentActive } = useOptimizedAnimation(0.15, true);
-
-  const [hoveredCard, setHoveredCard] = useState<number | null>(null);
+  const { ref: sectionRef, isActive } = useOptimizedAnimation(0.1, true);
+  const { ref: contentRef, isActive: isContentActive } = useOptimizedAnimation(0.1, true);
 
   // Animation variants
   const fadeInUp = {
     hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 }
-  };
-
-  const fadeInDown = {
-    hidden: { opacity: 0, y: -20 },
     visible: { opacity: 1, y: 0 }
   };
 
@@ -32,250 +38,299 @@ const AboutSection = () => {
     visible: { opacity: 1, x: 0 }
   };
 
-  const highlights = [
+  // Core competencies with modern icons
+  const coreSkills = [
     {
-      icon: Code2,
-      title: "Clean Code",
-      description: "Writing maintainable, scalable code",
-      color: "from-teal-500 to-cyan-500"
+      icon: Globe,
+      title: "Full Stack Development",
+      description: "End-to-end web applications with Next.js, React & Node.js",
+      gradient: "from-teal-500 to-cyan-500",
+      hoverBg: "teal"
     },
     {
-      icon: Rocket,
-      title: "Fast Performance",
-      description: "Optimized for speed and efficiency",
-      color: "from-blue-500 to-indigo-500"
+      icon: Database,
+      title: "Database Architecture",
+      description: "PostgreSQL, MongoDB, Redis with Prisma ORM",
+      gradient: "from-blue-500 to-indigo-500",
+      hoverBg: "blue"
     },
     {
-      icon: Brain,
-      title: "Problem Solver",
-      description: "Creative solutions to complex challenges",
-      color: "from-purple-500 to-pink-500"
+      icon: Layers,
+      title: "Modern UI/UX",
+      description: "Responsive interfaces with Tailwind CSS & Framer Motion",
+      gradient: "from-purple-500 to-pink-500",
+      hoverBg: "purple"
     },
     {
-      icon: Heart,
-      title: "User Focused",
-      description: "Building delightful user experiences",
-      color: "from-pink-500 to-rose-500"
-    },
-    {
-      icon: Award,
-      title: "Quality First",
-      description: "Attention to detail in every project",
-      color: "from-orange-500 to-amber-500"
-    },
-    {
-      icon: Zap,
-      title: "Always Learning",
-      description: "Staying updated with latest tech",
-      color: "from-yellow-500 to-green-500"
+      icon: Terminal,
+      title: "DevOps & Tools",
+      description: "Docker, Git, GitHub Actions, CI/CD pipelines",
+      gradient: "from-orange-500 to-amber-500",
+      hoverBg: "orange"
     }
   ];
-  
+
+  // Quick stats
+  const stats = [
+    { value: "8+", label: "Projects Built", icon: Code2 },
+    { value: "3+", label: "Years Coding", icon: Rocket },
+    { value: "5+", label: "Hackathons", icon: Trophy },
+    { value: "4+", label: "Certifications", icon: GraduationCap }
+  ];
+
   return (
     <section
       id="about"
-      className="min-h-screen py-24 relative overflow-hidden section-bg"
+      className="py-24 relative overflow-hidden section-bg"
     >
-      {/* Animated background particles */}
+      {/* Animated background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl" 
-             style={{ animation: 'pulse-slow 4s ease-in-out infinite' }}></div>
-        <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl" 
-             style={{ animation: 'pulse-slow 4s ease-in-out infinite 1s' }}></div>
-        <div className="absolute bottom-1/4 left-1/3 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl" 
-             style={{ animation: 'pulse-slow 4s ease-in-out infinite 2s' }}></div>
+        <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-teal-500/5 rounded-full blur-3xl" 
+             style={{ animation: 'pulse-slow 6s ease-in-out infinite' }} />
+        <div className="absolute bottom-0 right-1/4 w-[600px] h-[600px] bg-purple-500/5 rounded-full blur-3xl" 
+             style={{ animation: 'pulse-slow 6s ease-in-out infinite 2s' }} />
       </div>
 
-      <div className="container mx-auto px-4 relative z-10">
+      <div className="container mx-auto px-4 relative z-10 max-w-7xl">
         {/* Section Header */}
         <div className="text-center mb-16" ref={sectionRef}>
           <motion.div
-            variants={fadeInDown}
-            initial="hidden"
-            animate={isActive ? "visible" : "hidden"}
-            transition={{ duration: 0.6, ease: "easeOut" }}
-            className="inline-block"
-          >
-            <h2 className="text-xl md:text-2xl font-semibold gradient-text">
-              ABOUT ME
-            </h2>
-            <div className="h-1 bg-gradient-to-r from-teal-500 via-blue-500 to-purple-500 mt-2 rounded-full"></div>
-          </motion.div>
-
-          <motion.h3
             variants={fadeInUp}
             initial="hidden"
             animate={isActive ? "visible" : "hidden"}
-            transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
-            className="text-4xl md:text-6xl font-bold mt-4 text-white"
+            transition={{ duration: 0.6 }}
+            className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-white/5 backdrop-blur-sm border border-white/10 mb-6"
           >
-            Crafting Digital{" "}
-            <span className="gradient-text">Experiences</span>
-          </motion.h3>
+            <Sparkles className="w-5 h-5 text-teal-400" />
+            <span className="text-sm text-teal-400 font-semibold tracking-wide">ABOUT ME</span>
+          </motion.div>
+
+          <motion.h2
+            variants={fadeInUp}
+            initial="hidden"
+            animate={isActive ? "visible" : "hidden"}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="text-4xl md:text-5xl lg:text-6xl font-bold mb-5"
+          >
+            <span className="text-white">Turning Ideas Into </span>
+            <span className="bg-gradient-to-r from-teal-400 via-blue-500 to-purple-600 bg-clip-text text-transparent">
+              Digital Reality
+            </span>
+          </motion.h2>
 
           <motion.p
             variants={fadeInUp}
             initial="hidden"
             animate={isActive ? "visible" : "hidden"}
-            transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
-            className="mt-6 text-gray-400 max-w-3xl mx-auto text-lg"
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="text-gray-400 text-lg max-w-3xl mx-auto"
           >
-            A passionate developer dedicated to building innovative solutions and creating seamless user experiences
+            A passionate developer building enterprise-grade applications with modern technologies
           </motion.p>
         </div>
 
-        <div ref={contentRef} className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start max-w-7xl mx-auto">
-          {/* Left side - Profile Card */}
+        {/* Main Content Grid */}
+        <div ref={contentRef} className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+          
+          {/* Left Column - Profile Card (4 cols) */}
           <motion.div
             variants={fadeInLeft}
             initial="hidden"
             animate={isContentActive ? "visible" : "hidden"}
-            transition={{ duration: 0.6, ease: "easeOut" }}
-            className="relative"
+            transition={{ duration: 0.6 }}
+            className="lg:col-span-4 h-full"
           >
-            <div className="glass-morphism-strong rounded-3xl p-8 hover-lift">
-              {/* Profile Image Container */}
-              <div className="relative mb-8 group">
-                <div className="absolute -inset-1 bg-gradient-to-r from-teal-500 via-blue-500 to-purple-500 rounded-2xl blur-lg opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
-                <div className="relative aspect-square rounded-2xl overflow-hidden">
-                  <Image
-                    src="/your-profile-image.jpg"
-                    alt="Sahil Vishwakarma"
-                    width={600}
-                    height={600}
-                    priority
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
-                </div>
-              </div>
+            <div className="h-full">
+              <div className="relative group h-full">
+                {/* Gradient border glow */}
+                <div className="absolute -inset-1 bg-gradient-to-r from-teal-500 via-blue-500 to-purple-500 rounded-3xl blur-lg opacity-50 group-hover:opacity-75 transition duration-500" />
+                
+                {/* Card */}
+                <div className="relative bg-gray-900/90 backdrop-blur-xl rounded-3xl border border-white/10 overflow-hidden h-full flex flex-col">
+                  {/* Profile Image */}
+                  <div className="relative aspect-square overflow-hidden">
+                    <Image
+                      src="/your-profile-image.jpg"
+                      alt="Sahil Vishwakarma"
+                      fill
+                      priority
+                      className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/20 to-transparent" />
+                    
+                    {/* Floating badge */}
+                    <div className="absolute top-4 right-4 px-3 py-1.5 rounded-full bg-teal-500/20 backdrop-blur-md border border-teal-500/30 text-teal-400 text-xs font-semibold">
+                      Open to Work
+                    </div>
+                  </div>
 
-              {/* Profile Info */}
-              <div className="text-center mb-6">
-                <h4 className="text-3xl font-bold text-white mb-2">
-                  Sahil Vishwakarma
-                </h4>
-                <p className="text-xl gradient-text font-semibold">
-                  Full Stack Developer
-                </p>
-                <div className="flex items-center justify-center gap-2 mt-3 text-gray-400">
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
-                  </svg>
-                  <span>Bhopal, India</span>
-                </div>
-              </div>
+                  {/* Profile Info */}
+                  <div className="p-6 -mt-12 relative z-10 flex-1 flex flex-col">
+                    <h3 className="text-2xl font-bold text-white mb-1">
+                      Sahil Vishwakarma
+                    </h3>
+                    <p className="text-lg bg-gradient-to-r from-teal-400 to-blue-500 bg-clip-text text-transparent font-semibold mb-4">
+                      Full Stack Developer
+                    </p>
+                    
+                    <div className="space-y-2 text-sm text-gray-400">
+                      <div className="flex items-center gap-2">
+                        <MapPin className="w-4 h-4 text-teal-400" />
+                        <span>Bhopal, Madhya Pradesh</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <GraduationCap className="w-4 h-4 text-blue-400" />
+                        <span>LNCT Bhopal - CSE &apos;26</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Briefcase className="w-4 h-4 text-purple-400" />
+                        <span>Freelance Developer</span>
+                      </div>
+                    </div>
 
-              {/* Quick Stats */}
-              <div className="grid grid-cols-3 gap-4 pt-6 border-t border-white/10">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-teal-400">30+</div>
-                  <div className="text-sm text-gray-400 mt-1">Projects</div>
-                </div>
-                <div className="text-center border-x border-white/10">
-                  <div className="text-2xl font-bold text-blue-400">4+</div>
-                  <div className="text-sm text-gray-400 mt-1">Years</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-purple-400">25+</div>
-                  <div className="text-sm text-gray-400 mt-1">Certificates</div>
+                    {/* Stats Row */}
+                    <div className="grid grid-cols-4 gap-2 mt-auto pt-6 border-t border-white/10">
+                      {stats.map((stat, index) => (
+                        <div key={index} className="text-center group/stat cursor-default">
+                          <div className="text-xl font-bold text-white group-hover/stat:text-teal-400 transition-colors">
+                            {stat.value}
+                          </div>
+                          <div className="text-[10px] text-gray-500 uppercase tracking-wider">
+                            {stat.label}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </motion.div>
 
-          {/* Right side - Content Cards */}
+          {/* Right Column - Content (8 cols) */}
           <motion.div
             variants={fadeInRight}
             initial="hidden"
             animate={isContentActive ? "visible" : "hidden"}
-            transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
-            className="space-y-6"
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="lg:col-span-8 space-y-6"
           >
-            {/* Main Description */}
-            <div className="glass-morphism-strong rounded-2xl p-6 md:p-8">
-              <h5 className="text-2xl font-bold text-white mb-4">
-                Who I Am
-              </h5>
-              <div className="space-y-4 text-gray-300 leading-relaxed">
-                <p>
-                  I&apos;m a <span className="text-teal-400 font-semibold">Full Stack Developer</span> with a passion for creating 
-                  elegant solutions to complex problems. My journey in tech started with curiosity and has evolved into 
-                  a deep commitment to building applications that make a difference.
-                </p>
-                <p>
-                  I specialize in <span className="text-blue-400 font-semibold">React, Next.js, and TypeScript</span> for 
-                  frontend development, while leveraging <span className="text-purple-400 font-semibold">Node.js and modern databases</span> for 
-                  robust backend solutions. Every project is an opportunity to learn, grow, and push boundaries.
-                </p>
-                <p>
-                  Beyond code, I&apos;m passionate about <span className="text-pink-400 font-semibold">UI/UX design</span>, 
-                  performance optimization, and staying at the forefront of web technologies.
-                </p>
+            {/* Bio Card */}
+            <div className="relative group rounded-3xl overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-teal-500/10 via-transparent to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <div className="relative bg-white/[0.03] backdrop-blur-sm border border-white/10 rounded-3xl p-8 group-hover:border-white/20 transition-all duration-300">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="p-2 rounded-xl bg-gradient-to-br from-teal-500 to-cyan-500">
+                    <Brain className="w-5 h-5 text-white" />
+                  </div>
+                  <h4 className="text-xl font-bold text-white">The Developer Behind the Code</h4>
+                </div>
+                
+                <div className="space-y-4 text-gray-300 leading-relaxed">
+                  <p>
+                    I&apos;m a <span className="text-teal-400 font-semibold">final year Computer Science student</span> at LNCT Bhopal with a deep passion for building 
+                    <span className="text-blue-400 font-semibold"> enterprise-grade web applications</span>. My journey started at Jawahar Navodaya Vidyalaya, Sagar, 
+                    where Computer Science as an optional subject sparked my love for programming.
+                  </p>
+                  <p>
+                    With hands-on experience in <span className="text-purple-400 font-semibold">MERN Stack, Next.js, and TypeScript</span>, I specialize in creating 
+                    scalable solutions — from <span className="text-pink-400 font-semibold">SaaS platforms handling 50+ concurrent users</span> to AI-powered feedback systems.
+                  </p>
+                  <p>
+                    Beyond code, I&apos;ve actively participated in <span className="text-orange-400 font-semibold">Smart India Hackathon 2024</span> and multiple competitive hackathons, 
+                    building innovative solutions like oil spill detection systems using ML.
+                  </p>
+                </div>
               </div>
             </div>
 
-            {/* What I Do Section */}
-            <div className="glass-morphism-strong rounded-2xl p-6 md:p-8">
-              <h5 className="text-2xl font-bold text-white mb-6">
-                What I Bring
-              </h5>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {highlights.map((item, index) => {
-                  const Icon = item.icon;
-                  return (
-                    <motion.div
-                      key={index}
-                      onHoverStart={() => setHoveredCard(index)}
-                      onHoverEnd={() => setHoveredCard(null)}
-                      className={`relative group cursor-pointer rounded-xl p-4 transition-all duration-300 ${
-                        hoveredCard === index
-                          ? "bg-white/10 scale-105"
-                          : "bg-white/5"
-                      }`}
-                    >
-                      <div className="flex items-start gap-3">
-                        <div className={`p-2 rounded-lg bg-gradient-to-br ${item.color} flex-shrink-0`}>
-                          <Icon className="w-5 h-5 text-white" />
+            {/* Core Competencies Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {coreSkills.map((skill, index) => {
+                const Icon = skill.icon;
+                
+                return (
+                  <motion.div
+                    key={index}
+                    className="relative group cursor-default overflow-hidden rounded-2xl"
+                    whileHover={{ scale: 1.02 }}
+                    transition={{ duration: 0.3, ease: "easeOut" }}
+                  >
+                    {/* Background gradient that appears on hover */}
+                    <div 
+                      className={`absolute inset-0 bg-gradient-to-br ${skill.gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-500`}
+                    />
+                    
+                    {/* Animated border */}
+                    <div className="absolute inset-0 rounded-2xl border border-white/10 group-hover:border-transparent transition-all duration-300" />
+                    <div 
+                      className={`absolute inset-0 rounded-2xl border-2 border-transparent bg-gradient-to-br ${skill.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-300`}
+                      style={{ WebkitMask: 'linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0)', WebkitMaskComposite: 'xor', maskComposite: 'exclude' }}
+                    />
+                    
+                    <div className="relative h-full p-6 bg-white/[0.02] backdrop-blur-sm">
+                      <div className="flex items-start gap-4">
+                        <div className={`
+                          p-3 rounded-xl bg-gradient-to-br ${skill.gradient} 
+                          transform transition-all duration-500 group-hover:scale-110 group-hover:rotate-3 group-hover:shadow-lg
+                        `}
+                        style={{ boxShadow: 'none' }}
+                        onMouseEnter={(e) => e.currentTarget.style.boxShadow = `0 10px 40px -10px ${skill.gradient.includes('teal') ? '#14b8a6' : skill.gradient.includes('blue') ? '#3b82f6' : skill.gradient.includes('purple') ? '#8b5cf6' : '#f97316'}50`}
+                        onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'none'}
+                        >
+                          <Icon className="w-6 h-6 text-white" />
                         </div>
-                        <div>
-                          <h6 className="font-semibold text-white mb-1">
-                            {item.title}
-                          </h6>
-                          <p className="text-sm text-gray-400">
-                            {item.description}
+                        <div className="flex-1">
+                          <h5 className="font-bold text-white mb-1 transition-all duration-300">
+                            {skill.title}
+                          </h5>
+                          <p className="text-sm text-gray-400 group-hover:text-gray-300 transition-colors duration-300">
+                            {skill.description}
                           </p>
                         </div>
                       </div>
-                      {hoveredCard === index && (
-                        <motion.div
-                          layoutId="highlight-border"
-                          className={`absolute inset-0 rounded-xl border-2 bg-gradient-to-br ${item.color} opacity-20`}
-                          transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                        />
-                      )}
-                    </motion.div>
-                  );
-                })}
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </div>
+
+            {/* Tech Stack Highlight */}
+            <div className="relative group rounded-3xl overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 via-purple-500/5 to-pink-500/5" />
+              <div className="relative bg-white/[0.02] backdrop-blur-sm border border-white/10 rounded-3xl p-8 group-hover:border-white/20 transition-all duration-300">
+                <h4 className="text-lg font-bold text-white mb-4">Primary Tech Stack</h4>
+                <div className="flex flex-wrap gap-3">
+                  {[
+                    { name: 'Next.js', color: '#fff' },
+                    { name: 'React', color: '#61dafb' },
+                    { name: 'TypeScript', color: '#3178c6' },
+                    { name: 'Node.js', color: '#339933' },
+                    { name: 'PostgreSQL', color: '#336791' },
+                    { name: 'MongoDB', color: '#47a248' },
+                    { name: 'Prisma', color: '#2d3748' },
+                    { name: 'Tailwind CSS', color: '#06b6d4' },
+                    { name: 'Redis', color: '#dc382d' },
+                    { name: 'Docker', color: '#2496ed' },
+                  ].map((tech, index) => (
+                    <motion.span
+                      key={tech.name}
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={isContentActive ? { opacity: 1, scale: 1 } : {}}
+                      transition={{ delay: 0.3 + index * 0.05 }}
+                      className="px-4 py-2 rounded-xl text-sm font-medium bg-white/5 border border-white/10 text-gray-300 hover:bg-white/10 hover:border-white/20 transition-all duration-300 cursor-default"
+                      style={{
+                        boxShadow: `0 0 20px ${tech.color}10`,
+                      }}
+                    >
+                      {tech.name}
+                    </motion.span>
+                  ))}
+                </div>
               </div>
             </div>
 
-            {/* CTA Button */}
-            <div className="flex gap-4">
-              <a
-                href="#projects"
-                className="flex-1 group relative overflow-hidden px-8 py-4 rounded-xl bg-gradient-to-r from-teal-500 to-blue-600 text-white font-semibold text-center transition-all hover:scale-105 hover:shadow-2xl hover:shadow-teal-500/50"
-              >
-                <span className="relative z-10">View My Work</span>
-                <div className="absolute inset-0 bg-gradient-to-r from-teal-600 to-blue-700 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-              </a>
-              <a
-                href="#contact"
-                className="flex-1 group relative overflow-hidden px-8 py-4 rounded-xl border-2 border-white/20 text-white font-semibold text-center transition-all hover:scale-105 hover:border-white/40 hover:bg-white/5"
-              >
-                <span className="relative z-10">Get In Touch</span>
-              </a>
-            </div>
+
           </motion.div>
         </div>
       </div>
