@@ -7,6 +7,7 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import * as THREE from 'three';
 import Link from 'next/link';
 import { ArrowRight, Download, Github, Linkedin, Mail } from 'lucide-react';
+import { AnimatedNameText } from './ui/animated-name';
 
 // Optimized particle count for performance
 const PARTICLE_COUNT = 500;
@@ -206,10 +207,8 @@ export function Hero() {
           transition={{ duration: 0.6, delay: 0.4 }}
           className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold mb-6 leading-tight"
         >
-          <span className="block text-white">Hi, I&apos;m</span>
-          <span className="block bg-gradient-to-r from-teal-400 via-blue-500 to-purple-600 bg-clip-text text-transparent">
-            Sahil Vishwakarma
-          </span>
+          <span className="block text-white mb-4">Hi, I&apos;m</span>
+          <AnimatedNameText />
         </motion.h1>
 
         <motion.p

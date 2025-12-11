@@ -219,6 +219,87 @@
   animation: pulse-btn 2s infinite;
 }
 
+/* Animated Name SVG Letter Painting Styles */
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.animated-name-gradient {
+  background-size: 200% 200%;
+  animation: gradient-shift 3s ease infinite;
+}
+
+@keyframes letter-glow {
+  0%, 100% {
+    text-shadow: 
+      0 0 10px rgba(20, 184, 166, 0.5),
+      0 0 20px rgba(20, 184, 166, 0.3),
+      0 0 30px rgba(20, 184, 166, 0.2);
+  }
+  33% {
+    text-shadow: 
+      0 0 10px rgba(59, 130, 246, 0.5),
+      0 0 20px rgba(59, 130, 246, 0.3),
+      0 0 30px rgba(59, 130, 246, 0.2);
+  }
+  66% {
+    text-shadow: 
+      0 0 10px rgba(139, 92, 246, 0.5),
+      0 0 20px rgba(139, 92, 246, 0.3),
+      0 0 30px rgba(139, 92, 246, 0.2);
+  }
+}
+
+.letter-glow-animation {
+  animation: letter-glow 4s ease-in-out infinite;
+}
+
+@keyframes draw-underline {
+  from { 
+    width: 0; 
+    opacity: 0;
+  }
+  to { 
+    width: 100%; 
+    opacity: 1;
+  }
+}
+
+.animate-draw-underline {
+  animation: draw-underline 1s ease-out forwards;
+}
+
+/* SVG Path Drawing Animation Support */
+@keyframes dash-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.svg-draw-animation {
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+  animation: dash-draw 3s ease forwards;
+}
+
+/* Sparkle animation for name decoration */
+@keyframes sparkle {
+  0%, 100% { 
+    opacity: 0; 
+    transform: scale(0) rotate(0deg); 
+  }
+  50% { 
+    opacity: 1; 
+    transform: scale(1) rotate(180deg); 
+  }
+}
+
+.animate-sparkle {
+  animation: sparkle 2s ease-in-out infinite;
+}
+
 /* 3D perspective helpers */
 .perspective-1200 {
   perspective: 1200px;
