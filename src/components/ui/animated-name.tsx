@@ -1,247 +1,263 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface AnimatedNameProps {
   className?: string;
 }
 
-export function AnimatedName({ className = '' }: AnimatedNameProps) {
+// Hook to detect mobile devices
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  return isMobile;
+}
+
+// ============================================
+// MOBILE VERSION - Modern Stacked Design
+// ============================================
+function MobileAnimatedName() {
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    // Small delay to ensure smooth initial animation
-    const timer = setTimeout(() => setIsLoaded(true), 100);
+    const timer = setTimeout(() => setIsLoaded(true), 200);
     return () => clearTimeout(timer);
   }, []);
 
-  // SVG path for "Sahil Vishwakarma" in elegant cursive style
-  // Each path represents a letter with stroke animation
-  const namePathData = {
-    // "Sahil" - First name paths
-    S: "M35 25 C20 25 15 35 15 45 C15 55 25 60 35 60 C45 60 55 55 55 45",
-    a1: "M70 40 C65 40 60 45 60 55 C60 65 65 70 75 70 C85 70 90 65 90 55 L90 40 L90 70",
-    h: "M105 20 L105 70 M105 45 C105 40 115 35 125 40 L125 70",
-    i1: "M140 40 L140 70 M140 28 L140 30",
-    l1: "M155 20 L155 70",
-    
-    // "Vishwakarma" - Last name paths
-    V: "M195 25 L215 70 L235 25",
-    i2: "M250 40 L250 70 M250 28 L250 30",
-    s: "M275 45 C265 45 265 52 275 55 C285 58 285 65 275 65",
-    h2: "M300 20 L300 70 M300 45 C300 40 310 35 320 40 L320 70",
-    w: "M340 40 L350 70 L360 50 L370 70 L380 40",
-    a2: "M400 40 C395 40 390 45 390 55 C390 65 395 70 405 70 C415 70 420 65 420 55 L420 40 L420 70",
-    k: "M435 20 L435 70 M460 40 L435 55 L465 70",
-    a3: "M480 40 C475 40 470 45 470 55 C470 65 475 70 485 70 C495 70 500 65 500 55 L500 40 L500 70",
-    r: "M515 40 L515 70 M515 50 C515 42 525 38 535 42",
-    m: "M550 40 L550 70 M550 50 C550 42 558 38 565 45 L565 70 M565 50 C565 42 573 38 580 45 L580 70",
-    a4: "M600 40 C595 40 590 45 590 55 C590 65 595 70 605 70 C615 70 620 65 620 55 L620 40 L620 70",
-  };
+  const firstName = "Sahil";
+  const lastName = "Vishwakarma";
 
-  // Animation variants for path drawing
-  const pathVariants = {
-    hidden: {
-      pathLength: 0,
-      opacity: 0,
-    },
-    visible: (delay: number) => ({
-      pathLength: 1,
-      opacity: 1,
-      transition: {
-        pathLength: {
-          duration: 0.8,
-          delay: delay,
-          ease: "easeInOut",
-        },
-        opacity: {
-          duration: 0.2,
-          delay: delay,
-        },
-      },
-    }),
-  };
-
-  // Glow effect animation
-  const glowVariants = {
+  // Container animation
+  const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
-      opacity: [0, 1, 0.5],
+      opacity: 1,
       transition: {
-        duration: 2,
-        delay: 3,
-        repeat: Infinity,
-        repeatType: "reverse" as const,
+        staggerChildren: 0.08,
+        delayChildren: 0.2,
       },
     },
   };
 
-  const letters = Object.entries(namePathData);
-  const totalDuration = letters.length * 0.15;
+  // Letter animation - elegant reveal
+  const letterVariants = {
+    hidden: {
+      opacity: 0,
+      y: 30,
+      scale: 0.8,
+      filter: 'blur(10px)',
+    },
+    visible: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      filter: 'blur(0px)',
+      transition: {
+        duration: 0.6,
+        ease: [0.25, 0.46, 0.45, 0.94],
+      },
+    },
+  };
+
+  // Glow animation for mobile
+  const glowAnimation = {
+    animate: {
+      textShadow: [
+        '0 0 10px rgba(20, 184, 166, 0.4), 0 0 20px rgba(20, 184, 166, 0.2)',
+        '0 0 15px rgba(59, 130, 246, 0.5), 0 0 30px rgba(59, 130, 246, 0.3)',
+        '0 0 10px rgba(139, 92, 246, 0.4), 0 0 20px rgba(139, 92, 246, 0.2)',
+        '0 0 10px rgba(20, 184, 166, 0.4), 0 0 20px rgba(20, 184, 166, 0.2)',
+      ],
+      transition: {
+        duration: 4,
+        repeat: Infinity,
+        ease: 'easeInOut',
+      },
+    },
+  };
+
+  // Underline draw animation
+  const underlineVariants = {
+    hidden: { scaleX: 0, opacity: 0 },
+    visible: {
+      scaleX: 1,
+      opacity: 1,
+      transition: {
+        duration: 0.8,
+        ease: [0.25, 0.46, 0.45, 0.94],
+        delay: 1.5,
+      },
+    },
+  };
 
   return (
-    <div className={`relative ${className}`}>
-      <svg
-        viewBox="0 0 640 90"
-        className="w-full h-auto max-w-4xl mx-auto"
-        preserveAspectRatio="xMidYMid meet"
-        style={{ overflow: 'visible' }}
+    <div className="relative w-full px-2">
+      {/* Animated background glow for mobile */}
+      <motion.div
+        className="absolute inset-0 -z-10"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1, delay: 0.5 }}
       >
-        {/* Gradient definitions */}
-        <defs>
-          {/* Main gradient for text */}
-          <linearGradient id="nameGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#14b8a6" />
-            <stop offset="50%" stopColor="#3b82f6" />
-            <stop offset="100%" stopColor="#8b5cf6" />
-          </linearGradient>
-          
-          {/* Animated gradient */}
-          <linearGradient id="animatedGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#14b8a6">
-              <animate
-                attributeName="stop-color"
-                values="#14b8a6;#3b82f6;#8b5cf6;#14b8a6"
-                dur="4s"
-                repeatCount="indefinite"
-              />
-            </stop>
-            <stop offset="50%" stopColor="#3b82f6">
-              <animate
-                attributeName="stop-color"
-                values="#3b82f6;#8b5cf6;#14b8a6;#3b82f6"
-                dur="4s"
-                repeatCount="indefinite"
-              />
-            </stop>
-            <stop offset="100%" stopColor="#8b5cf6">
-              <animate
-                attributeName="stop-color"
-                values="#8b5cf6;#14b8a6;#3b82f6;#8b5cf6"
-                dur="4s"
-                repeatCount="indefinite"
-              />
-            </stop>
-          </linearGradient>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-gradient-to-r from-teal-500/20 via-blue-500/20 to-purple-500/20 rounded-full blur-3xl" />
+      </motion.div>
 
-          {/* Glow filter */}
-          <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur stdDeviation="3" result="coloredBlur" />
-            <feMerge>
-              <feMergeNode in="coloredBlur" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
-
-          {/* Stronger glow for hover */}
-          <filter id="strongGlow" x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur stdDeviation="6" result="coloredBlur" />
-            <feMerge>
-              <feMergeNode in="coloredBlur" />
-              <feMergeNode in="coloredBlur" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
-        </defs>
-
-        {/* Background glow layer */}
+      <AnimatePresence>
         {isLoaded && (
-          <motion.g
-            variants={glowVariants}
+          <motion.div
+            variants={containerVariants}
             initial="hidden"
             animate="visible"
-            filter="url(#strongGlow)"
+            className="flex flex-col items-center gap-1"
           >
-            {letters.map(([key, path], index) => (
-              <motion.path
-                key={`glow-${key}`}
-                d={path}
-                fill="none"
-                stroke="url(#nameGradient)"
-                strokeWidth="4"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                initial={{ pathLength: 0, opacity: 0 }}
-                animate={{ pathLength: 1, opacity: 0.3 }}
-                transition={{
-                  pathLength: { duration: 0.5, delay: index * 0.15 },
-                  opacity: { duration: 0.3, delay: index * 0.15 + totalDuration },
+            {/* First Name - Larger */}
+            <div className="flex justify-center">
+              {firstName.split('').map((letter, i) => (
+                <motion.span
+                  key={`mobile-first-${i}`}
+                  variants={letterVariants}
+                  className="inline-block text-4xl xs:text-5xl font-bold"
+                  style={{
+                    background: 'linear-gradient(135deg, #14b8a6 0%, #3b82f6 50%, #8b5cf6 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text',
+                  }}
+                >
+                  <motion.span animate={glowAnimation.animate}>
+                    {letter}
+                  </motion.span>
+                </motion.span>
+              ))}
+            </div>
+
+            {/* Decorative line between names */}
+            <motion.div
+              className="flex items-center gap-2 my-1"
+              initial={{ opacity: 0, scale: 0.5 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.8, duration: 0.5 }}
+            >
+              <motion.div
+                className="h-[2px] w-8 bg-gradient-to-r from-transparent via-teal-400 to-transparent"
+                animate={{ 
+                  opacity: [0.5, 1, 0.5],
+                  scaleX: [0.8, 1, 0.8],
                 }}
+                transition={{ duration: 2, repeat: Infinity }}
               />
-            ))}
-          </motion.g>
-        )}
+              <motion.div
+                className="w-2 h-2 rounded-full bg-gradient-to-r from-teal-400 to-blue-500"
+                animate={{ 
+                  scale: [1, 1.3, 1],
+                  opacity: [0.7, 1, 0.7],
+                }}
+                transition={{ duration: 1.5, repeat: Infinity }}
+              />
+              <motion.div
+                className="h-[2px] w-8 bg-gradient-to-r from-transparent via-purple-400 to-transparent"
+                animate={{ 
+                  opacity: [0.5, 1, 0.5],
+                  scaleX: [0.8, 1, 0.8],
+                }}
+                transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
+              />
+            </motion.div>
 
-        {/* Main text paths */}
-        <g filter="url(#glow)">
-          {letters.map(([key, path], index) => (
-            <motion.path
-              key={key}
-              d={path}
-              fill="none"
-              stroke="url(#animatedGradient)"
-              strokeWidth="3"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              variants={pathVariants}
-              initial="hidden"
-              animate={isLoaded ? "visible" : "hidden"}
-              custom={index * 0.15}
+            {/* Last Name - Slightly smaller for balance */}
+            <div className="flex justify-center flex-wrap">
+              {lastName.split('').map((letter, i) => (
+                <motion.span
+                  key={`mobile-last-${i}`}
+                  variants={letterVariants}
+                  className="inline-block text-3xl xs:text-4xl font-bold"
+                  style={{
+                    background: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 50%, #14b8a6 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text',
+                  }}
+                >
+                  <motion.span animate={glowAnimation.animate}>
+                    {letter}
+                  </motion.span>
+                </motion.span>
+              ))}
+            </div>
+
+            {/* Animated underline */}
+            <motion.div
+              variants={underlineVariants}
+              className="h-[3px] w-3/4 mt-2 rounded-full origin-center overflow-hidden"
               style={{
-                filter: 'drop-shadow(0 0 8px rgba(20, 184, 166, 0.5))',
+                background: 'linear-gradient(90deg, transparent, #14b8a6, #3b82f6, #8b5cf6, transparent)',
               }}
-            />
-          ))}
-        </g>
-
-        {/* Sparkle effects */}
-        {isLoaded && (
-          <>
-            {[0, 1, 2, 3, 4].map((i) => (
-              <motion.circle
-                key={`sparkle-${i}`}
-                r="2"
-                fill="white"
-                initial={{ opacity: 0, scale: 0 }}
+            >
+              <motion.div
+                className="h-full w-full"
                 animate={{
-                  opacity: [0, 1, 0],
-                  scale: [0, 1.5, 0],
-                  cx: [100 + i * 120, 100 + i * 120 + 20, 100 + i * 120],
-                  cy: [30 + (i % 2) * 30, 40 + (i % 2) * 20, 30 + (i % 2) * 30],
+                  x: ['-100%', '100%'],
                 }}
                 transition={{
                   duration: 2,
-                  delay: totalDuration + 0.5 + i * 0.3,
                   repeat: Infinity,
-                  repeatDelay: 3,
+                  ease: 'linear',
+                  delay: 2,
+                }}
+                style={{
+                  background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent)',
                 }}
               />
-            ))}
-          </>
-        )}
-      </svg>
+            </motion.div>
 
-      {/* Underline animation */}
-      <motion.div
-        className="h-1 mx-auto rounded-full bg-gradient-to-r from-teal-400 via-blue-500 to-purple-600"
-        initial={{ width: 0, opacity: 0 }}
-        animate={isLoaded ? { width: '80%', opacity: 1 } : { width: 0, opacity: 0 }}
-        transition={{
-          duration: 1,
-          delay: totalDuration + 0.5,
-          ease: "easeOut",
-        }}
-        style={{
-          boxShadow: '0 0 20px rgba(20, 184, 166, 0.5), 0 0 40px rgba(59, 130, 246, 0.3)',
-        }}
-      />
+            {/* Floating particles for mobile */}
+            <div className="absolute inset-0 pointer-events-none overflow-hidden">
+              {[...Array(6)].map((_, i) => (
+                <motion.div
+                  key={`particle-${i}`}
+                  className="absolute w-1 h-1 rounded-full"
+                  style={{
+                    background: i % 3 === 0 ? '#14b8a6' : i % 3 === 1 ? '#3b82f6' : '#8b5cf6',
+                    left: `${15 + i * 15}%`,
+                    top: `${20 + (i % 2) * 60}%`,
+                  }}
+                  initial={{ opacity: 0, scale: 0 }}
+                  animate={{
+                    opacity: [0, 1, 0],
+                    scale: [0, 1.5, 0],
+                    y: [0, -20, -40],
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    delay: 2 + i * 0.3,
+                    repeatDelay: 1,
+                  }}
+                />
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
 
-// Alternative: Text-based SVG animation with actual font rendering
-export function AnimatedNameText({ className = '' }: AnimatedNameProps) {
+// ============================================
+// DESKTOP VERSION - Original Text Animation
+// ============================================
+function DesktopAnimatedName() {
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
@@ -266,7 +282,7 @@ export function AnimatedNameText({ className = '' }: AnimatedNameProps) {
       rotateX: 0,
       transition: {
         duration: 0.8,
-        delay: i * 0.15,
+        delay: i * 0.12,
         ease: [0.215, 0.61, 0.355, 1],
       },
     }),
@@ -282,7 +298,7 @@ export function AnimatedNameText({ className = '' }: AnimatedNameProps) {
       strokeDasharray: "100 0",
       transition: {
         duration: 1.5,
-        delay: i * 0.15,
+        delay: i * 0.12,
         ease: "easeInOut",
       },
     }),
@@ -305,9 +321,9 @@ export function AnimatedNameText({ className = '' }: AnimatedNameProps) {
   };
 
   return (
-    <div className={`relative ${className}`}>
+    <div className="relative">
       <motion.div 
-        className="flex flex-wrap justify-center items-center gap-x-4 sm:gap-x-6"
+        className="flex flex-wrap justify-center items-center gap-x-6"
         initial="hidden"
         animate={isLoaded ? "visible" : "hidden"}
       >
@@ -318,7 +334,7 @@ export function AnimatedNameText({ className = '' }: AnimatedNameProps) {
               key={`first-${i}`}
               custom={i}
               variants={letterVariants}
-              className="inline-block text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold bg-gradient-to-r from-teal-400 via-blue-500 to-purple-600 bg-clip-text text-transparent"
+              className="inline-block text-6xl md:text-7xl lg:text-8xl font-bold bg-gradient-to-r from-teal-400 via-blue-500 to-purple-600 bg-clip-text text-transparent"
               style={{
                 WebkitBackgroundClip: 'text',
                 backgroundSize: '200% 100%',
@@ -342,7 +358,7 @@ export function AnimatedNameText({ className = '' }: AnimatedNameProps) {
                     x="50%"
                     y="80%"
                     textAnchor="middle"
-                    className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold"
+                    className="text-6xl md:text-7xl lg:text-8xl font-bold"
                     fill="none"
                     stroke="url(#strokeGradient)"
                     strokeWidth="1"
@@ -364,7 +380,7 @@ export function AnimatedNameText({ className = '' }: AnimatedNameProps) {
               key={`last-${i}`}
               custom={i + firstName.length}
               variants={letterVariants}
-              className="inline-block text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold bg-gradient-to-r from-teal-400 via-blue-500 to-purple-600 bg-clip-text text-transparent"
+              className="inline-block text-6xl md:text-7xl lg:text-8xl font-bold bg-gradient-to-r from-teal-400 via-blue-500 to-purple-600 bg-clip-text text-transparent"
               style={{
                 WebkitBackgroundClip: 'text',
                 backgroundSize: '200% 100%',
@@ -389,7 +405,7 @@ export function AnimatedNameText({ className = '' }: AnimatedNameProps) {
         animate={isLoaded ? { width: '100%' } : { width: 0 }}
         transition={{
           duration: 1.5,
-          delay: (firstName.length + lastName.length) * 0.08 + 0.3,
+          delay: (firstName.length + lastName.length) * 0.12 + 0.3,
           ease: [0.215, 0.61, 0.355, 1],
         }}
       >
@@ -424,7 +440,40 @@ export function AnimatedNameText({ className = '' }: AnimatedNameProps) {
   );
 }
 
-// Signature-style SVG drawing animation
+// ============================================
+// MAIN EXPORT - Responsive Component
+// ============================================
+export function AnimatedNameText({ className = '' }: AnimatedNameProps) {
+  const isMobile = useIsMobile();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Prevent hydration mismatch
+  if (!mounted) {
+    return (
+      <div className={`relative ${className}`}>
+        <div className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-bold bg-gradient-to-r from-teal-400 via-blue-500 to-purple-600 bg-clip-text text-transparent text-center">
+          Sahil Vishwakarma
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className={`relative ${className}`}>
+      {isMobile ? <MobileAnimatedName /> : <DesktopAnimatedName />}
+    </div>
+  );
+}
+
+// Keep legacy exports for backward compatibility
+export function AnimatedName({ className = '' }: AnimatedNameProps) {
+  return <AnimatedNameText className={className} />;
+}
+
 export function SignatureAnimation({ className = '' }: AnimatedNameProps) {
   const [isLoaded, setIsLoaded] = useState(false);
 

@@ -2,6 +2,9 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Custom breakpoint for extra small screens */
+@custom-variant xs (@media (min-width: 475px));
+
 /* Base theme variables - keeping your required format */
 
 @theme inline {
@@ -42,6 +45,8 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+  /* Custom breakpoint */
+  --breakpoint-xs: 475px;
 }
 
 /* Tailwind color variables - extended styling system */
