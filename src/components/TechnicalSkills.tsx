@@ -343,7 +343,7 @@ const TechnicalSkills = () => {
           animate={isActive ? "visible" : "hidden"}
           transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }}
         >
-          {categories.map((cat, index) => (
+          {categories.map((cat) => (
             <motion.button
               key={cat.id}
               onClick={() => {
