@@ -95,16 +95,22 @@ const ProjectCard = ({ project, index }: { project: Project; index: number }) =>
     mouseX.set(0);
     mouseY.set(0);
   };
+
+  // Animation variants
+  const cardVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: { opacity: 1, y: 0 }
+  };
   
   return (
     <motion.div
       ref={combinedRef}
-      initial={{ opacity: 0, y: 50 }}
-      animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
+      variants={cardVariants}
+      initial="hidden"
+      animate={isActive ? "visible" : "hidden"}
       transition={{ 
-        duration: 0.7,
-        ease: "easeOut",
-        delay: index * 0.1 
+        duration: 0.5,
+        ease: "easeOut"
       }}
       style={{
         rotateX: isActive ? rotateX : 0,
@@ -209,7 +215,18 @@ const ProjectCard = ({ project, index }: { project: Project; index: number }) =>
 };
 
 const RecentProjects = () => {
-  const { ref, isActive } = useOptimizedAnimation(0.1);
+  const { ref, isActive } = useOptimizedAnimation(0.15, true);
+
+  // Animation variants
+  const fadeInUp = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 }
+  };
+
+  const fadeInDown = {
+    hidden: { opacity: 0, y: -20 },
+    visible: { opacity: 1, y: 0 }
+  };
 
   return (
     <section id="projects" className="section-bg py-24 relative">
@@ -220,12 +237,13 @@ const RecentProjects = () => {
         <div className="absolute w-96 h-96 -bottom-48 left-1/3 bg-purple-500/5 rounded-full blur-3xl"></div>
       </div>
 
-      <div className="container mx-auto px-4 relative z-10">
-        <div className="text-center mb-16" ref={ref}>
+      <div className="container mx-auto px-4 relative z-10" ref={ref}>
+        <div className="text-center mb-16">
           <motion.div 
-            initial={{ opacity: 0, y: -20 }}
-            animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: -20 }}
-            transition={{ duration: 0.8 }}
+            variants={fadeInDown}
+            initial="hidden"
+            animate={isActive ? "visible" : "hidden"}
+            transition={{ duration: 0.6, ease: "easeOut" }}
             className="inline-block"
           >
             <h2 className="gradient-text text-xl md:text-2xl font-semibold">
@@ -235,18 +253,20 @@ const RecentProjects = () => {
           </motion.div>
           
           <motion.h3 
-            initial={{ opacity: 0, y: 20 }}
-            animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
+            variants={fadeInUp}
+            initial="hidden"
+            animate={isActive ? "visible" : "hidden"}
+            transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
             className="text-3xl md:text-5xl font-bold mt-3 text-white"
           >
             Recent Projects
           </motion.h3>
           
           <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
+            variants={fadeInUp}
+            initial="hidden"
+            animate={isActive ? "visible" : "hidden"}
+            transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
             className="mt-4 text-gray-400 max-w-2xl mx-auto"
           >
             Explore my latest work built with modern technologies and best practices.

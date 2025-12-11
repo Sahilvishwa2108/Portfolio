@@ -16,18 +16,24 @@ interface WorkExperienceItem {
 }
 
 const ExperienceCard = ({ experience, index }: { experience: WorkExperienceItem; index: number }) => {
-  const { ref: cardRef, isActive } = useOptimizedAnimation(0.1, false, "0px 100px");
+  const { ref: cardRef, isActive } = useOptimizedAnimation(0.2, true);
   const isEven = index % 2 === 0;
+
+  // Animation variants for cleaner code
+  const cardVariants = {
+    hidden: { opacity: 0, x: isEven ? -30 : 30 },
+    visible: { opacity: 1, x: 0 }
+  };
 
   return (
     <motion.div
       ref={cardRef}
-      initial={{ opacity: 0, x: isEven ? -50 : 50 }}
-      animate={isActive ? { opacity: 1, x: 0 } : { opacity: 0, x: isEven ? -50 : 50 }}
+      variants={cardVariants}
+      initial="hidden"
+      animate={isActive ? "visible" : "hidden"}
       transition={{
-        duration: 0.7,
-        ease: "easeOut",
-        delay: index * 0.1
+        duration: 0.5,
+        ease: "easeOut"
       }}
       className="relative transform-gpu will-change-transform"
     >
@@ -103,7 +109,18 @@ const ExperienceCard = ({ experience, index }: { experience: WorkExperienceItem;
 };
 
 const Experience = () => {
-  const { ref, isActive } = useOptimizedAnimation(0.15);
+  const { ref, isActive } = useOptimizedAnimation(0.15, true);
+
+  // Animation variants
+  const fadeInUp = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 }
+  };
+
+  const fadeInDown = {
+    hidden: { opacity: 0, y: -20 },
+    visible: { opacity: 1, y: 0 }
+  };
 
   return (
     <section 
@@ -111,17 +128,20 @@ const Experience = () => {
     >
       {/* Animated background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/3 left-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-1/3 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: "1s" }}></div>
+        <div className="absolute top-1/3 left-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl" 
+             style={{ animation: 'pulse-slow 4s ease-in-out infinite' }}></div>
+        <div className="absolute bottom-1/3 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl" 
+             style={{ animation: 'pulse-slow 4s ease-in-out infinite 1s' }}></div>
       </div>
 
-      <div className="relative z-10">
+      <div className="relative z-10" ref={ref}>
         <div className="container mx-auto px-4">
-          <div className="text-center mb-16" ref={ref}>
+          <div className="text-center mb-16">
             <motion.div 
-              initial={{ opacity: 0, y: -20 }}
-              animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: -20 }}
-              transition={{ duration: 0.8 }}
+              variants={fadeInDown}
+              initial="hidden"
+              animate={isActive ? "visible" : "hidden"}
+              transition={{ duration: 0.6, ease: "easeOut" }}
               className="inline-block"
             >
               <h2 className="text-xl md:text-2xl font-semibold gradient-text">
@@ -131,18 +151,20 @@ const Experience = () => {
             </motion.div>
             
             <motion.h3 
-              initial={{ opacity: 0, y: 20 }}
-              animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
+              variants={fadeInUp}
+              initial="hidden"
+              animate={isActive ? "visible" : "hidden"}
+              transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
               className="text-4xl md:text-6xl font-bold mt-4 text-white"
             >
               Where I&apos;ve <span className="gradient-text">Worked</span>
             </motion.h3>
             
             <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-              transition={{ duration: 0.8, delay: 0.3 }}
+              variants={fadeInUp}
+              initial="hidden"
+              animate={isActive ? "visible" : "hidden"}
+              transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
               className="mt-6 text-gray-400 max-w-3xl mx-auto text-lg"
             >
               My professional experiences working with amazing teams and clients

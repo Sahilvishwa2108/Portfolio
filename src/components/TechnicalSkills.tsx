@@ -261,7 +261,7 @@ const SkillCloud = ({
 const TechnicalSkills = () => {
   const [category, setCategory] = useState('all');
   const [selectedSkill, setSelectedSkill] = useState<Skill | null>(null);
-  const { ref: sectionRef, isActive } = useOptimizedAnimation(0.1);
+  const { ref: sectionRef, isActive } = useOptimizedAnimation(0.15, true);
 
   // Memoize displayed skills
   const displayedSkills = useMemo(() => {
@@ -276,21 +276,35 @@ const TechnicalSkills = () => {
     return skillsData[category as keyof typeof skillsData] || [];
   }, [category]);
 
+  // Animation variants for consistent behavior
+  const fadeInUp = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 }
+  };
+
+  const fadeInDown = {
+    hidden: { opacity: 0, y: -20 },
+    visible: { opacity: 1, y: 0 }
+  };
+
   return (
     <section id="skills" className="py-24 relative overflow-hidden section-bg">
       {/* Animated background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: "1.5s" }}></div>
+        <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl" 
+             style={{ animation: 'pulse-slow 4s ease-in-out infinite' }}></div>
+        <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl" 
+             style={{ animation: 'pulse-slow 4s ease-in-out infinite 1.5s' }}></div>
       </div>
       
-      <div className="container mx-auto px-4 relative z-10">
+      <div className="container mx-auto px-4 relative z-10" ref={sectionRef}>
         {/* Section header */}
-        <div className="text-center mb-16" ref={sectionRef}>
+        <div className="text-center mb-16">
           <motion.div 
-            initial={{ opacity: 0, y: -20 }}
-            animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: -20 }}
-            transition={{ duration: 0.8 }}
+            variants={fadeInDown}
+            initial="hidden"
+            animate={isActive ? "visible" : "hidden"}
+            transition={{ duration: 0.6, ease: "easeOut" }}
             className="inline-block"
           >
             <h2 className="text-xl md:text-2xl font-semibold gradient-text">
@@ -300,18 +314,20 @@ const TechnicalSkills = () => {
           </motion.div>
 
           <motion.h3 
-            initial={{ opacity: 0, y: 20 }}
-            animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
+            variants={fadeInUp}
+            initial="hidden"
+            animate={isActive ? "visible" : "hidden"}
+            transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
             className="text-4xl md:text-6xl font-bold mt-4 text-white"
           >
             My Technical <span className="gradient-text">Arsenal</span>
           </motion.h3>
           
           <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
+            variants={fadeInUp}
+            initial="hidden"
+            animate={isActive ? "visible" : "hidden"}
+            transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
             className="mt-6 text-gray-400 max-w-3xl mx-auto text-lg"
           >
             Explore my toolkit of technologies and frameworks - interact with the 3D visualization
@@ -321,9 +337,10 @@ const TechnicalSkills = () => {
         {/* Category filter tabs */}
         <motion.div 
           className="flex justify-center flex-wrap gap-3 mb-12"
-          initial={{ opacity: 0, y: 20 }}
-          animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-          transition={{ duration: 0.5, delay: 0.4 }}
+          variants={fadeInUp}
+          initial="hidden"
+          animate={isActive ? "visible" : "hidden"}
+          transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }}
         >
           {categories.map((cat, index) => (
             <motion.button
@@ -334,9 +351,6 @@ const TechnicalSkills = () => {
               }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              initial={{ opacity: 0, y: 20 }}
-              animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-              transition={{ duration: 0.5, delay: 0.4 + index * 0.1 }}
               className={`
                 px-6 py-3 rounded-full text-sm font-semibold transition-all duration-300
                 ${category === cat.id
@@ -354,9 +368,10 @@ const TechnicalSkills = () => {
         <motion.div 
           className="relative glass-morphism-strong rounded-3xl p-4 overflow-hidden shadow-2xl"
           style={{ height: '600px' }}
-          initial={{ opacity: 0, y: 30 }}
-          animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-          transition={{ duration: 0.7, delay: 0.5 }}
+          variants={fadeInUp}
+          initial="hidden"
+          animate={isActive ? "visible" : "hidden"}
+          transition={{ duration: 0.6, delay: 0.4, ease: "easeOut" }}
         >
           <Canvas className="rounded-2xl">
             <Suspense fallback={
@@ -387,9 +402,10 @@ const TechnicalSkills = () => {
 
         {/* Summary stats */}
         <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-          transition={{ duration: 0.5, delay: 0.7 }}
+          variants={fadeInUp}
+          initial="hidden"
+          animate={isActive ? "visible" : "hidden"}
+          transition={{ duration: 0.6, delay: 0.5, ease: "easeOut" }}
           className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-6"
         >
           {[

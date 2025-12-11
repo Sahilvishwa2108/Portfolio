@@ -1,119 +1,143 @@
 'use client';
 
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect, useState, useMemo } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { Points, PointMaterial, OrbitControls } from '@react-three/drei';
+import { Points, PointMaterial } from '@react-three/drei';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import * as THREE from 'three';
 import Link from 'next/link';
 import { ArrowRight, Download, Github, Linkedin, Mail } from 'lucide-react';
 
-function ParticleField({ mousePosition }: { mousePosition: { x: number; y: number } }) {
+// Optimized particle count for performance
+const PARTICLE_COUNT = 500;
+
+function ParticleField() {
   const ref = useRef<THREE.Points>(null);
-  const [sphere] = useState(() => {
-    const positions = new Float32Array(1000 * 3);
-    const velocities = new Float32Array(1000 * 3);
+  
+  // Generate static positions once - no velocities needed for stable effect
+  const positions = useMemo(() => {
+    const pos = new Float32Array(PARTICLE_COUNT * 3);
     
-    for (let i = 0; i < 1000; i++) {
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
       const i3 = i * 3;
-      const radius = Math.random() * 2 + 1;
+      // Create a more uniform sphere distribution
+      const radius = 1.5 + Math.random() * 1;
       const theta = Math.random() * Math.PI * 2;
-      const phi = Math.random() * Math.PI;
+      const phi = Math.acos(2 * Math.random() - 1); // Uniform distribution on sphere
       
-      positions[i3] = radius * Math.sin(phi) * Math.cos(theta);
-      positions[i3 + 1] = radius * Math.sin(phi) * Math.sin(theta);
-      positions[i3 + 2] = radius * Math.cos(phi);
-      
-      velocities[i3] = (Math.random() - 0.5) * 0.01;
-      velocities[i3 + 1] = (Math.random() - 0.5) * 0.01;
-      velocities[i3 + 2] = (Math.random() - 0.5) * 0.01;
+      pos[i3] = radius * Math.sin(phi) * Math.cos(theta);
+      pos[i3 + 1] = radius * Math.sin(phi) * Math.sin(theta);
+      pos[i3 + 2] = radius * Math.cos(phi);
     }
     
-    return { positions, velocities };
-  });
+    return pos;
+  }, []);
 
   useFrame((state) => {
     if (!ref.current) return;
     
     const time = state.clock.getElapsedTime();
-    const positions = ref.current.geometry.attributes.position.array as Float32Array;
     
-    for (let i = 0; i < positions.length; i += 3) {
-      positions[i] += sphere.velocities[i] + Math.sin(time + i) * 0.001;
-      positions[i + 1] += sphere.velocities[i + 1] + Math.cos(time + i) * 0.001;
-      positions[i + 2] += sphere.velocities[i + 2] + Math.sin(time * 0.5 + i) * 0.001;
-      
-      const dx = positions[i] - mousePosition.x * 2;
-      const dy = positions[i + 1] - mousePosition.y * 2;
-      const distance = Math.sqrt(dx * dx + dy * dy);
-      
-      if (distance < 0.5) {
-        positions[i] += dx * 0.02;
-        positions[i + 1] += dy * 0.02;
-      }
-      
-      const distanceFromCenter = Math.sqrt(
-        positions[i] ** 2 + positions[i + 1] ** 2 + positions[i + 2] ** 2
-      );
-      if (distanceFromCenter > 3) {
-        positions[i] *= 0.95;
-        positions[i + 1] *= 0.95;
-        positions[i + 2] *= 0.95;
-      }
-    }
-    
-    ref.current.geometry.attributes.position.needsUpdate = true;
-    ref.current.rotation.x = time * 0.05;
-    ref.current.rotation.y = time * 0.075;
+    // Simple, smooth rotation only - no position updates for stability
+    ref.current.rotation.x = time * 0.03;
+    ref.current.rotation.y = time * 0.05;
   });
 
   return (
-    <Points ref={ref} positions={sphere.positions} stride={3} frustumCulled={false}>
+    <Points ref={ref} positions={positions} stride={3} frustumCulled={false}>
       <PointMaterial
         transparent
         color="#14b8a6"
-        size={0.015}
+        size={0.02}
         sizeAttenuation={true}
         depthWrite={false}
-        opacity={0.8}
+        opacity={0.7}
         blending={THREE.AdditiveBlending}
       />
     </Points>
   );
 }
 
+// Secondary particle layer for depth
+function ParticleFieldSecondary() {
+  const ref = useRef<THREE.Points>(null);
+  
+  const positions = useMemo(() => {
+    const pos = new Float32Array(300 * 3);
+    
+    for (let i = 0; i < 300; i++) {
+      const i3 = i * 3;
+      const radius = 2 + Math.random() * 1.5;
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.acos(2 * Math.random() - 1);
+      
+      pos[i3] = radius * Math.sin(phi) * Math.cos(theta);
+      pos[i3 + 1] = radius * Math.sin(phi) * Math.sin(theta);
+      pos[i3 + 2] = radius * Math.cos(phi);
+    }
+    
+    return pos;
+  }, []);
+
+  useFrame((state) => {
+    if (!ref.current) return;
+    const time = state.clock.getElapsedTime();
+    // Rotate in opposite direction for parallax effect
+    ref.current.rotation.x = -time * 0.02;
+    ref.current.rotation.y = -time * 0.03;
+  });
+
+  return (
+    <Points ref={ref} positions={positions} stride={3} frustumCulled={false}>
+      <PointMaterial
+        transparent
+        color="#3b82f6"
+        size={0.015}
+        sizeAttenuation={true}
+        depthWrite={false}
+        opacity={0.5}
+        blending={THREE.AdditiveBlending}
+      />
+    </Points>
+  );
+}
+
+// Optimized typewriter with CSS animation instead of state updates
 function TypingText({ text, delay = 0 }: { text: string; delay?: number }) {
-  const [displayedText, setDisplayedText] = useState('');
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isTyping, setIsTyping] = useState(false);
-
+  const [isVisible, setIsVisible] = useState(false);
+  const [showCursor, setShowCursor] = useState(true);
+  
   useEffect(() => {
-    const startDelay = setTimeout(() => {
-      setIsTyping(true);
+    const timer = setTimeout(() => {
+      setIsVisible(true);
     }, delay);
-
-    return () => clearTimeout(startDelay);
+    
+    return () => clearTimeout(timer);
   }, [delay]);
 
+  // Hide cursor after typing animation completes
   useEffect(() => {
-    if (!isTyping) return;
-
-    if (currentIndex < text.length) {
-      const typingSpeed = text[currentIndex] === ' ' ? 30 : 80;
-      const timeout = setTimeout(() => {
-        setDisplayedText(text.slice(0, currentIndex + 1));
-        setCurrentIndex(currentIndex + 1);
-      }, typingSpeed);
-
-      return () => clearTimeout(timeout);
+    if (isVisible) {
+      const cursorTimer = setTimeout(() => {
+        setShowCursor(false);
+      }, text.length * 50 + 500); // Match CSS animation duration
+      
+      return () => clearTimeout(cursorTimer);
     }
-  }, [currentIndex, text, isTyping]);
+  }, [isVisible, text.length]);
 
   return (
     <span className="inline-flex items-center">
-      {displayedText}
-      {isTyping && currentIndex < text.length && (
-        <span className="ml-1 w-0.5 h-6 bg-teal-400 animate-pulse" />
+      <span 
+        className={`overflow-hidden whitespace-nowrap ${isVisible ? 'typewriter-text' : 'opacity-0'}`}
+        style={{
+          '--char-count': text.length,
+        } as React.CSSProperties}
+      >
+        {text}
+      </span>
+      {isVisible && showCursor && (
+        <span className="typewriter-cursor ml-0.5 w-0.5 h-6 bg-teal-400" />
       )}
     </span>
   );
@@ -121,7 +145,6 @@ function TypingText({ text, delay = 0 }: { text: string; delay?: number }) {
 
 export function Hero() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ['start start', 'end start'],
@@ -130,21 +153,6 @@ export function Hero() {
   const y = useTransform(scrollYProgress, [0, 1], [0, 300]);
   const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
 
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      if (containerRef.current) {
-        const rect = containerRef.current.getBoundingClientRect();
-        setMousePosition({
-          x: (e.clientX - rect.left) / rect.width - 0.5,
-          y: (e.clientY - rect.top) / rect.height - 0.5,
-        });
-      }
-    };
-
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
-
   return (
     <section
       ref={containerRef}
@@ -152,26 +160,28 @@ export function Hero() {
     >
       <div className="absolute inset-0 z-0">
         <Canvas
-          camera={{ position: [0, 0, 3], fov: 75 }}
-          gl={{ antialias: true, alpha: true }}
+          camera={{ position: [0, 0, 4], fov: 60 }}
+          gl={{ 
+            antialias: false, // Disable for performance
+            alpha: true,
+            powerPreference: 'high-performance',
+          }}
+          dpr={[1, 1.5]} // Limit pixel ratio for performance
+          frameloop="always"
         >
-          <ambientLight intensity={0.5} />
-          <pointLight position={[10, 10, 10]} intensity={1} />
-          <ParticleField mousePosition={mousePosition} />
-          <OrbitControls
-            enableZoom={false}
-            enablePan={false}
-            enableRotate={false}
-            autoRotate
-            autoRotateSpeed={0.5}
-          />
+          <ParticleField />
+          <ParticleFieldSecondary />
         </Canvas>
       </div>
 
-      <div className="absolute inset-0 z-0">
-        <div className="absolute top-20 left-20 w-96 h-96 bg-teal-500/20 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-20 right-20 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl animate-pulse delay-1000" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-pulse delay-2000" />
+      {/* Simplified background blurs - use CSS will-change for GPU acceleration */}
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        <div className="absolute top-20 left-20 w-96 h-96 bg-teal-500/15 rounded-full blur-3xl will-change-transform" 
+             style={{ animation: 'pulse-slow 4s ease-in-out infinite' }} />
+        <div className="absolute bottom-20 right-20 w-96 h-96 bg-blue-500/15 rounded-full blur-3xl will-change-transform" 
+             style={{ animation: 'pulse-slow 4s ease-in-out infinite 1s' }} />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-purple-500/15 rounded-full blur-3xl will-change-transform" 
+             style={{ animation: 'pulse-slow 4s ease-in-out infinite 2s' }} />
       </div>
 
       <motion.div
