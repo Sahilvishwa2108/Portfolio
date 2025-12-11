@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState, useRef, useMemo, Suspense } from "react";
-import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, ExternalLink, ChevronRight, ChevronLeft, Award, Star, Shield, Sparkles } from "lucide-react";
@@ -272,89 +272,7 @@ const AchievementsScene = () => {
   );
 };
 
-// Optimized Certificate Card for UI with framer motion
-const Certificate3DCard = ({ 
-  certificate, 
-  onClick,
-  index = 0
-}: { 
-  certificate: Certificate, 
-  onClick: () => void,
-  index?: number
-}) => {
-  const { ref, isActive } = useOptimizedAnimation(0.1, false);
-  
-  return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 20 }}
-      animate={isActive ? { 
-        opacity: 1, 
-        y: 0, 
-        transition: { duration: 0.5, delay: index * 0.1 } 
-      } : { opacity: 0, y: 20 }}
-      whileHover={{ 
-        rotateY: 5, 
-        rotateX: -5, 
-        scale: 1.02, 
-        z: 20,
-        transition: { duration: 0.3 } 
-      }}
-      style={{ 
-        transformStyle: "preserve-3d",
-        perspective: "1000px" 
-      }}
-      className="glass-morphism-strong rounded-xl overflow-hidden shadow-lg hover:shadow-xl hover:shadow-teal-500/10 transition-all duration-300 border border-white/10 h-full flex flex-col cursor-pointer hover-lift transform-gpu"
-      onClick={onClick}
-    >
-      <div className="relative pt-[56.25%]">
-        <Image
-          src={certificate.src}
-          alt={certificate.title}
-          fill
-          className="absolute inset-0 object-fill hover:scale-105 transition-transform duration-500"
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          loading={index < 3 ? "eager" : "lazy"} // Prioritize first few images
-        />
-        <motion.div 
-          initial={{ opacity: 0 }}
-          whileHover={{ opacity: 1 }}
-          className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent transition-opacity duration-300 flex items-end"
-        >
-          <div className="p-4 text-white">
-            <p className="text-sm font-medium">View Certificate</p>
-          </div>
-        </motion.div>
-      </div>
-      
-      <div className="p-5 flex flex-col flex-grow" style={{ transform: "translateZ(10px)" }}>
-        <div className="flex justify-between items-start mb-2">
-          <span className="px-2 py-1 text-xs rounded-full glass-morphism border border-teal-500/20 text-teal-300">
-            {certificate.category.toString() in categoryNames ? categoryNames[certificate.category] : "Certificate"}
-          </span>
-        </div>
-        
-        <h3 className="font-bold text-lg text-white mb-2">
-          {certificate.title}
-        </h3>
-        
-        <p className="text-gray-400 text-sm flex-grow">
-          {certificate.content?.substring(0, 100)}
-          {certificate.content && certificate.content.length > 100 ? '...' : ''}
-        </p>
-        
-        <motion.button 
-          className="mt-4 flex items-center gradient-text text-sm font-medium"
-          whileHover={{ x: 5 }}
-          transition={{ type: "spring", stiffness: 400, damping: 10 }}
-        >
-          View Details
-          <ArrowRight className="ml-1 h-4 w-4" />
-        </motion.button>
-      </div>
-    </motion.div>
-  );
-};
+// NOTE: Previously defined `Certificate3DCard` removed because it's unused; the UI now uses `PremiumCertificateCard` and a light carousel.
 
 // Premium Certificate Card - Modern, Innovative Design
 const PremiumCertificateCard = ({ 
@@ -373,23 +291,22 @@ const PremiumCertificateCard = ({
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, y: 30, scale: 0.95 }}
+      initial={{ opacity: 0, y: 20 }}
       animate={isActive ? { 
         opacity: 1, 
         y: 0, 
-        scale: 1,
-        transition: { duration: 0.5, delay: index * 0.08 } 
-      } : { opacity: 0, y: 30, scale: 0.95 }}
+        transition: { duration: 0.4, delay: index * 0.05, ease: "easeOut" } 
+      } : { opacity: 0, y: 20 }}
       whileHover={{ 
-        y: -8,
-        transition: { duration: 0.3 } 
+        y: -6,
+        transition: { duration: 0.2, ease: "easeOut" } 
       }}
-      className="group relative cursor-pointer"
+      className="group relative cursor-pointer will-change-transform"
       onClick={onClick}
     >
       {/* Animated gradient border */}
-      <div className={`absolute -inset-[1px] rounded-2xl bg-gradient-to-r ${certificate.color} opacity-0 group-hover:opacity-100 blur-sm transition-all duration-500`} />
-      <div className={`absolute -inset-[1px] rounded-2xl bg-gradient-to-r ${certificate.color} opacity-30 group-hover:opacity-50 transition-all duration-500`} />
+      <div className={`absolute -inset-[1px] rounded-2xl bg-gradient-to-r ${certificate.color} opacity-0 group-hover:opacity-60 blur-sm transition-opacity duration-300`} />
+      <div className={`absolute -inset-[1px] rounded-2xl bg-gradient-to-r ${certificate.color} opacity-20 group-hover:opacity-40 transition-opacity duration-300`} />
       
       {/* Card Container */}
       <div className="relative rounded-2xl bg-gradient-to-br from-gray-900/95 via-gray-900/90 to-gray-800/95 backdrop-blur-xl border border-white/[0.08] shadow-2xl overflow-hidden">
@@ -397,7 +314,7 @@ const PremiumCertificateCard = ({
         <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${certificate.color}`} />
         
         {/* Corner glow */}
-        <div className={`absolute -top-20 -right-20 w-40 h-40 bg-gradient-to-br ${certificate.color} opacity-10 blur-3xl group-hover:opacity-20 transition-opacity`} />
+        <div className={`absolute -top-20 -right-20 w-40 h-40 bg-gradient-to-br ${certificate.color} opacity-5 blur-3xl group-hover:opacity-15 transition-opacity duration-300 pointer-events-none`} />
         
         {/* Level Badge */}
         <div className="absolute top-4 right-4 z-10">
@@ -413,7 +330,7 @@ const PremiumCertificateCard = ({
             src={certificate.src}
             alt={certificate.title}
             fill
-            className="object-cover group-hover:scale-105 transition-transform duration-700"
+            className="object-cover group-hover:scale-[1.03] transition-transform duration-500 ease-out"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             loading={index < 6 ? "eager" : "lazy"}
           />
@@ -490,16 +407,6 @@ export function Achievements() {
   const { ref: carouselSectionRef, isActive: isCarouselActive } = useOptimizedAnimation(0.1, true);
   const { ref: premiumSectionRef, isActive: isPremiumActive } = useOptimizedAnimation(0.1, true);
 
-  // Add these for scroll fade effect
-  const containerRef = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end start"]
-  });
-  
-  // Transform scrollYProgress to opacity - fade out as section leaves viewport
-  const opacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
-
   // Load certificates data
   useEffect(() => {
     const fetchCertificates = async () => {
@@ -549,7 +456,6 @@ export function Achievements() {
     <section 
       id="achievements" 
       className="section-bg w-full py-24 relative overflow-hidden"
-      ref={containerRef}
     >
       {/* Subtle background blurs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -558,10 +464,7 @@ export function Achievements() {
         <div className="absolute w-96 h-96 -bottom-48 right-1/3 bg-blue-500/[0.02] rounded-full blur-3xl"></div>
       </div>
 
-      <motion.div
-        className="relative z-10"
-        style={{ opacity }}
-      >
+      <div className="relative z-10">
         <div className="max-w-7xl mx-auto px-4 md:px-8">
           {/* Section header using the optimized animation pattern */}
           <div className="text-center mb-16" ref={sectionRef}>
@@ -601,7 +504,7 @@ export function Achievements() {
             initial={{ opacity: 0, y: 20 }}
             animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
             transition={{ duration: 0.8, delay: 0.4 }}
-            className="h-[300px] mb-16 relative"
+            className="h-[350px] mb-16 relative mt-8"
             style={{
               perspective: "1000px",
             }}
@@ -755,7 +658,7 @@ export function Achievements() {
             </>
           )}
         </div>
-      </motion.div>
+      </div>
 
       {/* Certificate Modal - Optimized for performance */}
       <AnimatePresence>
